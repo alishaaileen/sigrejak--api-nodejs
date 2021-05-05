@@ -6,32 +6,12 @@ const { generateRandomString, hashPassword } = require('../utils')
 
 const getAll = async (req, res) => {
     try {
-        let sql = `SELECT id, nama, email, role FROM Admin`
-        let admins = await db(sql)
+        let sql = `SELECT * FROM Keluarga`
+        let families = await db(sql)
 
         res.status(200).send({
             message: "Success retrieving data",
-            result: admins,
-        })
-    } catch (error) {
-        console.log(error.message)
-        res.status(500).send({
-            message: "Failed to retrieve data",
-            error: error.message
-        })
-    }
-}
-
-const getAllByRole = async (req, res) => {
-    let { roleId } = req.params
-
-    try {
-        let sql = `SELECT id, nama, email, role FROM Admin WHERE role=?`
-        let admins = await db(sql, [ roleId ])
-
-        res.status(200).send({
-            message: "Success retrieving data",
-            result: admins,
+            result: families,
         })
     } catch (error) {
         console.log(error.message)
@@ -46,9 +26,7 @@ const getById = async (req, res) => {
     let { id } = req.params
     
     try {
-        let sql = 
-            `SELECT id, nama, email, role 
-            FROM Admin WHERE id = ?`
+        let sql = `SELECT * FROM Keluarga WHERE id = ?`
 
         let result = await db(sql, [ id ])
 
@@ -76,17 +54,23 @@ const post = async (req, res) => {
         let plainPassword = generateRandomString(6)
         console.log(plainPassword)
         let password = hashPassword(plainPassword)
-        let { nama, email, role } = req.body
+        let is_ketua_lingkungan = 0
+        let {
+            nama_keluarga,
+            username,
+            email,
+        } = req.body
     
         let sql =
-            `INSERT INTO Admin SET ?`
+            `INSERT INTO Keluarga SET ?`
         
         let result = await db(sql, [ 
             {
-                nama,
+                nama_keluarga,
+                username,
                 email,
                 password,
-                role
+                is_ketua_lingkungan,
             }
         ])
         
@@ -104,11 +88,15 @@ const post = async (req, res) => {
 }
 
 const update = async (req, res) => {
-    const { nama, email, role } = req.body
+    const {
+        nama_keluarga,
+        username,
+        email,
+    } = req.body
     const { id } = req.params
 
     try {
-        let sql = `SELECT * FROM Admin WHERE id = ?`
+        let sql = `SELECT * FROM Keluarga WHERE id = ?`
         let result = await db(sql, [ id ])
 
         if (result.length === 0) {
@@ -116,8 +104,12 @@ const update = async (req, res) => {
                 message: "Data not found",
             })
         } else {
-            sql = `UPDATE Admin SET ? WHERE id=?`
-            result = await db(sql, [ {nama, email, role}, id ]) 
+            sql = `UPDATE Keluarga SET ? WHERE id=?`
+            result = await db(sql, [ {
+                nama_keluarga,
+                username,
+                email,
+            }, id ]) 
             
             res.status(200).send({
                 message: "Success updating data",
@@ -137,7 +129,7 @@ const remove = async (req, res) => {
     let { id } = req.params
 
     try {
-        let sql = `SELECT * FROM Admin WHERE id = ?`
+        let sql = `SELECT * FROM Keluarga WHERE id = ?`
         let result = await db(sql, [ id ])
 
         if (result.length === 0) {
@@ -145,7 +137,7 @@ const remove = async (req, res) => {
                 message: "Data not found",
             })
         } else {
-            sql = `DELETE FROM Admin WHERE id=?`
+            sql = `DELETE FROM Keluarga WHERE id=?`
             result = await db(sql, [ id ])
     
             res.status(200).send({
@@ -163,23 +155,23 @@ const remove = async (req, res) => {
 }
 
 const login = async (req, res) => {
-    let { email, password } = req.body
+    let { username, password } = req.body
 
     try {
-        let sql = `SELECT * FROM Admin WHERE email=?`
+        let sql = `SELECT * FROM Keluarga WHERE username=?`
 
-        let admin = await db(sql,  email )
+        let family = await db(sql, username )
      
-        if(admin.length === 0) {
+        if(family.length === 0) {
             res.status(404).send({
-                message: "Invalid email or password",
+                message: "Invalid username or password",
             })
         }
         else {
-            if(compareSync(password, admin[0].password)) {
-                admin[0].password = undefined
+            if(compareSync(password, family[0].password)) {
+                family[0].password = undefined
                 let token = jwt.sign({
-                    admin: admin
+                    family: family
                 }, process.env.JWT_SECRET_KEY, { expiresIn: "1000h"})
                 res.status(200).send({
                     message: "Success logged in",
@@ -187,23 +179,20 @@ const login = async (req, res) => {
                 })
             } else {
                 res.status(401).send({
-                    message: "Invalid email or password",
+                    message: "Invalid username or password",
                 })
             }
         }
     } catch (error) {
-    
         res.status(500).send({
-           
             error: true,
-            message:error
+            message: error.message
         })
     }
 }
 
 module.exports = {
     getAll,
-    getAllByRole,
     getById,
     post,
     update,

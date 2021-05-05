@@ -2,10 +2,16 @@ const express = require('express')
 const router = express.Router()
 const adminController = require('../controllers/admin')
 
-router.get('/', adminController.getAll)
-router.get('/:id', adminController.getById)
-router.post('/register', adminController.post)
-router.patch('/:id', adminController.update)
-router.delete('/:id', adminController.remove)
+// Middleware
+const { validateToken } = require('../middleware/authMiddleware')
+
+router.get('/', validateToken, adminController.getAll)
+router.get('/role/:roleId', validateToken, adminController.getAllByRole)
+router.get('/:id', validateToken, adminController.getById)
+router.post('/register', validateToken, adminController.post)
+router.patch('/:id', validateToken, adminController.update)
+router.delete('/:id', validateToken, adminController.remove)
+
+router.post('/login', adminController.login)
 
 module.exports = router
