@@ -6,7 +6,7 @@ const { generateRandomString, hashPassword } = require('../utils')
 
 const getAll = async (req, res) => {
     try {
-        let sql = `SELECT id, nama, email, role FROM Admin`
+        let sql = `SELECT id, nama, email, no_telp, role FROM Admin`
         let admins = await db(sql)
 
         res.status(200).send({
@@ -26,7 +26,7 @@ const getAllByRole = async (req, res) => {
     let { roleId } = req.params
 
     try {
-        let sql = `SELECT id, nama, email, role FROM Admin WHERE role=?`
+        let sql = `SELECT id, nama, email, no_telp, role FROM Admin WHERE role=?`
         let admins = await db(sql, [ roleId ])
 
         res.status(200).send({
@@ -47,7 +47,7 @@ const getById = async (req, res) => {
     
     try {
         let sql = 
-            `SELECT id, nama, email, role 
+            `SELECT id, nama, email, no_telp, role 
             FROM Admin WHERE id = ?`
 
         let result = await db(sql, [ id ])
@@ -76,7 +76,7 @@ const post = async (req, res) => {
         let plainPassword = generateRandomString(6)
         console.log(plainPassword)
         let password = hashPassword(plainPassword)
-        let { nama, email, role } = req.body
+        let { nama, email, no_telp, role } = req.body
     
         let sql =
             `INSERT INTO Admin SET ?`
@@ -85,6 +85,7 @@ const post = async (req, res) => {
             {
                 nama,
                 email,
+                no_telp,
                 password,
                 role
             }
@@ -104,7 +105,7 @@ const post = async (req, res) => {
 }
 
 const update = async (req, res) => {
-    const { nama, email, role } = req.body
+    const { nama, email, no_telp, role } = req.body
     const { id } = req.params
 
     try {
@@ -117,7 +118,7 @@ const update = async (req, res) => {
             })
         } else {
             sql = `UPDATE Admin SET ? WHERE id=?`
-            result = await db(sql, [ {nama, email, role}, id ]) 
+            result = await db(sql, [ {nama, email, no_telp, role}, id ]) 
             
             res.status(200).send({
                 message: "Success updating data",
