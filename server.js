@@ -14,7 +14,6 @@ app.use(bodyParser.urlencoded({extended: true}));
 
 // Routes
 const adminRoutes = require('./routes/admin')
-const parokiRoutes = require('./routes/paroki')
 const lingkunganRoutes = require('./routes/lingkungan')
 const keluargaRoutes = require('./routes/keluarga')
 const umatRoutes = require('./routes/umat')
@@ -26,7 +25,6 @@ const suratKeteranganPindah = require('./routes/surat/suratKeteranganPindah')
 app.get('/', (req, res) => res.send('haii'))
 app.use('/check-user', checkUser)
 app.use('/admin', adminRoutes)
-app.use('/paroki', parokiRoutes)
 app.use('/lingkungan', lingkunganRoutes)
 app.use('/keluarga', keluargaRoutes)
 app.use('/umat', umatRoutes)

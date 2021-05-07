@@ -6,7 +6,7 @@ const { generateRandomString, hashPassword } = require('../utils')
 
 const getAll = async (req, res) => {
     try {
-        let sql = `SELECT id, nama_keluarga, email, username FROM Keluarga`
+        let sql = `SELECT id, nama_keluarga, email, username, is_ketua_lingkungan FROM Keluarga`
         let families = await db(sql)
 
         res.status(200).send({
@@ -26,7 +26,7 @@ const getById = async (req, res) => {
     let { id } = req.params
     
     try {
-        let sql = `SELECT id, nama_keluarga, email, username FROM Keluarga WHERE id = ?`
+        let sql = `SELECT id, nama_keluarga, email, username, is_ketua_lingkungan FROM Keluarga WHERE id = ?`
 
         let result = await db(sql, [ id ])
 
@@ -92,6 +92,7 @@ const update = async (req, res) => {
         nama_keluarga,
         username,
         email,
+        is_ketua_lingkungan,
     } = req.body
     console.log(req.body)
     const { id } = req.params
@@ -109,7 +110,8 @@ const update = async (req, res) => {
             result = await db(sql, [ {
                 nama_keluarga,
                 username,
-                email
+                email,
+                is_ketua_lingkungan,
             }, id ]) 
             
             res.status(200).send({

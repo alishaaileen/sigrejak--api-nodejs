@@ -2,27 +2,15 @@ const db = require('../connection')
 
 const getAll = async (req, res) => {
     try {
-        let sql = `SELECT * FROM Lingkungan`
+        let sql =
+            `SELECT L.id,
+                    L.ketua_lingkungan_id,
+                    K.nama_lingkungan,
+                    K.nama_keluarga,
+                    K.username,
+                    K.email,
+            FROM Lingkungan L JOIN Keluarga K ON (L.ketua_lingkungan_id=K.id)`
         let result = await db(sql)
-
-        res.status(200).send({
-            message: "Success retrieving data",
-            result: result,
-        })
-    } catch (error) {
-        console.log(error.message)
-        res.status(500).send({
-            message: "Failed to retrieve data",
-            error: error.message
-        })
-    }
-}
-
-const getLingkunganByParoki = async (req, res) => {
-    let { idParoki } = req.params
-    try {
-        let sql = `SELECT * FROM Lingkungan WHERE paroki_id=?`
-        let result = await db(sql, [ idParoki ])
 
         res.status(200).send({
             message: "Success retrieving data",
@@ -42,7 +30,14 @@ const getById = async (req, res) => {
 
     try {
         let sql = 
-            `SELECT * FROM Lingkungan WHERE id = ?`
+            `SELECT L.id,
+            L.ketua_lingkungan_id,
+            K.nama_lingkungan,
+            K.nama_keluarga,
+            K.username,
+            K.email,
+            FROM Lingkungan L JOIN Keluarga K ON (L.ketua_lingkungan_id=K.id) 
+            WHERE id = ?`
         let result = await db(sql, [ id ])
 
         if(result.length === 0) {
@@ -67,7 +62,6 @@ const getById = async (req, res) => {
 const post = async (req, res) => {
     let {
         nama_lingkungan,
-        paroki_id,
         ketua_lingkungan_id,
     } = req.body
 
@@ -77,7 +71,6 @@ const post = async (req, res) => {
         let result = await db(sql, [ 
             {
                 nama_lingkungan,
-                paroki_id,
                 ketua_lingkungan_id,
             }
         ])
@@ -98,7 +91,6 @@ const post = async (req, res) => {
 const update = async (req, res) => {
     let {
         nama_lingkungan,
-        paroki_id,
         ketua_lingkungan_id,
     } = req.body
     let { id } = req.params
@@ -116,7 +108,6 @@ const update = async (req, res) => {
             
             result = await db(sql, [ {
                 nama_lingkungan,
-                paroki_id,
                 ketua_lingkungan_id,
             }, id ])
     
@@ -176,7 +167,6 @@ const remove = async (req, res) => {
 
 module.exports = {
     getAll,
-    getLingkunganByParoki,
     getById,
     post,
     update,

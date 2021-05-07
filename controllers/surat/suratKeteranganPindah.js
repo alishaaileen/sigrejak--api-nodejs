@@ -77,7 +77,7 @@ const post = async (req, res) => {
     let {
         no_surat,
         id_keluarga,
-        id_paroki_lama,
+        paroki_lama,
         id_lingkungan_lama,
         ketua_lingkungan,
         id_umat,
@@ -87,8 +87,13 @@ const post = async (req, res) => {
         alamat_baru,
         no_telp_baru,
         id_lingkungan_baru,
-        id_paroki_baru,
+        nama_lingkungan_baru,
+        paroki_baru,
         ketua_lingkungan_approval,
+        id_sekretariat,
+        sekretariat_approval,
+        id_romo,
+        romo_approval,
     } = req.body
     let created_at = getTodayDate()
 
@@ -98,7 +103,7 @@ const post = async (req, res) => {
             {
                 no_surat,
                 id_keluarga,
-                id_paroki_lama,
+                paroki_lama,
                 id_lingkungan_lama,
                 ketua_lingkungan,
                 id_umat,
@@ -108,8 +113,13 @@ const post = async (req, res) => {
                 alamat_baru,
                 no_telp_baru,
                 id_lingkungan_baru,
-                id_paroki_baru,
+                nama_lingkungan_baru,
+                paroki_baru,
                 ketua_lingkungan_approval,
+                id_sekretariat,
+                sekretariat_approval,
+                id_romo,
+                romo_approval,
                 created_at,
             }
         ])
