@@ -5,10 +5,10 @@ const getAll = async (req, res) => {
         let sql =
             `SELECT L.id,
                     L.ketua_lingkungan_id,
-                    K.nama_lingkungan,
-                    K.nama_keluarga,
+                    L.nama_lingkungan,
+                    K.nama_keluarga "ketua_lingkungan",
                     K.username,
-                    K.email,
+                    K.email
             FROM Lingkungan L JOIN Keluarga K ON (L.ketua_lingkungan_id=K.id)`
         let result = await db(sql)
 
@@ -31,13 +31,13 @@ const getById = async (req, res) => {
     try {
         let sql = 
             `SELECT L.id,
-            L.ketua_lingkungan_id,
-            K.nama_lingkungan,
-            K.nama_keluarga,
-            K.username,
-            K.email,
+                    L.ketua_lingkungan_id,
+                    L.nama_lingkungan,
+                    K.nama_keluarga "ketua_lingkungan",
+                    K.username,
+                    K.email
             FROM Lingkungan L JOIN Keluarga K ON (L.ketua_lingkungan_id=K.id) 
-            WHERE id = ?`
+            WHERE L.id=?`
         let result = await db(sql, [ id ])
 
         if(result.length === 0) {

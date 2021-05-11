@@ -26,7 +26,9 @@ const getById = async (req, res) => {
     let { id } = req.params
     
     try {
-        let sql = `SELECT id, nama_keluarga, email, username, is_ketua_lingkungan FROM Keluarga WHERE id = ?`
+        let sql = 
+            `SELECT id, nama_keluarga, email, username, is_ketua_lingkungan 
+            FROM Keluarga WHERE id = ?`
 
         let result = await db(sql, [ id ])
 
