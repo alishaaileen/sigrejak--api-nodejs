@@ -1,15 +1,15 @@
 require('dotenv').config();
 const express = require('express');
-const bodyParser = require('body-parser');
+// const bodyParser = require('body-parser');
 const cors = require('cors');
 const { checkUser } = require('./utils')
 
 const app = express();
 app.use(express.json());
+app.use(express.urlencoded());
 app.use(cors());
-app.use(bodyParser.urlencoded());
-app.use(bodyParser.urlencoded({extended: true}));
-
+// app.use(bodyParser.urlencoded());
+// app.use(bodyParser.urlencoded({extended: true}));
 
 
 // Routes
@@ -35,5 +35,9 @@ app.use('/surat-keterangan-pindah', suratKeteranganPindah)
 
 
 app.listen(process.env.APP_PORT, () => {
-    console.log(`Server is running on PORT :${process.env.APP_PORT}`)
+    try {
+        console.log(`Server is running on PORT :${process.env.APP_PORT}`)
+    } catch (error) {
+        console.error('Unable to connect to the database:', error);
+    }
 });

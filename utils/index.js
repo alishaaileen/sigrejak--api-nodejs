@@ -27,7 +27,6 @@ const getTodayDate = () => {
 
     // concat date & time in YYYY-MM-DD format
     let fullDate = `${year}/${month}/${date}`;
-    console.log(fullDate)
     
     return fullDate
 }

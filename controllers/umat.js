@@ -1,222 +1,140 @@
-const db = require('../connection')
+const db = require('../models')
+const Umat = db.umat
+const Op = db.Sequelize.Op
 const { getTodayDate } = require('../utils')
 
 const getAll = async (req, res) => {
-    try {
-        let sql = `SELECT * FROM Umat WHERE deleted_at IS NULL`
-        let result = await db(sql)
-
-        res.status(200).send({
-            message: "Success retrieving data",
-            result: result,
-        })
-    } catch (error) {
-        console.log(error.message)
-        res.status(500).send({
-            message: "Failed to retrieve data",
-            error: error.message
-        })
-    }
+  try {
+    let result = await Umat.findAll()
+    
+    res.status(200).send({
+      message: "Success retrieving data",
+      result: result,
+    })
+  } catch (error) {
+    res.status(500).send({
+      message: "Failed to retrieve data",
+      error: error
+    })
+  }
 }
 
 const getFamilyMember = async (req, res) => {
-    let { idFamily } = req.params
+  let { idFamily } = req.params
 
-    try {
-        let sql = `SELECT * FROM Umat WHERE keluarga_id=?`
-        let result = await db(sql, [ idFamily ])
+  try {
+    let result = await Umat.findAll({
+      where: {
+        keluarga_id: idFamily
+      }
+    })
 
-        res.status(200).send({
-            message: "Success retrieving data",
-            result: result,
-        })
-    } catch (error) {
-        console.log(error.message)
-        res.status(500).send({
-            message: "Failed to retrieve data",
-            error: error.message
-        })
-    }
+    res.status(200).send({
+      message: "Success retrieving data",
+      result: result,
+    })
+  } catch (error) {
+    res.status(500).send({
+      message: "Failed to retrieve data",
+      error: error
+    })
+  }
 }
 
 const getById = async (req, res) => {
-    let { id } = req.params
+  let { id } = req.params
 
-    try {
-        let sql = 
-            `SELECT * FROM Umat
-            WHERE id = ? AND deleted_at IS NULL`
-
-        let result = await db(sql, [ id ])
-
-        if(result.length === 0) {
-            res.status(404).send({
-                message: "Data not found",
-            })
-        } else {
-            res.status(200).send({
-                message: "Success retrieving data",
-                result: result,
-            })
-        }
-    } catch (error) {
-        console.log(error.message)
-        res.status(500).send({
-            message: "Failed to retrieve data",
-            error: error.message
-        })
-    }
+  try {
+    let result = await Umat.findByPk(id, {
+      where: {
+        deleted_at: null
+      }
+    })
+    res.status(200).send({
+      message: "Success retrieving data",
+      result: result,
+    })
+  } catch (error) {
+    res.status(500).send({
+      message: "Failed to retrieve data",
+      error: error
+    })
+  }
 }
 
 const post = async (req, res) => {
-    let {
-        nama,
-        tempat_lahir,
-        tgl_lahir,
-        jenis_kelamin,
-        nama_baptis,
-        alamat,
-        no_telp,
-        pekerjaan,
-        is_dead,
-        is_umat_active,
-        keluarga_id,
-        lingkungan_id,
-    } = req.body
+  try {
     let created_at = getTodayDate()
+    let data = { ...req.body, created_at }
+    console.log(data)
+    
+    let result = await Umat.create(data)
 
-    try {
-        let sql =
-            `INSERT INTO Umat SET ?`
-        
-        let result = await db(sql, [ 
-            {
-                nama,
-                tempat_lahir,
-                tgl_lahir,
-                jenis_kelamin,
-                nama_baptis,
-                alamat,
-                no_telp,
-                pekerjaan,
-                is_dead,
-                is_umat_active,
-                keluarga_id,
-                lingkungan_id,
-                created_at,
-            }
-        ])
-        
-        res.status(200).send({
-            message: "Success adding data",
-            result: result,
-        })
-    } catch (error) {
-        console.log(error.message)
-        res.status(500).send({
-            message: "Failed adding data",
-            error: error.message,
-        })
-    }
+    res.status(200).send({
+      message: "Success adding data",
+      result: result,
+    })
+  } catch (error) {
+    res.status(500).send({
+      message: "Failed adding data",
+      error: error,
+    })
+  }
 }
 
 const update = async (req, res) => {
-    let {
-        nama,
-        tempat_lahir,
-        tgl_lahir,
-        jenis_kelamin,
-        nama_baptis,
-        alamat,
-        no_telp,
-        pekerjaan,
-        is_dead,
-        is_umat_active,
-        keluarga_id,
-        lingkungan_id,
-    } = req.body
-    let updated_at = getTodayDate()
-    let { id } = req.params
-    
-    try {
-        let sql =
-            `SELECT * FROM Umat 
-            WHERE id = ? AND deleted_at IS NULL`
-        let result = await db(sql, [ id ])
-        
-        if (result.length === 0) {
-            res.status(404).send({
-                message: "Data not found",
-            })
-        } else {
-            sql =
-                `UPDATE Umat SET ?
-                WHERE id=? AND deleted_at IS NULL`
-            
-            result = await db(sql, [ {
-                nama,
-                tempat_lahir,
-                tgl_lahir,
-                jenis_kelamin,
-                nama_baptis,
-                alamat,
-                no_telp,
-                pekerjaan,
-                is_dead,
-                is_umat_active,
-                keluarga_id,
-                lingkungan_id,
-                updated_at
-            }, id ]) 
-    
-            res.status(200).send({
-                message: "Success updating data",
-                result: result,
-            })
-        }
-    } catch (error) {
-        console.log(error.message)
-        res.status(500).send({
-            message: "Failed updating data",
-            error: error.message,
-        })
+  const { id } = req.params
+  let updated_at = getTodayDate()
+  let data = { ...req.body, updated_at }
+
+  try {
+    let result = await Umat.update(data, {
+      where: { id: id }
+    })
+
+    if (result[0] === 1) {
+      res.status(200).send({
+        message: "Success updating data",
+        result: result,
+      })
+    } else {
+      res.status(404).send({
+        message: "Data not found or no value is changed",
+        result: result,
+      })
     }
+  } catch (error) {
+    res.status(500).send({
+      message: "Failed updating data",
+      error: error,
+    })
+  }
 }
 
 const remove = async (req, res) => {
-    let { id } = req.params
-    let deleted_at = getTodayDate()
-    let is_umat_active = 0
+  let { id } = req.params
+  try {
+    let result = await Umat.destroy({
+      where: { id: id }
+    })
 
-    try {
-        let sql =
-            `SELECT * FROM Umat 
-            WHERE id = ? AND deleted_at IS NULL`
-        let result = await db(sql, [ id ])
-        
-        if (result.length === 0) {
-            res.status(404).send({
-                message: "Data not found",
-            })
-        } else {
-            sql = 
-                `UPDATE Umat SET ?
-                WHERE id=? AND deleted_at IS NULL`
-            
-            let result = db(sql, [ { deleted_at }, id ])
-
-            res.status(200).send({
-                message: "Success deleting data",
-                result: result,
-            })
-        }
-    } catch (error) {
-        console.log(error.message)
-        res.status(500).send({
-            message: "Failed deleting data",
-            error: error.message,
-        })
+    if (result === 1) {
+      res.status(200).send({
+        message: "Success deleting data",
+        result: result,
+      })
+    } else {
+      res.status(404).send({
+        message: "Data not found",
+        result: result,
+      })
     }
+  } catch (error) {
+      res.status(500).send({
+          message: "Failed deleting data",
+          error: error,
+      })
+  }
 }
 
 module.exports = {
