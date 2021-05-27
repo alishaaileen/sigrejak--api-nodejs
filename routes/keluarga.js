@@ -12,5 +12,6 @@ router.patch('/:id', validateToken, keluargaController.update)
 router.delete('/:id', validateToken, keluargaController.remove)
 
 router.post('/login', keluargaController.login)
+router.post('/change-pw', keluargaController.changePassword)
 
 module.exports = router

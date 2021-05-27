@@ -3,7 +3,29 @@ const { getTodayDate } = require('../utils')
 
 const getAll = async (req, res) => {
     try {
-        let sql = `SELECT * FROM Umat WHERE deleted_at IS NULL`
+        let sql = 
+            `SELECT U.id,
+                    U.nama,
+                    U.tempat_lahir,
+                    U.tgl_lahir,
+                    U.jenis_kelamin,
+                    U.nama_baptis,
+                    U.alamat,
+                    U.no_telp,
+                    U.pekerjaan,
+                    U.is_dead,
+                    U.is_umat_active,
+                    U.keluarga_id,
+                    U.lingkungan_id,
+                    U.created_at,
+                    U.updated_at,
+                    U.deleted_at,
+                    L.nama_lingkungan,
+                    L.ketua_lingkungan_id,
+                    K.nama_keluarga
+             FROM Umat U JOIN Lingkungan L ON (U.lingkungan_id=L.id)
+             JOIN Keluarga K ON (L.ketua_lingkungan_id=K.id) 
+             WHERE U.deleted_at IS NULL`
         let result = await db(sql)
 
         res.status(200).send({
@@ -23,7 +45,29 @@ const getFamilyMember = async (req, res) => {
     let { idFamily } = req.params
 
     try {
-        let sql = `SELECT * FROM Umat WHERE keluarga_id=?`
+        let sql = 
+            `SELECT U.id,
+                    U.nama,
+                    U.tempat_lahir,
+                    U.tgl_lahir,
+                    U.jenis_kelamin,
+                    U.nama_baptis,
+                    U.alamat,
+                    U.no_telp,
+                    U.pekerjaan,
+                    U.is_dead,
+                    U.is_umat_active,
+                    U.keluarga_id,
+                    U.lingkungan_id,
+                    U.created_at,
+                    U.updated_at,
+                    U.deleted_at,
+                    L.nama_lingkungan,
+                    L.ketua_lingkungan_id,
+                    K.nama_keluarga
+            FROM Umat U JOIN Lingkungan L ON (U.lingkungan_id=L.id)
+            JOIN Keluarga K ON (L.ketua_lingkungan_id=K.id) 
+            WHERE U.keluarga_id=?`
         let result = await db(sql, [ idFamily ])
 
         res.status(200).send({
@@ -44,8 +88,28 @@ const getById = async (req, res) => {
 
     try {
         let sql = 
-            `SELECT * FROM Umat
-            WHERE id = ? AND deleted_at IS NULL`
+            `SELECT U.id,
+                    U.nama,
+                    U.tempat_lahir,
+                    U.tgl_lahir,
+                    U.jenis_kelamin,
+                    U.nama_baptis,
+                    U.alamat,
+                    U.no_telp,
+                    U.pekerjaan,
+                    U.is_dead,
+                    U.is_umat_active,
+                    U.keluarga_id,
+                    U.lingkungan_id,
+                    U.created_at,
+                    U.updated_at,
+                    U.deleted_at,
+                    L.nama_lingkungan,
+                    L.ketua_lingkungan_id,
+                    K.nama_keluarga
+            FROM Umat U JOIN Lingkungan L ON (U.lingkungan_id=L.id)
+            JOIN Keluarga K ON (L.ketua_lingkungan_id=K.id) 
+            WHERE U.id = ?`
 
         let result = await db(sql, [ id ])
 
@@ -186,7 +250,7 @@ const update = async (req, res) => {
 const remove = async (req, res) => {
     let { id } = req.params
     let deleted_at = getTodayDate()
-    let is_umat_active = 0
+    // let is_umat_active = 0
 
     try {
         let sql =

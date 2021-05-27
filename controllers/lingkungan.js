@@ -59,6 +59,40 @@ const getById = async (req, res) => {
     }
 }
 
+const getByKetuaLingkunganId = async (req, res) => {
+    let { id } = req.params
+
+    try {
+        let sql = 
+            `SELECT L.id,
+                    L.ketua_lingkungan_id,
+                    L.nama_lingkungan,
+                    K.nama_keluarga "ketua_lingkungan",
+                    K.username,
+                    K.email
+            FROM Lingkungan L JOIN Keluarga K ON (L.ketua_lingkungan_id=K.id) 
+            WHERE L.ketua_lingkungan_id=?`
+        let result = await db(sql, [ id ])
+
+        if(result.length === 0) {
+            res.status(404).send({
+                message: "Data not found",
+            })
+        } else {
+            res.status(200).send({
+                message: "Success retrieving data",
+                result: result,
+            })
+        }
+    } catch (error) {
+        console.log(error.message)
+        res.status(500).send({
+            message: "Failed to retrieve data",
+            error: error.message
+        })
+    }
+}
+
 const post = async (req, res) => {
     let {
         nama_lingkungan,
@@ -168,6 +202,7 @@ const remove = async (req, res) => {
 module.exports = {
     getAll,
     getById,
+    getByKetuaLingkunganId,
     post,
     update,
     remove

@@ -18,16 +18,15 @@ const hashPassword = (plainPassword) => {
 
 const getTodayDate = () => {
     // current timestamp in milliseconds
-    let ts = Date.now();
+    let ts = Date.now(),
 
-    let date_ob = new Date(ts);
-    let date = date_ob.getDate();
-    let month = date_ob.getMonth() + 1;
-    let year = date_ob.getFullYear();
+        date_ob = new Date(ts),
+        date = date_ob.getDate(),
+        month = date_ob.getMonth() + 1,
+        year = date_ob.getFullYear(),
 
     // concat date & time in YYYY-MM-DD format
-    let fullDate = `${year}/${month}/${date}`;
-    console.log(fullDate)
+        fullDate = `${year}/${month}/${date}`
     
     return fullDate
 }
@@ -56,9 +55,22 @@ const checkUser = (req, res, next) => {
     }
 }
 
+const generateNomorSurat = (kodeSurat) => {
+    // current timestamp in milliseconds
+    let ts = Date.now(),
+        date_ob = new Date(ts),
+        month = date_ob.getMonth() + 1,
+        year = date_ob.getFullYear(),
+        number = Math.floor(Math.random() * 1000) + 1;
+    
+    // 015 is the code for Paroki of Kumetiran
+    return `015/${kodeSurat}/${number}/${month}/${year}`
+}
+
 module.exports = {
     generateRandomString,
     hashPassword,
     getTodayDate,
-    checkUser
+    checkUser,
+    generateNomorSurat,
 }

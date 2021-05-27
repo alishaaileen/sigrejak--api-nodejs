@@ -20,6 +20,8 @@ const umatRoutes = require('./routes/umat')
 const detailUmatRoutes = require('./routes/detailUmat')
 
 const suratKeteranganPindah = require('./routes/surat/suratKeteranganPindah')
+const suratKeterangan = require('./routes/surat/suratKeterangan')
+const suratKeteranganBeasiswa = require('./routes/surat/suratKeteranganBeasiswa')
 
 
 app.get('/', (req, res) => res.send('haii'))
@@ -31,6 +33,8 @@ app.use('/umat', umatRoutes)
 app.use('/detail-umat', detailUmatRoutes)
 
 app.use('/surat-keterangan-pindah', suratKeteranganPindah)
+app.use('/surat-keterangan', suratKeterangan)
+app.use('/surat-keterangan-beasiswa', suratKeteranganBeasiswa)
 
 
 

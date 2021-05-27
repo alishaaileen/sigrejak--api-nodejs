@@ -3,10 +3,14 @@ const db = require('../connection')
 const jwt = require('jsonwebtoken')
 const {compareSync } = require('bcryptjs')
 const { generateRandomString, hashPassword } = require('../utils')
+const { getTodayDate } = require('../utils')
 
 const getAll = async (req, res) => {
     try {
-        let sql = `SELECT id, nama, email, no_telp, role FROM Admin`
+        let sql = 
+            `SELECT id, nama, email, no_telp, role 
+            FROM Admin
+            WHERE deleted_at IS NULL`
         let admins = await db(sql)
 
         res.status(200).send({
@@ -26,7 +30,10 @@ const getAllByRole = async (req, res) => {
     let { roleId } = req.params
 
     try {
-        let sql = `SELECT id, nama, email, no_telp, role FROM Admin WHERE role=?`
+        let sql = 
+            `SELECT id, nama, email, no_telp, role 
+            FROM Admin 
+            WHERE role=?`
         let admins = await db(sql, [ roleId ])
 
         res.status(200).send({
@@ -77,6 +84,7 @@ const post = async (req, res) => {
         console.log(plainPassword)
         let password = hashPassword(plainPassword)
         let { nama, email, no_telp, role } = req.body
+        let created_at = getTodayDate()
     
         let sql =
             `INSERT INTO Admin SET ?`
@@ -87,7 +95,8 @@ const post = async (req, res) => {
                 email,
                 no_telp,
                 password,
-                role
+                role,
+                created_at
             }
         ])
         
@@ -106,6 +115,7 @@ const post = async (req, res) => {
 
 const update = async (req, res) => {
     const { nama, email, no_telp, role } = req.body
+    const updated_at = getTodayDate()
     const { id } = req.params
 
     try {
@@ -118,7 +128,7 @@ const update = async (req, res) => {
             })
         } else {
             sql = `UPDATE Admin SET ? WHERE id=?`
-            result = await db(sql, [ {nama, email, no_telp, role}, id ]) 
+            result = await db(sql, [ {nama, email, no_telp, role, updated_at}, id ]) 
             
             res.status(200).send({
                 message: "Success updating data",
@@ -136,6 +146,7 @@ const update = async (req, res) => {
 
 const remove = async (req, res) => {
     let { id } = req.params
+    let deleted_at = getTodayDate()
 
     try {
         let sql = `SELECT * FROM Admin WHERE id = ?`
@@ -146,8 +157,8 @@ const remove = async (req, res) => {
                 message: "Data not found",
             })
         } else {
-            sql = `DELETE FROM Admin WHERE id=?`
-            result = await db(sql, [ id ])
+            sql = `UPDATE Admin SET ? WHERE id=?`
+            result = await db(sql, [ { deleted_at }, id ])
     
             res.status(200).send({
                 message: "Success deleting data",
@@ -178,10 +189,9 @@ const login = async (req, res) => {
         }
         else {
             if(compareSync(password, admin[0].password)) {
-                admin[0].password = undefined
                 let token = jwt.sign({
-                    admin: admin
-                }, process.env.JWT_SECRET_KEY, { expiresIn: "1000h"})
+                    id: admin[0].id
+            }, process.env.JWT_SECRET_KEY, { expiresIn: "9999h"})
                 res.status(200).send({
                     message: "Success logged in",
                     token: token
@@ -202,6 +212,48 @@ const login = async (req, res) => {
     }
 }
 
+const changePassword = async (req, res) => {
+    const {
+        id,
+        lama,
+        baru
+    } = req.body
+
+    try {
+        let sql = `SELECT * FROM Admin WHERE id = ?`
+        let result = await db(sql, [ id ])
+
+        if (result.length === 0) {
+            res.status(404).send({
+                message: "Data not found",
+            })
+        } else {
+            if (compareSync(lama, result[0].password)) {
+                let password = hashPassword(baru)
+                sql = `UPDATE Admin SET ? WHERE id=?`
+                result = await db(sql, [ {
+                    password
+                }, id ]) 
+                
+                res.status(200).send({
+                    message: "Success updating data",
+                    result: result,
+                })
+            } else {
+                res.status(400).send({
+                    message: "Password lama salah",
+                })
+            }
+        }
+    } catch (error) {
+        console.log(error.message)
+        res.status(500).send({
+            message: "Failed updating data",
+            error: error.message,
+        })
+    }
+}
+
 module.exports = {
     getAll,
     getAllByRole,
@@ -211,4 +263,5 @@ module.exports = {
     remove,
 
     login,
+    changePassword,
 }

@@ -13,5 +13,6 @@ router.patch('/:id', validateToken, adminController.update)
 router.delete('/:id', validateToken, adminController.remove)
 
 router.post('/login', adminController.login)
+router.post('/change-pw', adminController.changePassword)
 
 module.exports = router

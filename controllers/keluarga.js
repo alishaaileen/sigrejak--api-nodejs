@@ -174,9 +174,8 @@ const login = async (req, res) => {
         }
         else {
             if(compareSync(password, family[0].password)) {
-                family[0].password = undefined
                 let token = jwt.sign({
-                    family: family
+                    id: family[0].id
                 }, process.env.JWT_SECRET_KEY, { expiresIn: "1000h"})
                 res.status(200).send({
                     message: "Success logged in",
@@ -196,6 +195,48 @@ const login = async (req, res) => {
     }
 }
 
+const changePassword = async (req, res) => {
+    const {
+        id,
+        lama,
+        baru
+    } = req.body
+
+    try {
+        let sql = `SELECT * FROM Keluarga WHERE id = ?`
+        let result = await db(sql, [ id ])
+
+        if (result.length === 0) {
+            res.status(404).send({
+                message: "Data not found",
+            })
+        } else {
+            if (compareSync(lama, result[0].password)) {
+                let password = hashPassword(baru)
+                sql = `UPDATE Keluarga SET ? WHERE id=?`
+                result = await db(sql, [ {
+                    password
+                }, id ]) 
+                
+                res.status(200).send({
+                    message: "Success updating data",
+                    result: result,
+                })
+            } else {
+                res.status(400).send({
+                    message: "Password lama salah",
+                })
+            }
+        }
+    } catch (error) {
+        console.log(error.message)
+        res.status(500).send({
+            message: "Failed updating data",
+            error: error.message,
+        })
+    }
+}
+
 module.exports = {
     getAll,
     getById,
@@ -204,4 +245,5 @@ module.exports = {
     remove,
 
     login,
+    changePassword
 }

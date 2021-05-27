@@ -10,7 +10,6 @@ const getAll = async (req, res) => {
             result: result,
         })
     } catch (error) {
-        console.log(error.message)
         res.status(500).send({
             message: "Failed to retrieve data",
             error: error.message
@@ -38,7 +37,6 @@ const getByIdUmat = async (req, res) => {
             })
         }
     } catch (error) {
-        console.log(error.message)
         res.status(500).send({
             message: "Failed to retrieve data",
             error: error.message
@@ -84,7 +82,6 @@ const post = async (req, res) => {
             result: result,
         })
     } catch (error) {
-        console.log(error.message)
         res.status(500).send({
             message: "Failed adding data",
             error: error.message,
@@ -117,9 +114,8 @@ const update = async (req, res) => {
                 message: "Data not found",
             })
         } else {
-            sql = `UPDATE Detail_Umat SET ? WHERE id=?`
+            sql = `UPDATE Detail_Umat SET ? WHERE id_umat=?`
             result = await db(sql, [ {
-                id_umat,
                 tgl_baptis,
                 tgl_komuni,
                 tgl_penguatan,
@@ -138,7 +134,6 @@ const update = async (req, res) => {
             })
         }
     } catch (error) {
-        console.log(error.message)
         res.status(500).send({
             message: "Failed updating data",
             error: error.message,
@@ -167,7 +162,6 @@ const remove = async (req, res) => {
             })
         }
     } catch (error) {
-        console.log(error.message)
         res.status(500).send({
             message: "Failed deleting data",
             error: error.message,
