@@ -6,7 +6,14 @@ const { generateRandomString, hashPassword } = require('../utils')
 
 const getAll = async (req, res) => {
     try {
-        let sql = `SELECT id, nama_keluarga, email, username, is_ketua_lingkungan FROM Keluarga`
+        let sql = 
+            `SELECT id,
+                    nama_keluarga,
+                    nama_kepala_keluarga,
+                    no_telp_kepala_keluarga,
+                    email,
+                    username
+            FROM Keluarga`
         let families = await db(sql)
 
         res.status(200).send({
@@ -27,7 +34,12 @@ const getById = async (req, res) => {
     
     try {
         let sql = 
-            `SELECT id, nama_keluarga, email, username, is_ketua_lingkungan 
+            `SELECT id,
+                    nama_keluarga,
+                    nama_kepala_keluarga,
+                    no_telp_kepala_keluarga,
+                    email,
+                    username
             FROM Keluarga WHERE id = ?`
 
         let result = await db(sql, [ id ])
@@ -53,26 +65,28 @@ const getById = async (req, res) => {
 
 const post = async (req, res) => {
     try {
-        let plainPassword = generateRandomString(6)
-        console.log(plainPassword)
-        let password = hashPassword(plainPassword)
-        let is_ketua_lingkungan = 0
         let {
             nama_keluarga,
+            nama_kepala_keluarga,
+            no_telp_kepala_keluarga,
             username,
             email,
         } = req.body
-    
+        let plainPassword = generateRandomString(6)
+        console.log(plainPassword)
+        let password = hashPassword(plainPassword)
+        
         let sql =
             `INSERT INTO Keluarga SET ?`
         
         let result = await db(sql, [ 
             {
                 nama_keluarga,
+                nama_kepala_keluarga,
+                no_telp_kepala_keluarga,
                 username,
                 email,
                 password,
-                is_ketua_lingkungan,
             }
         ])
         
@@ -92,11 +106,11 @@ const post = async (req, res) => {
 const update = async (req, res) => {
     const {
         nama_keluarga,
+        nama_kepala_keluarga,
+        no_telp_kepala_keluarga,
         username,
         email,
-        is_ketua_lingkungan,
     } = req.body
-    console.log(req.body)
     const { id } = req.params
 
     try {
@@ -111,9 +125,10 @@ const update = async (req, res) => {
             sql = `UPDATE Keluarga SET ? WHERE id=?`
             result = await db(sql, [ {
                 nama_keluarga,
+                nama_kepala_keluarga,
+                no_telp_kepala_keluarga,
                 username,
                 email,
-                is_ketua_lingkungan,
             }, id ]) 
             
             res.status(200).send({

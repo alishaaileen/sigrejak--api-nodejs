@@ -64,7 +64,7 @@ const generateNomorSurat = (kodeSurat) => {
         number = Math.floor(Math.random() * 1000) + 1;
     
     // 015 is the code for Paroki of Kumetiran
-    return `015/${kodeSurat}/${number}/${month}/${year}`
+    return `015.${kodeSurat}/${number}/${month}/${year}`
 }
 
 module.exports = {
