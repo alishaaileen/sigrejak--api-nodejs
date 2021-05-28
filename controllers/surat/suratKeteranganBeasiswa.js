@@ -155,7 +155,7 @@ const getByIdKeluarga = async (req, res) => {
 }
 
 const post = async (req, res) => {
-    let no_surat = generateNomorSurat('SKB'),
+    let no_surat = generateNomorSurat('F2'),
         {
             id_keluarga,
             id_lingkungan,
