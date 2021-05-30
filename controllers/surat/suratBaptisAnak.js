@@ -7,32 +7,35 @@ const getAll = async (req, res) => {
             `SELECT S.id,
                     S.no_surat,
                     S.id_keluarga,
-                    S.paroki_lama,
-                    S.id_lingkungan_lama,
-                    L.nama_lingkungan AS nama_lingkungan_lama,
-                    S.id_umat,
-                    U.nama,
-                    U.tempat_lahir,
-                    U.tgl_lahir,
-                    S.alamat_lama,
-                    S.no_telp_lama,
-                    S.tgl_mulai_domisili,
-                    S.alamat_baru,
-                    S.no_telp_baru,
-                    S.id_lingkungan_baru,
-                    S.nama_lingkungan_baru,
-                    S.paroki_baru,
-                    S.ketua_lingkungan_approval,
+                    S.id_lingkungan,
+                    S.id_anak,
+                    A.nama,
+                    S.nama_baptis,
+                    A.tempat_lahir,
+                    A.tgl_lahir,
+                    Ayah.nama AS nama_ayah,
+                    Ibu.nama AS nama_ibu,
+                    Ayah.alamat AS alamat_ortu,
+                    Ayah.no_telp AS no_telp_ortu,
+                    S.cara_ortu_menikah,
+                    S.tempat_ortu_menikah,
+                    S.tgl_ortu_menikah,
+                    S.nama_wali_baptis,
+                    S.tgl_krisma_wali_baptis,
                     S.ketua_lingkungan,
+                    S.ketua_lingkungan_approval,
                     S.id_sekretariat,
                     S.sekretariat_approval,
-                    S.id_romo,
-                    S.romo_approval,
+                    S.tgl_baptis,
+                    S.romo_pembaptis,
                     S.created_at,
                     S.updated_at,
                     S.deleted_at 
-            FROM Surat_Keterangan_Pindah S JOIN Umat U ON (S.id_umat=U.id) 
-                JOIN Lingkungan L ON (S.id_lingkungan_lama=L.id)`
+            FROM Surat_Baptis_Anak S JOIN Umat A ON (S.id_anak=A.id)
+                JOIN Detail_Umat D ON (A.id=D.id_umat)
+                JOIN (SELECT id, nama, no_telp, alamat FROM Umat) Ayah ON (D.id_ayah=Ayah.id)
+                JOIN (SELECT id, nama FROM Umat) Ibu ON (D.id_ibu=Ibu.id) 
+                JOIN Lingkungan L ON (S.id_lingkungan=L.id)`
         let result = await db(sql)
 
         res.status(200).send({
@@ -56,32 +59,35 @@ const getById = async (req, res) => {
             `SELECT S.id,
                     S.no_surat,
                     S.id_keluarga,
-                    S.id_umat,
-                    U.nama,
-                    U.tempat_lahir,
-                    U.tgl_lahir,
-                    S.paroki_lama,
-                    S.id_lingkungan_lama,
-                    L.nama_lingkungan AS nama_lingkungan_lama,
-                    S.alamat_lama,
-                    S.no_telp_lama,
-                    S.tgl_mulai_domisili,
-                    S.alamat_baru,
-                    S.no_telp_baru,
-                    S.id_lingkungan_baru,
-                    S.nama_lingkungan_baru,
-                    S.paroki_baru,
+                    S.id_lingkungan,
+                    S.id_anak,
+                    A.nama,
+                    S.nama_baptis,
+                    A.tempat_lahir,
+                    A.tgl_lahir,
+                    Ayah.nama AS nama_ayah,
+                    Ibu.nama AS nama_ibu,
+                    Ayah.alamat AS alamat_ortu,
+                    Ayah.no_telp AS no_telp_ortu,
+                    S.cara_ortu_menikah,
+                    S.tempat_ortu_menikah,
+                    S.tgl_ortu_menikah,
+                    S.nama_wali_baptis,
+                    S.tgl_krisma_wali_baptis,
+                    S.ketua_lingkungan,
                     S.ketua_lingkungan_approval,
                     S.id_sekretariat,
                     S.sekretariat_approval,
-                    S.ketua_lingkungan,
-                    S.id_romo,
-                    S.romo_approval,
+                    S.tgl_baptis,
+                    S.romo_pembaptis,
                     S.created_at,
                     S.updated_at,
                     S.deleted_at 
-            FROM Surat_Keterangan_Pindah S JOIN Umat U ON (S.id_umat=U.id) 
-                JOIN Lingkungan L ON (S.id_lingkungan_lama=L.id) 
+            FROM Surat_Baptis_Anak S JOIN Umat A ON (S.id_anak=A.id)
+                JOIN Detail_Umat D ON (A.id=D.id_umat)
+                JOIN (SELECT id, nama, no_telp, alamat FROM Umat) Ayah ON (D.id_ayah=Ayah.id)
+                JOIN (SELECT id, nama FROM Umat) Ibu ON (D.id_ibu=Ibu.id) 
+                JOIN Lingkungan L ON (S.id_lingkungan=L.id)
             WHERE S.id = ?`
         let result = await db(sql, [ id ])
 
@@ -112,32 +118,35 @@ const getByIdKeluarga = async (req, res) => {
             `SELECT S.id,
                     S.no_surat,
                     S.id_keluarga,
-                    S.paroki_lama,
-                    S.id_lingkungan_lama,
-                    L.nama_lingkungan AS nama_lingkungan_lama,
-                    S.id_umat,
-                    U.nama,
-                    U.tempat_lahir,
-                    U.tgl_lahir,
-                    S.alamat_lama,
-                    S.no_telp_lama,
-                    S.tgl_mulai_domisili,
-                    S.alamat_baru,
-                    S.no_telp_baru,
-                    S.id_lingkungan_baru,
-                    S.nama_lingkungan_baru,
-                    S.paroki_baru,
+                    S.id_lingkungan,
+                    S.id_anak,
+                    A.nama,
+                    S.nama_baptis,
+                    A.tempat_lahir,
+                    A.tgl_lahir,
+                    Ayah.nama AS nama_ayah,
+                    Ibu.nama AS nama_ibu,
+                    Ayah.alamat AS alamat_ortu,
+                    Ayah.no_telp AS no_telp_ortu,
+                    S.cara_ortu_menikah,
+                    S.tempat_ortu_menikah,
+                    S.tgl_ortu_menikah,
+                    S.nama_wali_baptis,
+                    S.tgl_krisma_wali_baptis,
+                    S.ketua_lingkungan,
                     S.ketua_lingkungan_approval,
                     S.id_sekretariat,
                     S.sekretariat_approval,
-                    S.ketua_lingkungan,
-                    S.id_romo,
-                    S.romo_approval,
+                    S.tgl_baptis,
+                    S.romo_pembaptis,
                     S.created_at,
                     S.updated_at,
                     S.deleted_at 
-            FROM Surat_Keterangan_Pindah S JOIN Umat U ON (S.id_umat=U.id) 
-                JOIN Lingkungan L ON (S.id_lingkungan_lama=L.id) 
+            FROM Surat_Baptis_Anak S JOIN Umat A ON (S.id_anak=A.id)
+                JOIN Detail_Umat D ON (A.id=D.id_umat)
+                JOIN (SELECT id, nama, no_telp, alamat FROM Umat) Ayah ON (D.id_ayah=Ayah.id)
+                JOIN (SELECT id, nama FROM Umat) Ibu ON (D.id_ibu=Ibu.id) 
+                JOIN Lingkungan L ON (S.id_lingkungan=L.id)
             WHERE S.id_keluarga = ?`
         let result = await db(sql, [ id ])
 
@@ -155,52 +164,44 @@ const getByIdKeluarga = async (req, res) => {
 }
 
 const post = async (req, res) => {
-    let no_surat = generateNomorSurat("F11"),
+    let no_surat = generateNomorSurat("F4"),
         {
             id_keluarga,
-            paroki_lama,
-            id_lingkungan_lama,
+            id_lingkungan,
+            id_anak,
+            nama_baptis,
+            cara_ortu_menikah,
+            tempat_ortu_menikah,
+            tgl_ortu_menikah,
+            nama_wali_baptis,
+            tgl_krisma_wali_baptis,
             ketua_lingkungan,
-            id_umat,
-            alamat_lama,
-            no_telp_lama,
-            tgl_mulai_domisili,
-            alamat_baru,
-            no_telp_baru,
-            id_lingkungan_baru,
-            nama_lingkungan_baru,
-            paroki_baru,
-            ketua_lingkungan_approval,
+            isKetuaLingkungan,
         } = req.body,
         created_at = getTodayDate(),
         id_sekretariat = null,
         sekretariat_approval = null,
-        id_romo = null,
-        romo_approval = null
+        ketua_lingkungan_approval = isKetuaLingkungan ? 1 : 0
+        if(!isKetuaLingkungan) ketua_lingkungan = null
 
     try {
-        let sql = `INSERT INTO Surat_Keterangan_Pindah SET ?`
+        let sql = `INSERT INTO Surat_Baptis_Anak SET ?`
         let result = await db(sql, [ 
             {
                 no_surat,
                 id_keluarga,
-                paroki_lama,
-                id_lingkungan_lama,
+                id_lingkungan,
+                id_anak,
+                nama_baptis,
+                cara_ortu_menikah,
+                tempat_ortu_menikah,
+                tgl_ortu_menikah,
+                nama_wali_baptis,
+                tgl_krisma_wali_baptis,
                 ketua_lingkungan,
-                id_umat,
-                alamat_lama,
-                no_telp_lama,
-                tgl_mulai_domisili,
-                alamat_baru,
-                no_telp_baru,
-                id_lingkungan_baru,
-                nama_lingkungan_baru,
-                paroki_baru,
                 ketua_lingkungan_approval,
                 id_sekretariat,
                 sekretariat_approval,
-                id_romo,
-                romo_approval,
                 created_at,
             }
         ])
@@ -222,29 +223,24 @@ const update = async (req, res) => {
     let {
         no_surat,
         id_keluarga,
-        paroki_lama,
-        id_lingkungan_lama,
+        id_lingkungan,
+        id_anak,
+        nama_baptis,
+        cara_ortu_menikah,
+        tempat_ortu_menikah,
+        tgl_ortu_menikah,
+        nama_wali_baptis,
+        tgl_krisma_wali_baptis,
         ketua_lingkungan,
-        id_umat,
-        alamat_lama,
-        no_telp_lama,
-        tgl_mulai_domisili,
-        alamat_baru,
-        no_telp_baru,
-        paroki_baru,
-        id_lingkungan_baru,
-        nama_lingkungan_baru,
         ketua_lingkungan_approval,
         id_sekretariat,
         sekretariat_approval,
-        id_romo,
-        romo_approval,
     } = req.body
     let updated_at = getTodayDate()
     let { id } = req.params
     
     try {
-        let sql = `SELECT * FROM Surat_Keterangan_Pindah WHERE id = ?`
+        let sql = `SELECT * FROM Surat_Baptis_Anak WHERE id = ?`
         let result = await db(sql, [ id ])
         
         if (result.length === 0) {
@@ -252,27 +248,22 @@ const update = async (req, res) => {
                 message: "Data not found",
             })
         } else {
-            sql = `UPDATE Surat_Keterangan_Pindah SET ? WHERE id=?`
+            sql = `UPDATE Surat_Baptis_Anak SET ? WHERE id=?`
             result = await db(sql, [ {
                                         no_surat,
                                         id_keluarga,
-                                        paroki_lama,
-                                        id_lingkungan_lama,
+                                        id_lingkungan,
+                                        id_anak,
+                                        nama_baptis,
+                                        cara_ortu_menikah,
+                                        tempat_ortu_menikah,
+                                        tgl_ortu_menikah,
+                                        nama_wali_baptis,
+                                        tgl_krisma_wali_baptis,
                                         ketua_lingkungan,
-                                        id_umat,
-                                        alamat_lama,
-                                        no_telp_lama,
-                                        tgl_mulai_domisili,
-                                        alamat_baru,
-                                        no_telp_baru,
-                                        paroki_baru,
-                                        id_lingkungan_baru,
-                                        nama_lingkungan_baru,
                                         ketua_lingkungan_approval,
                                         id_sekretariat,
                                         sekretariat_approval,
-                                        id_romo,
-                                        romo_approval,
                                         updated_at,
                                     }, id ]) 
     
@@ -295,7 +286,7 @@ const remove = async (req, res) => {
         deleted_at = getTodayDate()
 
     try {
-        let sql = `SELECT * FROM Surat_Keterangan_Pindah WHERE id = ?`
+        let sql = `SELECT * FROM Surat_Baptis_Anak WHERE id = ?`
         let result = await db(sql, [ id ])
         
         if (result.length === 0) {
@@ -303,7 +294,7 @@ const remove = async (req, res) => {
                 message: "Data not found",
             })
         } else {
-            sql =  `UPDATE Surat_Keterangan_Pindah SET ? WHERE id=?`
+            sql =  `UPDATE Surat_Baptis_Anak SET ? WHERE id=?`
             result = await db(sql, [ { deleted_at }, id ])
 
             res.status(200).send({

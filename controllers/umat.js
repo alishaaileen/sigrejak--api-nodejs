@@ -24,7 +24,7 @@ const getAll = async (req, res) => {
                     L.ketua_lingkungan_id,
                     K.nama_keluarga
              FROM Umat U JOIN Lingkungan L ON (U.lingkungan_id=L.id)
-             JOIN Keluarga K ON (L.ketua_lingkungan_id=K.id) 
+             JOIN Keluarga K ON (U.keluarga_id=K.id) 
              WHERE U.deleted_at IS NULL`
         let result = await db(sql)
 
@@ -59,14 +59,14 @@ const getFamilyMember = async (req, res) => {
                     U.is_umat_active,
                     U.keluarga_id,
                     U.lingkungan_id,
-                    U.created_at,
-                    U.updated_at,
-                    U.deleted_at,
                     L.nama_lingkungan,
                     L.ketua_lingkungan_id,
-                    K.nama_keluarga
+                    K.nama_keluarga,
+                    U.created_at,
+                    U.updated_at,
+                    U.deleted_at
             FROM Umat U JOIN Lingkungan L ON (U.lingkungan_id=L.id)
-            JOIN Keluarga K ON (L.ketua_lingkungan_id=K.id) 
+            JOIN Keluarga K ON (U.keluarga_id=K.id) 
             WHERE U.keluarga_id=?`
         let result = await db(sql, [ idFamily ])
 
@@ -101,14 +101,14 @@ const getById = async (req, res) => {
                     U.is_umat_active,
                     U.keluarga_id,
                     U.lingkungan_id,
-                    U.created_at,
-                    U.updated_at,
-                    U.deleted_at,
                     L.nama_lingkungan,
                     L.ketua_lingkungan_id,
-                    K.nama_keluarga
+                    K.nama_keluarga,
+                    U.created_at,
+                    U.updated_at,
+                    U.deleted_at
             FROM Umat U JOIN Lingkungan L ON (U.lingkungan_id=L.id)
-            JOIN Keluarga K ON (L.ketua_lingkungan_id=K.id) 
+            JOIN Keluarga K ON (U.keluarga_id=K.id) 
             WHERE U.id = ?`
 
         let result = await db(sql, [ id ])
