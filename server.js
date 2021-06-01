@@ -24,6 +24,7 @@ const suratKeterangan = require('./routes/surat/suratKeterangan')
 const suratKeteranganBeasiswa = require('./routes/surat/suratKeteranganBeasiswa')
 const suratIzinPelayananEkaristi = require('./routes/surat/suratIzinPelayananEkaristi')
 const suratBaptisAnak = require('./routes/surat/suratBaptisAnak')
+const suratPelayananMinyakSuci = require('./routes/surat/suratPelayananMinyakSuci')
 
 
 app.get('/', (req, res) => res.send('haii'))
@@ -39,6 +40,7 @@ app.use('/surat-keterangan', suratKeterangan)
 app.use('/surat-keterangan-beasiswa', suratKeteranganBeasiswa)
 app.use('/surat-izin-pelayanan-ekaristi', suratIzinPelayananEkaristi)
 app.use('/surat-baptis-anak', suratBaptisAnak)
+app.use('/surat-pelayanan-minyak-suci', suratPelayananMinyakSuci)
 
 
 
