@@ -118,6 +118,55 @@ const getByIdKeluarga = async (req, res) => {
     }
 }
 
+const getByIdLingkungan = async (req, res) => {
+    const { id } = req.params
+
+    try {
+        let sql = 
+            `SELECT S.id,
+                    S.no_surat,
+                    S.id_keluarga,
+                    S.id_lingkungan,
+                    S.nama_keluarga_penanggung_jawab,
+                    S.alamat_keluarga_penanggung_jawab,
+                    S.no_telp_keluarga_penanggung_jawab,
+                    S.nama,
+                    S.nama_baptis,
+                    S.tempat_lahir,
+                    S.tgl_lahir,
+                    S.alamat,
+                    S.nama_pasangan,
+                    S.cara_menikah,
+                    S.tahun_menikah,
+                    S.status_terima_minyak,
+                    S.tgl_terima_minyak,
+                    S.id_pastor_pelayan,
+                    R.nama_pastor_pelayan,
+                    S.pastor_pelayan_approval,
+                    S.ketua_lingkungan,
+                    S.ketua_lingkungan_approval,
+                    S.id_sekretariat,
+                    S.sekretariat_approval,
+                    S.created_at,
+                    S.updated_at,
+                    S.deleted_at
+            FROM Surat_Pelayanan_Minyak_Suci S JOIN (SELECT id AS id_pastor_pelayan, nama AS nama_pastor_pelayan FROM Admin) R ON (S.id_pastor_pelayan=R.id_pastor_pelayan)
+            WHERE S.id_lingkungan = ?`
+        let result = await db(sql, [ id ])
+
+        res.status(200).send({
+            message: "Success retrieving data",
+            result: result,
+        })
+    } catch (error) {
+        console.log(error.message)
+        res.status(500).send({
+            message: "Failed to retrieve data",
+            error: error.message
+        })
+    }
+}
+
 const post = async (req, res) => {
     let no_surat = generateNomorSurat("F9"),
         {
@@ -301,6 +350,7 @@ module.exports = {
     getAll,
     getById,
     getByIdKeluarga,
+    getByIdLingkungan,
     post,
     update,
     remove

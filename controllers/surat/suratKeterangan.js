@@ -145,6 +145,53 @@ const getByIdKeluarga = async (req, res) => {
     }
 }
 
+const getByIdLingkungan = async (req, res) => {
+    const { id } = req.params
+
+    try {
+        let sql = 
+            `SELECT S.id,
+                    S.no_surat,
+                    S.id_keluarga,
+                    S.id_lingkungan,
+                    S.ketua_lingkungan,
+                    S.id_umat,
+                    U.nama,
+                    U.tempat_lahir,
+                    U.tgl_lahir,
+                    U.alamat,
+                    U.pekerjaan,
+                    S.pendidikan,
+                    S.id_ortu,
+                    O.nama AS nama_ortu,
+                    O.alamat AS alamat_ortu,
+                    S.keperluan,
+                    S.ketua_lingkungan_approval,
+                    S.id_sekretariat,
+                    S.sekretariat_approval,
+                    S.id_romo,
+                    S.romo_approval,
+                    S.created_at,
+                    S.updated_at,
+                    S.deleted_at
+            FROM Surat_Keterangan S JOIN Umat U on (S.id_umat=U.id) 
+                JOIN (SELECT * FROM Umat) O ON (S.id_ortu=O.id) 
+            WHERE S.id_lingkungan = ?`
+            let result = await db(sql, [ id ])
+
+        res.status(200).send({
+            message: "Success retrieving data",
+            result: result,
+        })
+    } catch (error) {
+        console.log(error.message)
+        res.status(500).send({
+            message: "Failed to retrieve data",
+            error: error.message
+        })
+    }
+}
+
 const post = async (req, res) => {
     let no_surat = generateNomorSurat('F3'),
         {
@@ -294,6 +341,7 @@ module.exports = {
     getAll,
     getById,
     getByIdKeluarga,
+    getByIdLingkungan,
     post,
     update,
     remove
