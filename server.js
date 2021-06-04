@@ -1,7 +1,8 @@
 require('dotenv').config();
-const express = require('express');
-const bodyParser = require('body-parser');
-const cors = require('cors');
+const express = require('express')
+const fileUpload = require('express-fileupload')
+const bodyParser = require('body-parser')
+const cors = require('cors')
 const { checkUser } = require('./utils')
 
 const app = express();
@@ -9,23 +10,24 @@ app.use(express.json());
 app.use(cors());
 app.use(bodyParser.urlencoded());
 app.use(bodyParser.urlencoded({extended: true}));
-
+app.use(fileUpload());
+app.use(express.static('files')) // Set static path utk file upload
 
 
 // Routes
 const adminRoutes = require('./routes/admin')
-const lingkunganRoutes = require('./routes/lingkungan')
-const keluargaRoutes = require('./routes/keluarga')
-const umatRoutes = require('./routes/umat')
-const detailUmatRoutes = require('./routes/detailUmat')
+    , lingkunganRoutes = require('./routes/lingkungan')
+    , keluargaRoutes = require('./routes/keluarga')
+    , umatRoutes = require('./routes/umat')
+    , detailUmatRoutes = require('./routes/detailUmat')
 
 const suratKeteranganPindah = require('./routes/surat/suratKeteranganPindah')
-const suratKeterangan = require('./routes/surat/suratKeterangan')
-const suratKeteranganBeasiswa = require('./routes/surat/suratKeteranganBeasiswa')
-const suratIzinPelayananEkaristi = require('./routes/surat/suratIzinPelayananEkaristi')
-const suratBaptisAnak = require('./routes/surat/suratBaptisAnak')
-const suratPelayananMinyakSuci = require('./routes/surat/suratPelayananMinyakSuci')
-const suratKeteranganMati = require('./routes/surat/suratKeteranganMati')
+    , suratKeterangan = require('./routes/surat/suratKeterangan')
+    , suratKeteranganBeasiswa = require('./routes/surat/suratKeteranganBeasiswa')
+    , suratIzinPelayananEkaristi = require('./routes/surat/suratIzinPelayananEkaristi')
+    , suratBaptisAnak = require('./routes/surat/suratBaptisAnak')
+    , suratPelayananMinyakSuci = require('./routes/surat/suratPelayananMinyakSuci')
+    , suratKeteranganMati = require('./routes/surat/suratKeteranganMati')
 
 
 app.get('/', (req, res) => res.send('haii'))

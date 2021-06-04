@@ -67,10 +67,15 @@ const generateNomorSurat = (kodeSurat) => {
     return `015.${kodeSurat}/${number}/${month}/${year}`
 }
 
+const generateFileName = (kode, fileType) => {
+    return `${kode}-${generateRandomString(50)}${fileType}`
+} 
+
 module.exports = {
     generateRandomString,
     hashPassword,
     getTodayDate,
     checkUser,
     generateNomorSurat,
+    generateFileName,
 }
