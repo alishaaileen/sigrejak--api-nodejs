@@ -5,6 +5,7 @@ const izinPelayananController = require('../../controllers/surat/suratIzinPelaya
 router.get('/', izinPelayananController.getAll)
 router.get('/:id', izinPelayananController.getById)
 router.get('/keluarga/:id', izinPelayananController.getByIdKeluarga)
+router.get('/lingkungan/:id', izinPelayananController.getByIdLingkungan)
 router.post('/add', izinPelayananController.post)
 router.patch('/:id', izinPelayananController.update)
 router.delete('/:id', izinPelayananController.remove)

@@ -12,6 +12,7 @@ app.use(bodyParser.urlencoded());
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(fileUpload());
 app.use(express.static('files')) // Set static path utk file upload
+app.use(express.static('templates')) // Set static path utk template cetak surat
 
 
 // Routes
@@ -29,6 +30,7 @@ const suratKeteranganPindah = require('./routes/surat/suratKeteranganPindah')
     , suratPelayananMinyakSuci = require('./routes/surat/suratPelayananMinyakSuci')
     , suratKeteranganMati = require('./routes/surat/suratKeteranganMati')
 
+const cetakSurat = require('./routes/surat/cetakSurat')
 
 app.get('/', (req, res) => res.send('haii'))
 app.use('/check-user', checkUser)
@@ -46,7 +48,7 @@ app.use('/surat-baptis-anak', suratBaptisAnak)
 app.use('/surat-pelayanan-minyak-suci', suratPelayananMinyakSuci)
 app.use('/surat-keterangan-mati', suratKeteranganMati)
 
-
+app.use('/cetak', cetakSurat)
 
 app.listen(process.env.APP_PORT, () => {
     console.log(`Server is running on PORT :${process.env.APP_PORT}`)
