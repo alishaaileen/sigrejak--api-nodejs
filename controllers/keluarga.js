@@ -63,23 +63,85 @@ const getById = async (req, res) => {
     }
 }
 
-const post = async (req, res) => {
+// Cek apakah username sudah dipakai atau belum
+const checkUsernameExist = async (username, id = null) => {
+    let sql, result
+    
     try {
-        let {
-            nama_keluarga,
-            nama_kepala_keluarga,
-            no_telp_kepala_keluarga,
-            username,
-            email,
-        } = req.body
+        if (id === null) {
+            sql = `SELECT * FROM Keluarga WHERE username=?`
+            result = await db(sql, [ username ])
+        } else {
+            sql = `
+                SELECT * FROM Keluarga WHERE username=?
+                EXCEPT
+                SELECT * FROM Keluarga WHERE id=?`
+            result = await db(sql, [ username, id ])
+        }
+
+        if (result.length > 0) {
+            return true // this means, the error is true
+        } else {
+            return false
+        }
+    } catch (error) {
+        return true
+    }
+}
+
+// Cek apakah email sudah dipakai atau belum
+const checkEmailExist = async (email, id = null) => {
+    let sql, result
+
+    try {
+        if (id === null) {
+            sql = `SELECT * FROM Keluarga WHERE email=?`
+            result = await db(sql, [ email ])
+        } else {
+            sql = `
+                SELECT * FROM Keluarga WHERE username=?
+                EXCEPT
+                SELECT * FROM Keluarga WHERE id=?`
+            result = await db(sql, [ email, id ])
+        }
+
+        if (result.length > 0) {
+            return true // this means, the error is true
+        } else {
+            return false
+        }
+    } catch (error) {
+        return true
+    }
+}
+
+const post = async (req, res) => {
+    let {
+        nama_keluarga,
+        nama_kepala_keluarga,
+        no_telp_kepala_keluarga,
+        username,
+        email,
+    } = req.body
+
+    if ( checkUsernameExist(username) ) {
+        res.status(409).send({ message: "Username sudah dipakai" })
+        return
+    }
+    if ( checkEmailExist(email) ) {
+        res.status(409).send({ message: "Email sudah dipakai" })
+        return
+    }
+
+    try {
         let plainPassword = generateRandomString(6)
         console.log(plainPassword)
         let password = hashPassword(plainPassword)
         
-        let sql =
+        sql =
             `INSERT INTO Keluarga SET ?`
         
-        let result = await db(sql, [ 
+        result = await db(sql, [ 
             {
                 nama_keluarga,
                 nama_kepala_keluarga,
@@ -112,6 +174,15 @@ const update = async (req, res) => {
         email,
     } = req.body
     const { id } = req.params
+
+    if ( await checkUsernameExist(username, id) ) {
+        res.status(409).send({ message: "Username sudah dipakai" })
+        return
+    }
+    if ( await checkEmailExist(email, id) ) {
+        res.status(409).send({ message: "Email sudah dipakai" })
+        return
+    }
 
     try {
         let sql = `SELECT * FROM Keluarga WHERE id = ?`
