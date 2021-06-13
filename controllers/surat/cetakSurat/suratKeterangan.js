@@ -1,3 +1,5 @@
+require('dotenv').config();
+const { generateRandomString } = require('../../../utils')
 const db = require('../../../connection')
 const puppeteer = require('puppeteer')
 const fs = require('fs-extra')
@@ -5,9 +7,9 @@ const hbs = require('handlebars')
 const path = require('path')
 
 const compile = async (templateName, data) => {
-  let pathToTemplate = `templates/`
-  const filePath = path.join(pathToTemplate, `${templateName}.hbs`)
+  const filePath = path.join(`templates/`, `${templateName}.hbs`)
   const html = await fs.readFile(filePath, 'utf-8')
+  
   return hbs.compile(html)(data)
 }
 
@@ -18,6 +20,7 @@ const getData = async (id) => {
               S.no_surat,
               S.id_keluarga,
               S.id_lingkungan,
+              L.nama_lingkungan,
               S.ketua_lingkungan,
               S.id_umat,
               U.nama,
@@ -32,6 +35,7 @@ const getData = async (id) => {
               S.keperluan,
               S.ketua_lingkungan_approval,
               S.id_sekretariat,
+              Sekret.nama AS nama_sekretariat,
               S.sekretariat_approval,
               S.id_romo,
               S.romo_approval,
@@ -40,6 +44,8 @@ const getData = async (id) => {
               S.deleted_at
       FROM Surat_Keterangan S JOIN Umat U on (S.id_umat=U.id) 
           JOIN (SELECT * FROM Umat) O ON (S.id_ortu=O.id) 
+          JOIN Lingkungan L ON (S.id_lingkungan=L.id)
+          JOIN Admin Sekret ON (S.id_sekretariat=Sekret.id)
       WHERE S.id = ?`
     let result = await db(sql, [ id ])
 
@@ -59,29 +65,35 @@ const cetakSuratKeterangan = async (req, res) => {
   try {
     const browser = await puppeteer.launch()
     const page =  await browser.newPage()
+    
     const data = await getData(id)
-    console.log(data.no_surat)
 
     const content = await compile('suratKeterangan', data)
 
     await page.setContent(content)
     await page.emulateMediaType('screen')
-    await page.pdf({
-      path: 'a.pdf',
+
+    // const fileName = `${generateRandomString(10)}.pdf`
+
+    const pdfBuffer = await page.pdf({
+      // path: `/tmp/${fileName}`,
       format: 'A4',
       printBackground: true
     })
 
     console.log('done generate pdf')
-    res.status(200).send({
-      message: "Success retrieving data",
-      result: 'a',
-  })
+
+    res.set('Content-Type', 'application/pdf');
+    res.set('Content-Disposition', 'attachment; filename="surat.pdf"');
+    res.status(200).send(pdfBuffer);
 
     await browser.close()
-    // process.exit()
   } catch (error) {
     console.log(error)
+    res.status(500).send({
+      message: 'error',
+      error: error.message
+    });
   }
 }
 

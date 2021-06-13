@@ -1,15 +1,138 @@
 <html>
   <head>
+    <title>Surat Keterangan</title>
     <style>
+      body{
+        padding: 30px 50px;
+        position: relative;
+      }
+
       .title{
         text-align: center;
+        font-weight: 600;
+      }
+      .text-center { text-align: center; }
+      .text-right { text-align: right; }
+
+      .logo{
+        margin: 0 auto;
+        width: 100px;
+      }
+      .divider{
+        width: 100%;
+        height: 10px;
+        border-top: 3px solid #000;
+        border-top: 1px solid #000;
+      }
+
+      .ttd{
+        width: 50%;
+        margin: auto;
+        position: relative;
+      }
+
+      .footer {
+        position: absolute;
+        bottom: 30;
       }
     </style>
   </head>
   <body>
-    <h1 class="title">Surat Keterangan</h1>
+    <div class="head">
+      <div class="logo">
+        <img
+          src="http://localhost:5000/logo.jpg"
+          style="width: inherit;"
+        />
+      </div>
+      <h1 class="title">GEREJA HSP MARIA TAK BERCELA</h1>
+      <p class="text-center">
+        Jalan Kumetiran 13 Telp. 0274-512817, 518586 <br>
+        Yogyakarta 55272
+      </p>
+    </div>
 
-    <p>{{ data.no_surat }}</p>
-    <p>asdf</p>
+    <div class="divider"></div>
+
+    <div class="top">
+      <p>LINGKUNGAN: {{ nama_lingkungan }}</p>
+
+      <h2 class="title">SURAT KETERANGAN</h2>
+      <p class="text-center">{{ no_surat }}</p>
+    </div>
+    
+    <div class="content">
+      <p>
+        Yang bertandatangan dibawah ini Ketua Lingkungan {{ ketua_lingkungan }} <br>
+        dengan ini menerangkan dengan sesungguhnya:
+      </p>
+      <table style="width: 80%; margin: auto;">
+        <tr>
+          <td>Nama</td>
+          <td>: {{ nama }}</td>
+        </tr>
+        <tr>
+          <td>Tempat/tgl lahir</td>
+          <td>: {{ tempat_lahir }}/{{ tgl_lahir }}</td>
+        </tr>
+        <tr>
+          <td>Alamat</td>
+          <td>: {{ alamat }}</td>
+        </tr>
+        <tr>
+          <td>Pendidikan</td>
+          <td>: {{ pendidikan }}</td>
+        </tr>
+        <tr>
+          <td>Pekerjaan</td>
+          <td>: {{ pekerjaan }}</td>
+        </tr>
+        <tr>
+          <td>Nama orang tua</td>
+          <td>: {{ nama_ortu }}</td>
+        </tr>
+        <tr>
+          <td>Alamat orang tua</td>
+          <td>: {{ alamat_ortu }}</td>
+        </tr>
+      </table>
+      <p>
+        adalah benar-benar warga Lingkungan kami dan bahwa ybs:<br>
+        ... .
+        </p>
+      <p>
+        Surat keterangan ini kami buat untuk keperluan {{ keperluan }}.<br>
+        Demikian untuk dapat dipergunakan sebagaimana mestinya.
+      </p>
+    </div>
+
+    <div class="end">
+      <p class="text-right">Yogyakarta, {{ created_at }}</p>
+
+      <div style="display: flex;">
+        <div class="text-center ttd">
+          <p>
+            Ketua Lingkungan
+            <br><br>
+          </p>
+          <p class="nama-ttd">{{ ketua_lingkungan }}</p>
+        </div>
+        <div class="text-center ttd">
+          <p>
+            Mengetahui,<br>
+            Romo Paroki
+            <br><br>
+          </p>
+          <p class="nama-ttd">{{ ketua_lingkungan }}</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer">
+      <em>
+        Catatan: <br>
+        Surat Keterangan ini tidak berlaku untuk pendaftaran Perkawinan dan pengajuan beasiswa
+      </em>
+    </div>
   </body>
 </html>

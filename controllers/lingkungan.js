@@ -6,8 +6,8 @@ const getAll = async (req, res) => {
             `SELECT L.id,
                     L.ketua_lingkungan_id,
                     L.nama_lingkungan,
-                    K.nama_keluarga "ketua_lingkungan",
-                    K.username,
+                    K.nama_kepala_keluarga AS "nama_ketua_lingkungan",
+                    K.no_telp_kepala_keluarga AS "no_hp",
                     K.email
             FROM Lingkungan L JOIN Keluarga K ON (L.ketua_lingkungan_id=K.id)`
         let result = await db(sql)
@@ -33,8 +33,8 @@ const getById = async (req, res) => {
             `SELECT L.id,
                     L.ketua_lingkungan_id,
                     L.nama_lingkungan,
-                    K.nama_keluarga "ketua_lingkungan",
-                    K.username,
+                    K.nama_kepala_keluarga AS "nama_ketua_lingkungan",
+                    K.no_telp_kepala_keluarga AS "no_hp",
                     K.email
             FROM Lingkungan L JOIN Keluarga K ON (L.ketua_lingkungan_id=K.id) 
             WHERE L.id=?`
@@ -67,8 +67,8 @@ const getByKetuaLingkunganId = async (req, res) => {
             `SELECT L.id,
                     L.ketua_lingkungan_id,
                     L.nama_lingkungan,
-                    K.nama_keluarga "ketua_lingkungan",
-                    K.username,
+                    K.nama_kepala_keluarga AS "nama_ketua_lingkungan",
+                    K.no_telp_kepala_keluarga AS "no_hp",
                     K.email
             FROM Lingkungan L JOIN Keluarga K ON (L.ketua_lingkungan_id=K.id) 
             WHERE L.ketua_lingkungan_id=?`
