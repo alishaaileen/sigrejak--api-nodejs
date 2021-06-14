@@ -28,9 +28,9 @@ const getAll = async (req, res) => {
                     S.sekretariat_approval,
                     S.id_romo,
                     S.romo_approval,
-                    S.created_at,
-                    S.updated_at,
-                    S.deleted_at 
+                    DATE_FORMAT(S.created_at, '%d-%m-%Y') AS created_at,
+                    DATE_FORMAT(S.updated_at, '%d-%m-%Y') AS updated_at,
+                    DATE_FORMAT(S.deleted_at, '%d-%m-%Y') AS deleted_at 
             FROM Surat_Keterangan_Pindah S JOIN Umat U ON (S.id_umat=U.id) 
                 JOIN Lingkungan L ON (S.id_lingkungan_lama=L.id)`
         let result = await db(sql)
@@ -77,9 +77,9 @@ const getById = async (req, res) => {
                     S.ketua_lingkungan,
                     S.id_romo,
                     S.romo_approval,
-                    S.created_at,
-                    S.updated_at,
-                    S.deleted_at 
+                    DATE_FORMAT(S.created_at, '%d-%m-%Y') AS created_at,
+                    DATE_FORMAT(S.updated_at, '%d-%m-%Y') AS updated_at,
+                    DATE_FORMAT(S.deleted_at, '%d-%m-%Y') AS deleted_at 
             FROM Surat_Keterangan_Pindah S JOIN Umat U ON (S.id_umat=U.id) 
                 JOIN Lingkungan L ON (S.id_lingkungan_lama=L.id) 
             WHERE S.id = ?`
@@ -133,9 +133,9 @@ const getByIdKeluarga = async (req, res) => {
                     S.ketua_lingkungan,
                     S.id_romo,
                     S.romo_approval,
-                    S.created_at,
-                    S.updated_at,
-                    S.deleted_at 
+                    DATE_FORMAT(S.created_at, '%d-%m-%Y') AS created_at,
+                    DATE_FORMAT(S.updated_at, '%d-%m-%Y') AS updated_at,
+                    DATE_FORMAT(S.deleted_at, '%d-%m-%Y') AS deleted_at 
             FROM Surat_Keterangan_Pindah S JOIN Umat U ON (S.id_umat=U.id) 
                 JOIN Lingkungan L ON (S.id_lingkungan_lama=L.id) 
             WHERE S.id_keluarga = ?`

@@ -49,9 +49,9 @@ const getById = async (req, res) => {
                     S.ketua_lingkungan_approval,
                     S.id_sekretariat,
                     S.sekretariat_approval,
-                    S.created_at,
-                    S.updated_at,
-                    S.deleted_at
+                    DATE_FORMAT(S.created_at, '%d-%m-%Y') AS created_at,
+                    DATE_FORMAT(S.updated_at, '%d-%m-%Y') AS updated_at,
+                    DATE_FORMAT(S.deleted_at, '%d-%m-%Y') AS deleted_at
             FROM Surat_Pelayanan_Minyak_Suci S JOIN (SELECT id AS id_pastor_pelayan, nama AS nama_pastor_pelayan FROM Admin) R ON (S.id_pastor_pelayan=R.id_pastor_pelayan)
             WHERE S.id = ?`
         let result = await db(sql, [ id ])
@@ -98,9 +98,9 @@ const getByIdKeluarga = async (req, res) => {
                     S.ketua_lingkungan_approval,
                     S.id_sekretariat,
                     S.sekretariat_approval,
-                    S.created_at,
-                    S.updated_at,
-                    S.deleted_at
+                    DATE_FORMAT(S.created_at, '%d-%m-%Y') AS created_at,
+                    DATE_FORMAT(S.updated_at, '%d-%m-%Y') AS updated_at,
+                    DATE_FORMAT(S.deleted_at, '%d-%m-%Y') AS deleted_at
             FROM Surat_Pelayanan_Minyak_Suci S JOIN (SELECT id AS id_pastor_pelayan, nama AS nama_pastor_pelayan FROM Admin) R ON (S.id_pastor_pelayan=R.id_pastor_pelayan)
             WHERE S.id_keluarga = ?`
         let result = await db(sql, [ id ])
@@ -147,9 +147,9 @@ const getByIdLingkungan = async (req, res) => {
                     S.ketua_lingkungan_approval,
                     S.id_sekretariat,
                     S.sekretariat_approval,
-                    S.created_at,
-                    S.updated_at,
-                    S.deleted_at
+                    DATE_FORMAT(S.created_at, '%d-%m-%Y') AS created_at,
+                    DATE_FORMAT(S.updated_at, '%d-%m-%Y') AS updated_at,
+                    DATE_FORMAT(S.deleted_at, '%d-%m-%Y') AS deleted_at
             FROM Surat_Pelayanan_Minyak_Suci S JOIN (SELECT id AS id_pastor_pelayan, nama AS nama_pastor_pelayan FROM Admin) R ON (S.id_pastor_pelayan=R.id_pastor_pelayan)
             WHERE S.id_lingkungan = ?`
         let result = await db(sql, [ id ])

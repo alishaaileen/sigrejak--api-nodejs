@@ -39,7 +39,7 @@ const getData = async (id) => {
               S.sekretariat_approval,
               S.id_romo,
               S.romo_approval,
-              S.created_at,
+              DATE_FORMAT(S.created_at, '%d%m%Y'),
               S.updated_at,
               S.deleted_at
       FROM Surat_Keterangan S JOIN Umat U on (S.id_umat=U.id) 

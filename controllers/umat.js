@@ -17,9 +17,9 @@ const getAll = async (req, res) => {
                     U.is_umat_active,
                     U.keluarga_id,
                     U.lingkungan_id,
-                    U.created_at,
-                    U.updated_at,
-                    U.deleted_at,
+                    DATE_FORMAT(U.created_at, '%d-%m-%Y') AS created_at,
+                    DATE_FORMAT(U.updated_at, '%d-%m-%Y') AS updated_at,
+                    DATE_FORMAT(U.deleted_at, '%d-%m-%Y') AS deleted_at,
                     L.nama_lingkungan,
                     L.ketua_lingkungan_id,
                     K.nama_keluarga
@@ -62,9 +62,9 @@ const getFamilyMember = async (req, res) => {
                     L.nama_lingkungan,
                     L.ketua_lingkungan_id,
                     K.nama_keluarga,
-                    U.created_at,
-                    U.updated_at,
-                    U.deleted_at
+                    DATE_FORMAT(U.created_at, '%d-%m-%Y') AS created_at,
+                    DATE_FORMAT(U.updated_at, '%d-%m-%Y') AS updated_at,
+                    DATE_FORMAT(U.deleted_at, '%d-%m-%Y') AS deleted_at
             FROM Umat U JOIN Lingkungan L ON (U.lingkungan_id=L.id)
             JOIN Keluarga K ON (U.keluarga_id=K.id) 
             WHERE U.keluarga_id=?`
@@ -104,9 +104,9 @@ const getById = async (req, res) => {
                     L.nama_lingkungan,
                     L.ketua_lingkungan_id,
                     K.nama_keluarga,
-                    U.created_at,
-                    U.updated_at,
-                    U.deleted_at
+                    DATE_FORMAT(U.created_at, '%d-%m-%Y') AS created_at,
+                    DATE_FORMAT(U.updated_at, '%d-%m-%Y') AS updated_at,
+                    DATE_FORMAT(U.deleted_at, '%d-%m-%Y') AS deleted_at
             FROM Umat U JOIN Lingkungan L ON (U.lingkungan_id=L.id)
             JOIN Keluarga K ON (U.keluarga_id=K.id) 
             WHERE U.id = ?`

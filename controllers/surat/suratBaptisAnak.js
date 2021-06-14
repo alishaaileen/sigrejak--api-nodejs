@@ -28,9 +28,9 @@ const getAll = async (req, res) => {
                     S.sekretariat_approval,
                     S.tgl_baptis,
                     S.romo_pembaptis,
-                    S.created_at,
-                    S.updated_at,
-                    S.deleted_at 
+                    DATE_FORMAT(S.created_at, '%d-%m-%Y') AS created_at,
+                    DATE_FORMAT(S.updated_at, '%d-%m-%Y') AS updated_at,
+                    DATE_FORMAT(S.deleted_at, '%d-%m-%Y') AS deleted_at 
             FROM Surat_Baptis_Anak S JOIN Umat A ON (S.id_anak=A.id)
                 JOIN Detail_Umat D ON (A.id=D.id_umat)
                 JOIN (SELECT id, nama, no_telp, alamat FROM Umat) Ayah ON (D.id_ayah=Ayah.id)
@@ -80,9 +80,9 @@ const getById = async (req, res) => {
                     S.sekretariat_approval,
                     S.tgl_baptis,
                     S.romo_pembaptis,
-                    S.created_at,
-                    S.updated_at,
-                    S.deleted_at 
+                    DATE_FORMAT(S.created_at, '%d-%m-%Y') AS created_at,
+                    DATE_FORMAT(S.updated_at, '%d-%m-%Y') AS updated_at,
+                    DATE_FORMAT(S.deleted_at, '%d-%m-%Y') AS deleted_at 
             FROM Surat_Baptis_Anak S JOIN Umat A ON (S.id_anak=A.id)
                 JOIN Detail_Umat D ON (A.id=D.id_umat)
                 JOIN (SELECT id, nama, no_telp, alamat FROM Umat) Ayah ON (D.id_ayah=Ayah.id)
@@ -139,9 +139,9 @@ const getByIdKeluarga = async (req, res) => {
                     S.sekretariat_approval,
                     S.tgl_baptis,
                     S.romo_pembaptis,
-                    S.created_at,
-                    S.updated_at,
-                    S.deleted_at 
+                    DATE_FORMAT(S.created_at, '%d-%m-%Y') AS created_at,
+                    DATE_FORMAT(S.updated_at, '%d-%m-%Y') AS updated_at,
+                    DATE_FORMAT(S.deleted_at, '%d-%m-%Y') AS deleted_at 
             FROM Surat_Baptis_Anak S JOIN Umat A ON (S.id_anak=A.id)
                 JOIN Detail_Umat D ON (A.id=D.id_umat)
                 JOIN (SELECT id, nama, no_telp, alamat FROM Umat) Ayah ON (D.id_ayah=Ayah.id)
