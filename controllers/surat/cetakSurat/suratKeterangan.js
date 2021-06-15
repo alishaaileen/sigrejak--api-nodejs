@@ -18,35 +18,29 @@ const getData = async (id) => {
     let sql = 
       `SELECT S.id,
               S.no_surat,
-              S.id_keluarga,
-              S.id_lingkungan,
               L.nama_lingkungan,
               S.ketua_lingkungan,
-              S.id_umat,
               U.nama,
               U.tempat_lahir,
               U.tgl_lahir,
               U.alamat,
               U.pekerjaan,
               S.pendidikan,
-              S.id_ortu,
               O.nama AS nama_ortu,
               O.alamat AS alamat_ortu,
               S.keperluan,
               S.ketua_lingkungan_approval,
-              S.id_sekretariat,
               Sekret.nama AS nama_sekretariat,
               S.sekretariat_approval,
-              S.id_romo,
+              Romo.nama AS nama_romo_paroki,
               S.romo_approval,
-              DATE_FORMAT(S.created_at, '%d%m%Y'),
-              S.updated_at,
-              S.deleted_at
-      FROM Surat_Keterangan S JOIN Umat U on (S.id_umat=U.id) 
+              DATE_FORMAT(S.created_at, '%d-%m-%Y') AS created_at
+        FROM Surat_Keterangan S JOIN Umat U ON (S.id_umat=U.id) 
           JOIN (SELECT * FROM Umat) O ON (S.id_ortu=O.id) 
           JOIN Lingkungan L ON (S.id_lingkungan=L.id)
           JOIN Admin Sekret ON (S.id_sekretariat=Sekret.id)
-      WHERE S.id = ?`
+          JOIN (SELECT id, nama, role FROM Admin) Romo ON (S.id_romo=Romo.id)
+        WHERE S.id = 11`
     let result = await db(sql, [ id ])
 
     if(result.length === 0) {
@@ -73,10 +67,7 @@ const cetakSuratKeterangan = async (req, res) => {
     await page.setContent(content)
     await page.emulateMediaType('screen')
 
-    // const fileName = `${generateRandomString(10)}.pdf`
-
     const pdfBuffer = await page.pdf({
-      // path: `/tmp/${fileName}`,
       format: 'A4',
       printBackground: true
     })
@@ -84,7 +75,7 @@ const cetakSuratKeterangan = async (req, res) => {
     console.log('done generate pdf')
 
     res.set('Content-Type', 'application/pdf');
-    res.set('Content-Disposition', 'attachment; filename="surat.pdf"');
+    res.set('Content-Disposition', `attachment; filename="${data.no_surat}.pdf"`);
     res.status(200).send(pdfBuffer);
 
     await browser.close()
