@@ -9,6 +9,7 @@ router.get('/', validateToken, adminController.getAll)
 router.get('/role/:roleId', validateToken, adminController.getAllByRole)
 router.get('/:id', validateToken, adminController.getById)
 router.post('/register', validateToken, adminController.post)
+router.patch('/set-romo-paroki', validateToken, adminController.setAsRomoParoki)
 router.patch('/:id', validateToken, adminController.update)
 router.delete('/:id', validateToken, adminController.remove)
 

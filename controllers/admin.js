@@ -144,6 +144,31 @@ const update = async (req, res) => {
     }
 }
 
+const setAsRomoParoki = async (req, res) => {
+    const updated_at = getTodayDate()
+        , role = 3
+        , { id } = req.body
+
+    try {
+        let sql = `UPDATE Admin SET role=4 WHERE role=3`
+        let result = await db(sql)
+
+        sql = `UPDATE Admin SET ? WHERE id=?`
+        result = await db(sql, [ {role, updated_at}, id ]) 
+        
+        res.status(200).send({
+            message: "Success change romo as romo paroki",
+            result: result,
+        })
+    } catch (error) {
+        console.log(error.message)
+        res.status(500).send({
+            message: "Failed updating data",
+            error: error.message,
+        })
+    }
+}
+
 const remove = async (req, res) => {
     let { id } = req.params
     let deleted_at = getTodayDate()
@@ -260,6 +285,7 @@ module.exports = {
     getById,
     post,
     update,
+    setAsRomoParoki,
     remove,
 
     login,
