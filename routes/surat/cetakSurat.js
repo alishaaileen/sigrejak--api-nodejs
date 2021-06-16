@@ -1,7 +1,7 @@
 const express = require('express')
 const router = express.Router()
-const suratKeterangan = require('../../controllers/surat/cetakSurat/suratKeterangan')
+const cetakSurat = require('../../controllers/surat/cetakSurat')
 
-router.get('/surat-keterangan/:id', suratKeterangan.cetakSuratKeterangan)
+router.get('/:jenisSurat/:id', cetakSurat.cetakSurat)
 
 module.exports = router
