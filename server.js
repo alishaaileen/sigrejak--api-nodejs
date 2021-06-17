@@ -16,6 +16,7 @@ app.use(express.static('templates')) // Set static path utk template cetak surat
 
 
 // Routes
+
 const adminRoutes = require('./routes/admin')
     , lingkunganRoutes = require('./routes/lingkungan')
     , keluargaRoutes = require('./routes/keluarga')
@@ -31,6 +32,11 @@ const suratKeteranganPindah = require('./routes/surat/suratKeteranganPindah')
     , suratKeteranganMati = require('./routes/surat/suratKeteranganMati')
 
 const cetakSurat = require('./routes/surat/cetakSurat')
+
+
+// Files path to access images, zips, etc
+app.use('/files', express.static('files'))
+
 
 app.get('/', (req, res) => res.send('haii'))
 app.use('/check-user', checkUser)
