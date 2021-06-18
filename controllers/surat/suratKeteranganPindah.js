@@ -104,6 +104,62 @@ const getById = async (req, res) => {
     }
 }
 
+const getByIdLingkungan = async (req, res) => {
+    const { id } = req.params
+
+    try {
+        let sql = 
+            `SELECT S.id,
+                    S.no_surat,
+                    S.id_keluarga,
+                    S.id_umat,
+                    U.nama,
+                    U.tempat_lahir,
+                    U.tgl_lahir,
+                    S.paroki_lama,
+                    S.id_lingkungan_lama,
+                    L.nama_lingkungan AS nama_lingkungan_lama,
+                    S.alamat_lama,
+                    S.no_telp_lama,
+                    S.tgl_mulai_domisili,
+                    S.alamat_baru,
+                    S.no_telp_baru,
+                    S.id_lingkungan_baru,
+                    S.nama_lingkungan_baru,
+                    S.paroki_baru,
+                    S.ketua_lingkungan_approval,
+                    S.id_sekretariat,
+                    S.sekretariat_approval,
+                    S.ketua_lingkungan,
+                    S.id_romo,
+                    S.romo_approval,
+                    DATE_FORMAT(S.created_at, '%d-%m-%Y') AS created_at,
+                    DATE_FORMAT(S.updated_at, '%d-%m-%Y') AS updated_at,
+                    DATE_FORMAT(S.deleted_at, '%d-%m-%Y') AS deleted_at 
+            FROM Surat_Keterangan_Pindah S JOIN Umat U ON (S.id_umat=U.id) 
+                JOIN Lingkungan L ON (S.id_lingkungan_lama=L.id) 
+            WHERE S.id_lingkungan_lama = ?`
+        let result = await db(sql, [ id ])
+
+        if(result.length === 0) {
+            res.status(404).send({
+                message: "Data not found",
+            })
+        } else {
+            res.status(200).send({
+                message: "Success retrieving data",
+                result: result,
+            })
+        }
+    } catch (error) {
+        console.log(error.message)
+        res.status(500).send({
+            message: "Failed to retrieve data",
+            error: error.message
+        })
+    }
+}
+
 const getByIdKeluarga = async (req, res) => {
     const { id } = req.params
 
@@ -323,6 +379,7 @@ const remove = async (req, res) => {
 module.exports = {
     getAll,
     getById,
+    getByIdLingkungan,
     getByIdKeluarga,
     post,
     update,

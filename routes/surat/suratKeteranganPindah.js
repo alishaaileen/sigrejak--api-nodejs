@@ -5,6 +5,7 @@ const keteranganPindahController = require('../../controllers/surat/suratKeteran
 router.get('/', keteranganPindahController.getAll)
 router.get('/:id', keteranganPindahController.getById)
 router.get('/keluarga/:id', keteranganPindahController.getByIdKeluarga)
+router.get('/lingkungan/:id', keteranganPindahController.getByIdLingkungan)
 router.post('/add', keteranganPindahController.post)
 router.patch('/:id', keteranganPindahController.update)
 router.delete('/:id', keteranganPindahController.remove)
