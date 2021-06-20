@@ -19,6 +19,8 @@ const getData = async (jenisSurat, id) => {
     return getDataSuratIzinEkaristi(id)
   } else if (jenisSurat === 'surat-pelayanan-minyak-suci') {
     return getDataSuratPelayananMinyakSuci(id)
+  } else if (jenisSurat === 'surat-keterangan-pindah') {
+    return getDataSuratKeteranganPindah(id)
   }
 }
 
@@ -26,6 +28,7 @@ const getTemplateSurat = (jenisSurat) => {
   if (jenisSurat === 'surat-keterangan') return 'suratKeterangan'
   else if (jenisSurat === 'surat-izin-pelayanan-ekaristi') return 'suratIzinEkaristi'
   else if (jenisSurat === 'surat-pelayanan-minyak-suci') return 'suratMinyakSuci'
+  else if (jenisSurat === 'surat-keterangan-pindah') return 'suratKeteranganPindah'
 } 
 
 const cetakSurat = async (req, res) => {
@@ -71,9 +74,9 @@ const cetakSurat = async (req, res) => {
   }
 }
 
-
-
-
+// ==================================================================
+// QUERIES ==========================================================
+// ==================================================================
 
 
 const getDataSuratKeterangan = async (id) => {
@@ -183,12 +186,10 @@ const getDataSuratPelayananMinyakSuci = async (id) => {
             S.tahun_menikah,
             S.status_terima_minyak,
             DATE_FORMAT(S.tgl_terima_minyak, '%d-%m-%Y') AS tgl_terima_minyak,
-            S.id_pastor_pelayan,
             R.nama_pastor_pelayan,
             S.pastor_pelayan_approval,
             S.ketua_lingkungan,
             S.ketua_lingkungan_approval,
-            S.id_sekretariat,
             S.sekretariat_approval,
             DATE_FORMAT(S.created_at, '%d-%m-%Y') AS created_at,
             DATE_FORMAT(S.updated_at, '%d-%m-%Y') AS updated_at,
@@ -210,6 +211,58 @@ const getDataSuratPelayananMinyakSuci = async (id) => {
       if(result[0].status_terima_minyak === 'Belum pernah') {
         result[0].tgl_terima_minyak = '-'
       }
+      return result[0]
+    }
+  } catch (error) {
+    console.log(error.message)
+  }
+}
+
+const getDataSuratKeteranganPindah = async (id) => {
+  try {
+    let sql = 
+    `SELECT S.id,
+            S.no_surat,
+            S.id_keluarga,
+            S.id_umat,
+            U.nama,
+            U.tempat_lahir,
+            U.tgl_lahir,
+            S.paroki_lama,
+            S.id_lingkungan_lama,
+            L.nama_lingkungan AS nama_lingkungan_lama,
+            S.tgl_domisili_lama,
+            S.alamat_lama,
+            S.no_telp_lama,
+            S.tgl_domisili_baru,
+            S.alamat_baru,
+            S.no_telp_baru,
+            S.id_lingkungan_baru,
+            S.nama_lingkungan_baru,
+            S.paroki_baru,
+            S.ketua_lingkungan,
+            S.ketua_lingkungan_approval,
+            Romo.nama AS nama_romo_paroki,
+            S.romo_approval,
+            DATE_FORMAT(S.created_at, '%d-%m-%Y') AS created_at,
+            DATE_FORMAT(S.updated_at, '%d-%m-%Y') AS updated_at,
+            DATE_FORMAT(S.deleted_at, '%d-%m-%Y') AS deleted_at 
+    FROM Surat_Keterangan_Pindah S JOIN Umat U ON (S.id_umat=U.id) 
+        JOIN Lingkungan L ON (S.id_lingkungan_lama=L.id)
+        JOIN (SELECT id, nama, role FROM Admin) Romo ON (S.id_romo=Romo.id)
+    WHERE S.id = ?`
+    let result = await db(sql, [ id ])
+    
+    if(result.length === 0) {
+      return 404
+    } else {
+      const hari = ['Minggu','Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu']
+      let tempTgl = new Date(result[0].tgl_domisili_lama)
+      result[0].hari_domisili_lama = hari[tempTgl.getDay()]
+
+      tempTgl = new Date(result[0].tgl_domisili_baru)
+      result[0].hari_domisili_baru = hari[tempTgl.getDay()]
+
       return result[0]
     }
   } catch (error) {
