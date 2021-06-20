@@ -256,12 +256,37 @@ const getDataSuratKeteranganPindah = async (id) => {
     if(result.length === 0) {
       return 404
     } else {
-      const hari = ['Minggu','Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu']
-      let tempTgl = new Date(result[0].tgl_domisili_lama)
-      result[0].hari_domisili_lama = hari[tempTgl.getDay()]
+      const hariList = ['Minggu','Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu']
 
+      //  GET nama hari utl tgl domisili lama
+      let tempTgl = new Date(result[0].tgl_domisili_lama)
+      result[0].hari_domisili_lama = hariList[tempTgl.getDay()]
+
+      //  UBAH format YYYY-MM-DD jadi DD-MM-YYYY
+      let date = tempTgl.getDate()
+        , month = tempTgl.getMonth()
+        , year = tempTgl.getFullYear()
+      
+      //  UBAH tgl dan bulan jadi 2 digit kalo cuma 1 digit
+        date = date < 10 ? `0${date}` : date
+      month = month < 10 ? `0${month}` : month
+
+      result[0].tgl_domisili_lama = `${date}-${month}-${year}`
+
+      //  GET nama hari utl tgl domisili baru
       tempTgl = new Date(result[0].tgl_domisili_baru)
-      result[0].hari_domisili_baru = hari[tempTgl.getDay()]
+      result[0].hari_domisili_baru = hariList[tempTgl.getDay()]
+
+      //  UBAH format YYYY-MM-DD jadi DD-MM-YYYY
+      date = tempTgl.getDate()
+      month = tempTgl.getMonth()
+      year = tempTgl.getFullYear()
+
+      //  UBAH tgl dan bulan jadi 2 digit kalo cuma 1 digit
+      date = date < 10 ? `0${date}` : date
+      month = month < 10 ? `0${month}` : month
+      
+      result[0].tgl_domisili_baru = `${date}-${month}-${year}`
 
       return result[0]
     }
