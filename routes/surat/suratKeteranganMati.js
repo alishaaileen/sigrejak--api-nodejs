@@ -4,6 +4,7 @@ const keteranganMatiController = require('../../controllers/surat/suratKeteranga
 
 router.get('/', keteranganMatiController.getAll)
 router.get('/:id', keteranganMatiController.getById)
+router.get('/lingkungan/:id', keteranganMatiController.getByIdLingkungan)
 router.get('/keluarga/:id', keteranganMatiController.getByIdKeluarga)
 router.post('/add', keteranganMatiController.post)
 router.patch('/:id', keteranganMatiController.update)
