@@ -1,0 +1,214 @@
+<html>
+  <head>
+    <title>Surat Keterangan Kematian</title>
+    <style>
+      body{
+        padding: 30px 50px;
+        position: relative;
+      }
+
+      .title{
+        text-align: center;
+        font-weight: 600;
+      }
+      .text-center { text-align: center; }
+      .text-right { text-align: right; }
+
+      .logo{
+        margin: 0 auto;
+        width: 80px;
+      }
+      .divider{
+        width: 100%;
+        height: 10px;
+        border-top: 3px solid #000;
+        border-top: 1px solid #000;
+      }
+
+      p {
+        line-height: 1.5rem;
+      }
+
+      .ttd{
+        width: 30%;
+        margin: auto;
+        position: relative;
+      }
+
+      .end {
+        margin-top: 30px;
+      }
+
+      .footer {
+        position: absolute;
+        bottom: 30;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="head">
+      <div class="logo">
+        <img
+          src="http://localhost:5000/logo.jpg"
+          style="width: inherit;"
+        />
+      </div>
+      <h1 class="title">GEREJA HSP MARIA TAK BERCELA</h1>
+      <p class="text-center">
+        Jalan Kumetiran 13 Telp. 0274-512817, 518586 <br>
+        Yogyakarta 55272
+      </p>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="top">
+      <p>LINGKUNGAN: {{ nama_lingkungan }}</p>
+
+      <h2 class="title">SURAT KETERANGAN KEMATIAN</h2>
+      <p class="text-center">{{ no_surat }}</p>
+    </div>
+    
+    <div class="content">
+      <table style="width: 90%; margin: auto;">
+        <tr>
+          <td>
+            <p>Nama lengkap</p>
+          </td>
+          <td>
+            <p>: {{ nama }}</p>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <p>Nama baptis</p>
+          </td>
+          <td>
+            <p>: {{ nama_baptis }}</p>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <p>Tempat/tgl lahir</p>
+          </td>
+          <td>
+            <p>: {{ tempat_lahir }}/{{ tgl_lahir }}</p>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <p>Alamat</p>
+          </td>
+          <td>
+            <p>: {{ alamat }}</p>
+          </td>
+        </tr>
+        <tr>
+          <td>Tempat/tgl meninggal</td>
+          <td>
+            <p>{{ tempat_meninggal }}/{{ tgl_meninggal }}</p>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <p>Tempat/tgl makam/kremasi</p>
+          </td>
+          <td>
+            <p>: {{ tempat_makam_kremasi }}/{{ tgl_makam_kremasi }}</p>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <p>Nama orang tua</p>
+          </td>
+          <td>
+            <p>: {{ nama_ortu }}</p>
+          </td>
+        </tr>
+        <tr>
+          <td>Nama pasangan</td>
+          <td>
+            <p>: {{ nama_pasangan }}</p>
+          </td>
+        </tr>
+      </table>
+      <p>
+        Sakramen yang diterima sebelum meninggal:
+      </p>
+      <table style="width: 100%">
+        <tr>
+          <td class="text-center">Sakramen:</td>
+          <td class="text-center">Tanggal:</td>
+          <td class="text-center">Pelayan Sakramen:</td>
+        </tr>
+        <tr>
+          <td>a. Viaticum (Komuni)</td>
+          <td class="text-center">{{ tgl_komuni }}</td>
+          <td class="text-center">{{ pelayan_komuni }}</td>
+        </tr>
+        <tr>
+          <td>b. Pengampunan Dosa</td>
+          <td class="text-center">{{ tgl_pengampunan_dosa }}</td>
+          <td class="text-center">{{ pelayan_pengampunan_dosa }}</td>
+        </tr>
+        <tr>
+          <td>c. Perminyakan Orang Sakit</td>
+          <td class="text-center">{{ tgl_perminyakan }}</td>
+          <td class="text-center">{{ pelayan_perminyakan }}</td>
+        </tr>
+        <tr>
+          <td>e. Baptis Darurat</td>
+          <td class="text-center">{{ tgl_baptis_darurat }}</td>
+          <td class="text-center">{{ pelayan_baptis_darurat }}</td>
+        </tr>
+      </table>
+    </div>
+
+    <div class="end">
+      <p class="text-right" style="line-height: 0;">
+        Yogyakarta, {{ created_at }}
+      </p>
+
+      <div style="display: flex;">
+        <div class="text-center ttd">
+          <p>
+            Imam yang memberkati
+            <br>
+            <br>
+            <br>
+          </p>
+          <p class="nama-ttd">{{ nama_imam }}</p>
+        </div>
+        <div class="text-center ttd">
+          <p>
+            Mengetahui<br>
+            Ketua Lingkungan
+            <br>
+            <br>
+            <br>
+          </p>
+          <p class="nama-ttd">{{ ketua_lingkungan }}</p>
+          <span>No. HP: {{ no_hp_ketua_lingkungan }}</span>
+        </div>
+        <div class="text-center ttd">
+          <p>
+            Hormat kami<br>
+            Pelapor
+            <br>
+            <br>
+            <br>
+          </p>
+          <p class="nama-ttd">{{ nama_pelapor }}</p>
+          <span>No. HP: {{ no_hp_pelapor }}</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer">
+      <em>
+        Catatan: <br>
+        No. Telp./HP keluarga/penanggung jawab yang bisa dihubungi: {{ no_hp_penanggungjawab }}
+      </em>
+    </div>
+  </body>
+</html>

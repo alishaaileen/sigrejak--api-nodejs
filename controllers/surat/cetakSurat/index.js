@@ -21,6 +21,8 @@ const getData = async (jenisSurat, id) => {
     return getDataSuratPelayananMinyakSuci(id)
   } else if (jenisSurat === 'surat-keterangan-pindah') {
     return getDataSuratKeteranganPindah(id)
+  } else if(jenisSurat === 'surat-keterangan-mati') {
+    return getDataSuratKeteranganMati(id)
   }
 }
 
@@ -29,6 +31,7 @@ const getTemplateSurat = (jenisSurat) => {
   else if (jenisSurat === 'surat-izin-pelayanan-ekaristi') return 'suratIzinEkaristi'
   else if (jenisSurat === 'surat-pelayanan-minyak-suci') return 'suratMinyakSuci'
   else if (jenisSurat === 'surat-keterangan-pindah') return 'suratKeteranganPindah'
+  else if (jenisSurat === 'surat-keterangan-mati') return 'suratKeteranganMati'
 } 
 
 const cetakSurat = async (req, res) => {
@@ -287,6 +290,75 @@ const getDataSuratKeteranganPindah = async (id) => {
       month = month < 10 ? `0${month}` : month
       
       result[0].tgl_domisili_baru = `${date}-${month}-${year}`
+
+      return result[0]
+    }
+  } catch (error) {
+    console.log(error.message)
+  }
+}
+
+const getDataSuratKeteranganMati = async (id) => {
+  try {
+    let sql = 
+    `SELECT S.id,
+            S.no_surat,
+            S.id_keluarga,
+            S.id_lingkungan,
+            L.nama_lingkungan,
+            K.no_telp_kepala_keluarga AS no_hp_ketua_lingkungan,
+            S.id_umat,
+            U.nama,
+            U.nama_baptis,
+            U.tempat_lahir,
+            DATE_FORMAT(U.tgl_lahir, '%d-%m-%Y') AS tgl_lahir,
+            U.alamat,
+            D.id_ayah,
+            D.id_ibu,
+            S.nama_pasangan,
+            S.tempat_meninggal,
+            DATE_FORMAT(S.tgl_meninggal, '%d-%m-%Y') AS tgl_meninggal,
+            S.tempat_makam_kremasi,
+            DATE_FORMAT(S.tgl_makam_kremasi, '%d-%m-%Y') AS tgl_makam_kremasi,
+            DATE_FORMAT(S.tgl_komuni, '%d-%m-%Y') AS tgl_komuni,
+            S.pelayan_komuni,
+            DATE_FORMAT(S.tgl_pengampunan_dosa, '%d-%m-%Y') AS tgl_pengampunan_dosa,
+            S.pelayan_pengampunan_dosa,
+            DATE_FORMAT(S.tgl_perminyakan, '%d-%m-%Y') AS tgl_perminyakan,
+            S.pelayan_perminyakan,
+            DATE_FORMAT(S.tgl_baptis_darurat, '%d-%m-%Y') AS tgl_baptis_darurat,
+            S.pelayan_baptis_darurat,
+            S.id_imam_pemberkat,
+            I.nama AS nama_imam,
+            S.imam_pemberkat_approval,
+            S.nama_pelapor,
+            S.no_hp_pelapor,
+            S.no_hp_penanggungjawab,
+            S.ketua_lingkungan,
+            S.ketua_lingkungan_approval,
+            DATE_FORMAT(S.created_at, '%d-%m-%Y') AS created_at
+    FROM Surat_Keterangan_Mati S JOIN Umat U ON (S.id_umat=U.id)
+        JOIN Detail_Umat D ON (U.id=D.id_umat) 
+        JOIN Admin I ON (S.id_imam_pemberkat=I.id)
+        JOIN Lingkungan L ON (S.id_lingkungan=L.id)
+        JOIN (SELECT id, no_telp_kepala_keluarga FROM Keluarga) K ON (L.ketua_lingkungan_id=K.id)
+    WHERE S.id = ?`
+    let result = await db(sql, [ id ])
+    
+    if(result.length === 0) {
+      return 404
+    } else {
+      sql = `SELECT nama FROM Umat WHERE id=?`
+      let tempIdOrtu = result[0].id_ayah != null ? result[0].id_ayah : result[0].id_ibu
+      let tempOrtu = await db(sql, [ tempIdOrtu ])
+
+      console.log(tempOrtu)
+
+      result[0].nama_ortu = tempOrtu[0].nama
+
+      if (result[0].nama_pasangan == null) {
+        result[0].nama_pasangan = '-'
+      }
 
       return result[0]
     }
