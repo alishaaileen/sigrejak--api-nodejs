@@ -107,6 +107,63 @@ const getById = async (req, res) => {
     }
 }
 
+const getByIdLingkungan = async (req, res) => {
+    const { id } = req.params
+
+    try {
+        let sql = 
+            `SELECT S.id,
+                    S.no_surat,
+                    S.id_keluarga,
+                    S.id_lingkungan,
+                    S.ketua_lingkungan,
+                    S.id_siswa,
+                    U.nama,
+                    U.tempat_lahir,
+                    U.tgl_lahir,
+                    U.alamat,
+                    U.no_telp,
+                    S.sekolah,
+                    S.kelas,
+                    S.id_ortu,
+                    O.nama AS nama_ortu,
+                    O.alamat AS alamat_ortu,
+                    O.no_telp AS no_telp_ortu,
+                    S.status_beasiswa,
+                    S.permohonan,
+                    S.file_syarat_beasiswa,
+                    S.ketua_lingkungan_approval,
+                    S.id_sekretariat,
+                    S.sekretariat_approval,
+                    S.id_romo,
+                    S.romo_approval,
+                    DATE_FORMAT(S.created_at, '%d-%m-%Y') AS created_at,
+                    DATE_FORMAT(S.updated_at, '%d-%m-%Y') AS updated_at,
+                    DATE_FORMAT(S.deleted_at, '%d-%m-%Y') AS deleted_at
+            FROM Surat_Keterangan_Beasiswa S JOIN Umat U on (S.id_siswa=U.id)
+            JOIN (SELECT * FROM Umat) O on (S.id_ortu=O.id) 
+            WHERE S.id_lingkungan = ?`
+        let result = await db(sql, [ id ])
+
+        if(result.length === 0) {
+            res.status(404).send({
+                message: "Data not found",
+            })
+        } else {
+            res.status(200).send({
+                message: "Success retrieving data",
+                result: result,
+            })
+        }
+    } catch (error) {
+        console.log(error.message)
+        res.status(500).send({
+            message: "Failed to retrieve data",
+            error: error.message
+        })
+    }
+}
+
 const getByIdKeluarga = async (req, res) => {
     const { id } = req.params
 
@@ -252,6 +309,14 @@ const update = async (req, res) => {
     file_syarat_beasiswa = null
     file_syarat_beasiswa = req.files != null ? req.files.file_syarat_beasiswa : null
 
+    // Saat ketua lingkungan blm approve dan user edit data,
+    // ketua_lingkungan_approval harus di-set jadi 0
+    // karena by default dari front end itu undefined
+    // Karna di front end pakenya FormData()
+    if (ketua_lingkungan_approval === undefined) {
+        ketua_lingkungan_approval = 0
+    }
+
     let updated_at = getTodayDate()
     let { id } = req.params
     
@@ -358,6 +423,7 @@ const remove = async (req, res) => {
 module.exports = {
     getAll,
     getById,
+    getByIdLingkungan,
     getByIdKeluarga,
     post,
     update,

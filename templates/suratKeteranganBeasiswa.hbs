@@ -1,0 +1,207 @@
+<html>
+  <head>
+    <title>Surat Keterangan Beasiswa</title>
+    <style>
+      body{
+        padding: 30px 50px;
+        position: relative;
+      }
+
+      .title{
+        text-align: center;
+        font-weight: 600;
+      }
+      .text-center { text-align: center; }
+      .text-right { text-align: right; }
+      .line-height-normal { line-height: 1rem !important;}
+
+      .logo{
+        margin: 0 auto;
+        width: 80px;
+      }
+      .divider{
+        width: 100%;
+        height: 10px;
+        border-top: 3px solid #000;
+        border-top: 1px solid #000;
+      }
+
+      p {
+        line-height: 1.5rem;
+      }
+
+      .ttd{
+        width: 50%;
+        margin: auto;
+        position: relative;
+      }
+
+      .footer {
+        position: absolute;
+        bottom: 30;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="head">
+      <div class="logo">
+        <img
+          src="http://localhost:5000/logo.jpg"
+          style="width: inherit;"
+        />
+      </div>
+      <h1 class="title line-height-normal">GEREJA HSP MARIA TAK BERCELA</h1>
+      <p class="text-center line-height-normal">
+        Jalan Kumetiran 13 Telp. 0274-512817, 518586 <br>
+        Yogyakarta 55272
+      </p>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="top">
+      <p class="line-height-normal">LINGKUNGAN: {{ nama_lingkungan }}</p>
+
+      <h2 class="title line-height-normal">SURAT KETERANGAN BEASISWA</h2>
+      <p class="text-center ">No.: {{ no_surat }}</p>
+    </div>
+    
+    <div class="content">
+      <p>
+        Yang bertandatangan di bawah ini Ketua Lingkungan {{ ketua_lingkungan }} 
+        dengan ini menerangkan dengan sesungguhnya:
+      </p>
+      <table style="width: 90%; margin: auto;">
+        <tr>
+          <td>
+            <p>
+              Nama
+            </p>
+          </td>
+          <td>
+            <p>
+              : {{ nama }}
+            </p>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <p>
+              Tempat/tgl lahir
+            </p>
+          </td>
+          <td>
+            <p>
+              : {{ tempat_lahir }}/{{ tgl_lahir }}
+            </p>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <p>
+              Alamat
+            </p>
+          </td>
+          <td>
+            <p>
+              : {{ alamat }}
+            </p>
+          </td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>
+            <p>
+              No. Telp/HP: {{ no_telp }}
+            </p>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <p>
+              Sekolah/Kelas
+            </p>
+          </td>
+          <td>
+            <p>
+              : {{ sekolah }} / {{ kelas }}
+            </p>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <p>
+              Nama Bapak/Ibu
+            </p>
+          </td>
+          <td>
+            <p>
+              : {{ nama_ayah }} / {{ nama_ibu }}
+            </p>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <p>
+              Alamat orang tua
+            </p>
+          </td>
+          <td>
+            <p>
+              : {{ alamat_ortu }}
+            </p>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <p>
+              Pekerjaan
+            </p>
+          </td>
+          <td>
+            <p>
+              : {{ pekerjaan_ayah }} / {{ pekerjaan_ibu }}
+            </p>
+          </td>
+        </tr>
+      </table>
+      <p>
+        adalah benar-benar warga Lingkungan kami dan anak tersebut {{ status_beasiswa }} menerima
+        bantuan beasiswa dari Lembaga/Instansi manapun juga.<br>
+        Surat keterangan ini sebagai lampiran permohonan {{ permohonan }}.<br>
+        Demikian untuk dapat dipergunakan sebagaimana mestinya. Untuk mengurus beasiswa ke 
+        Tim Kerja Pendidikan Bidang Yanmas Paroki atau Lembaga yang terkait.
+      </p>
+    </div>
+
+    <div class="end">
+      <p class="text-right line-height-normal" style="margin-right: 80px;">
+        Yogyakarta, {{ created_at }}
+      </p>
+
+      <div style="display: flex;">
+        <div class="text-center ttd">
+          <p>
+            Menyetujui,<br>
+            Romo Paroki
+            <br><br><br>
+          </p>
+          <p class="nama-ttd">{{ nama_romo_paroki }}</p>
+        </div>
+        <div class="text-center ttd">
+          <p>
+            Hormat kami<br>
+            Ketua Lingkungan
+            <br><br><br>
+          </p>
+          <p class="nama-ttd">{{ ketua_lingkungan }}</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer">
+      <em>
+      </em>
+    </div>
+  </body>
+</html>

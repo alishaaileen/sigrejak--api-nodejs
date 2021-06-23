@@ -122,7 +122,7 @@ const update = async (req, res) => {
             })
         } else {
             let pathToFiles = `files/`
-            if(typeof file_akta_lahir != string) { // ??????? gmn caranya biar bisa tau ga ada aplod an baru
+            if(typeof file_akta_lahir != 'string') { // ??????? gmn caranya biar bisa tau ga ada aplod an baru
                 if(result[0].file_akta_lahir) {
                     fs.unlink(`${pathToFiles}${result[0].file_akta_lahir}`, (err) => {
                         if (err) {

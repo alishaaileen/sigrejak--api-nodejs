@@ -23,6 +23,8 @@ const getData = async (jenisSurat, id) => {
     return getDataSuratKeteranganPindah(id)
   } else if(jenisSurat === 'surat-keterangan-mati') {
     return getDataSuratKeteranganMati(id)
+  } else if(jenisSurat === 'surat-keterangan-beasiswa') {
+    return getDataSuratKeteranganBeasiswa(id)
   }
 }
 
@@ -32,6 +34,7 @@ const getTemplateSurat = (jenisSurat) => {
   else if (jenisSurat === 'surat-pelayanan-minyak-suci') return 'suratMinyakSuci'
   else if (jenisSurat === 'surat-keterangan-pindah') return 'suratKeteranganPindah'
   else if (jenisSurat === 'surat-keterangan-mati') return 'suratKeteranganMati'
+  else if (jenisSurat === 'surat-keterangan-beasiswa') return 'suratKeteranganBeasiswa'
 } 
 
 const cetakSurat = async (req, res) => {
@@ -360,6 +363,54 @@ const getDataSuratKeteranganMati = async (id) => {
         result[0].nama_pasangan = '-'
       }
 
+      return result[0]
+    }
+  } catch (error) {
+    console.log(error.message)
+  }
+}
+
+const getDataSuratKeteranganBeasiswa = async (id) => {
+  try {
+    let sql = 
+    `SELECT S.id,
+            S.no_surat,
+            S.id_keluarga,
+            S.id_lingkungan,
+            L.nama_lingkungan,
+            S.ketua_lingkungan,
+            S.id_siswa,
+            U.nama,
+            U.tempat_lahir,
+            U.tgl_lahir,
+            U.alamat,
+            U.no_telp,
+            S.sekolah,
+            S.kelas,
+            Ayah.nama AS nama_ayah,
+            Ibu.nama AS nama_ibu,
+            Ayah.alamat AS alamat_ortu,
+            Ayah.pekerjaan AS pekerjaan_ayah,
+            Ibu.pekerjaan AS pekerjaan_ibu,
+            S.status_beasiswa,
+            S.permohonan,
+            S.ketua_lingkungan_approval,
+            S.id_romo,
+            Romo.nama AS nama_romo_paroki,
+            S.romo_approval,
+            DATE_FORMAT(S.created_at, '%d-%m-%Y') AS created_at
+        FROM Surat_Keterangan_Beasiswa S JOIN Umat U on (S.id_siswa=U.id)
+        JOIN Detail_Umat D ON (S.id_siswa=D.id_umat)
+        JOIN (SELECT * FROM Umat) Ayah on (D.id_ayah=Ayah.id) 
+        JOIN (SELECT * FROM Umat) Ibu on (D.id_ibu=Ibu.id) 
+        JOIN Admin Romo ON (S.id_romo=Romo.id)
+        JOIN Lingkungan L ON (S.id_lingkungan=L.id)
+    WHERE S.id = ?`
+    let result = await db(sql, [ id ])
+    
+    if(result.length === 0) {
+      return 404
+    } else {
       return result[0]
     }
   } catch (error) {

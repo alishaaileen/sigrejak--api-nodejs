@@ -5,6 +5,7 @@ const keteranganBeasiswaController = require('../../controllers/surat/suratKeter
 router.get('/', keteranganBeasiswaController.getAll)
 router.get('/:id', keteranganBeasiswaController.getById)
 router.get('/keluarga/:id', keteranganBeasiswaController.getByIdKeluarga)
+router.get('/lingkungan/:id', keteranganBeasiswaController.getByIdLingkungan)
 router.post('/add', keteranganBeasiswaController.post)
 router.patch('/:id', keteranganBeasiswaController.update)
 router.delete('/:id', keteranganBeasiswaController.remove)
