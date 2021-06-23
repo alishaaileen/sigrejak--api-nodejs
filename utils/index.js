@@ -1,5 +1,6 @@
 const jwt = require('jsonwebtoken')
-const { hashSync, genSaltSync } = require('bcryptjs')
+    , { hashSync, genSaltSync } = require('bcryptjs')
+    , fs = require('fs')
 
 const generateRandomString = (length) => {
     var result           = [];
@@ -71,6 +72,17 @@ const generateFileName = (kode, fileType) => {
     return `${kode}-${generateRandomString(50)}${fileType}`
 } 
 
+const deleteFile = async (pathToFiles, fileName) => {
+    fs.unlink(`${pathToFiles}${fileName}`, (err) => {
+        if (err) {
+            console.error(err)
+            return false
+        }
+        console.log("file berhasil dihapus")
+        return true
+    })
+}
+
 module.exports = {
     generateRandomString,
     hashPassword,
@@ -78,4 +90,5 @@ module.exports = {
     checkUser,
     generateNomorSurat,
     generateFileName,
+    deleteFile,
 }

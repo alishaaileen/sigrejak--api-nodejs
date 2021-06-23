@@ -231,13 +231,15 @@ const post = async (req, res) => {
             id_lingkungan_baru,
             nama_lingkungan_baru,
             paroki_baru,
-            ketua_lingkungan_approval,
+            isKetuaLingkungan
         } = req.body,
         created_at = getTodayDate(),
         id_sekretariat = null,
         sekretariat_approval = null,
         id_romo = null,
-        romo_approval = null
+        romo_approval = null,
+        ketua_lingkungan_approval = isKetuaLingkungan
+        if(isKetuaLingkungan == 0) ketua_lingkungan = null
 
     try {
         let sql = `INSERT INTO Surat_Keterangan_Pindah SET ?`

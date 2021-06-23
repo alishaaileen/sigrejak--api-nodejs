@@ -57,9 +57,6 @@ const post = async (req, res) => {
         file_ktp,
         id_ayah,
         id_ibu,
-        id_pasangan,
-        cara_menikah,
-        tgl_menikah,
     } = req.body
 
     try {
@@ -74,9 +71,6 @@ const post = async (req, res) => {
                 file_ktp,
                 id_ayah,
                 id_ibu,
-                id_pasangan,
-                cara_menikah,
-                tgl_menikah,
             }
         ])
         
@@ -94,20 +88,26 @@ const post = async (req, res) => {
 
 const update = async (req, res) => {
     let {
-        id_umat,
         tgl_baptis,
         tgl_komuni,
         tgl_penguatan,
         id_ayah,
         id_ibu,
-        id_pasangan,
-        cara_menikah,
-        tgl_menikah,
-    } = req.body
-    let {
-        file_akta_lahir,
-        file_ktp,
-    } = req.files
+    } = req.body,
+    file_akta_lahir = null,
+    file_ktp = null
+    if(req.files != null) {
+        if(req.files.file_akta_lahir) {
+            file_akta_lahir = req.files.file_akta_lahir
+        } else {
+            file_akta_lahir = req.body.file_akta_lahir
+        }
+        if(req.files.file_ktp) {
+            file_ktp = req.files.file_ktp
+        } else {
+            file_ktp = req.body.file_ktp
+        }
+    }
     let { idUmat } = req.params
 
     let tempNamaAkta, tempNamaKtp
@@ -122,7 +122,7 @@ const update = async (req, res) => {
             })
         } else {
             let pathToFiles = `files/`
-            if(file_akta_lahir) {
+            if(typeof file_akta_lahir != string) { // ??????? gmn caranya biar bisa tau ga ada aplod an baru
                 if(result[0].file_akta_lahir) {
                     fs.unlink(`${pathToFiles}${result[0].file_akta_lahir}`, (err) => {
                         if (err) {
@@ -131,7 +131,7 @@ const update = async (req, res) => {
                                 message: "Failed to change akta lahir",
                             })
                         }
-                        console.log("file berhasil dihapus")
+                        console.log("file akta berhasil dihapus")
                     })
                 }
 
@@ -147,7 +147,7 @@ const update = async (req, res) => {
                 })
             }
 
-            if(file_ktp) {
+            if(typeof file_ktp != 'string') {
                 if(result[0].file_ktp) {
                     fs.unlink(`${pathToFiles}${result[0].file_ktp}`, (err) => {
                         if (err) {
@@ -181,9 +181,6 @@ const update = async (req, res) => {
                 file_ktp: tempNamaKtp||null,
                 id_ayah,
                 id_ibu,
-                id_pasangan,
-                cara_menikah,
-                tgl_menikah,
             }, idUmat ]) 
     
             res.status(200).send({
