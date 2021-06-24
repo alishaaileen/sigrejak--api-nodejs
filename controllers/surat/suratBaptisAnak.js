@@ -1,5 +1,6 @@
 const db = require('../../connection')
-const { getTodayDate, generateNomorSurat } = require('../../utils')
+    , { getTodayDate, generateNomorSurat, generateFileName } = require('../../utils')
+    , path = require('path')
 
 const getAll = async (req, res) => {
     try {
@@ -22,6 +23,7 @@ const getAll = async (req, res) => {
                     S.tgl_ortu_menikah,
                     S.nama_wali_baptis,
                     S.tgl_krisma_wali_baptis,
+                    S.file_syarat_baptis,
                     S.ketua_lingkungan,
                     S.ketua_lingkungan_approval,
                     S.id_sekretariat,
@@ -74,6 +76,7 @@ const getById = async (req, res) => {
                     S.tgl_ortu_menikah,
                     S.nama_wali_baptis,
                     S.tgl_krisma_wali_baptis,
+                    S.file_syarat_baptis,
                     S.ketua_lingkungan,
                     S.ketua_lingkungan_approval,
                     S.id_sekretariat,
@@ -133,6 +136,7 @@ const getByIdKeluarga = async (req, res) => {
                     S.tgl_ortu_menikah,
                     S.nama_wali_baptis,
                     S.tgl_krisma_wali_baptis,
+                    S.file_syarat_baptis,
                     S.ketua_lingkungan,
                     S.ketua_lingkungan_approval,
                     S.id_sekretariat,
@@ -178,13 +182,27 @@ const post = async (req, res) => {
             ketua_lingkungan,
             isKetuaLingkungan,
         } = req.body,
+        { file_syarat_baptis } = req.files
+
         created_at = getTodayDate(),
         id_sekretariat = null,
         sekretariat_approval = null,
-        ketua_lingkungan_approval = isKetuaLingkungan
+        ketua_lingkungan_approval = isKetuaLingkungan ? 1 : 0
         if(isKetuaLingkungan == 0) ketua_lingkungan = null
 
     try {
+        let pathToFiles = `files/`
+        let tempNamaFile = generateFileName('baptis-anak', path.extname(file_syarat_baptis.name))
+
+        file_syarat_baptis.mv(`${pathToFiles}${tempNamaFile}`, (err) => {
+            if(err) {
+                console.log("syarat baptis anak error: "+err)
+                return res.status(500).send({
+                    message: "Failed to save file",
+                })
+            }
+        })
+
         let sql = `INSERT INTO Surat_Baptis_Anak SET ?`
         let result = await db(sql, [
             {
@@ -198,6 +216,7 @@ const post = async (req, res) => {
                 tgl_ortu_menikah,
                 nama_wali_baptis,
                 tgl_krisma_wali_baptis,
+                file_syarat_baptis,
                 ketua_lingkungan,
                 ketua_lingkungan_approval,
                 id_sekretariat,
@@ -236,6 +255,17 @@ const update = async (req, res) => {
         id_sekretariat,
         sekretariat_approval,
     } = req.body
+    file_syarat_baptis = null
+    file_syarat_baptis = req.files != null ? req.files.file_syarat_baptis : null
+
+    // Saat ketua lingkungan blm approve dan user edit data,
+    // ketua_lingkungan_approval harus di-set jadi 0
+    // karena by default dari front end itu undefined
+    // Karna di front end pakenya FormData()
+    if (ketua_lingkungan_approval === undefined) {
+        ketua_lingkungan_approval = 0
+    }
+
     let updated_at = getTodayDate()
     let { id } = req.params
     
@@ -248,6 +278,29 @@ const update = async (req, res) => {
                 message: "Data not found",
             })
         } else {
+            if(file_syarat_baptis != null) {
+                let pathToFiles = `files/`
+                
+                if(result[0].file_syarat_baptis) {
+                    let del = await deleteFile(pathToFiles, result[0].file_syarat_baptis)
+                    console.log('del: '+del)
+                    if ( del === false ) {
+                        return res.status(500).send({ message: "Failed to delete old file" })
+                    }
+                }
+    
+                tempNamaFile = generateFileName('baptis-anak', path.extname(file_syarat_baptis.name))
+    
+                file_syarat_baptis.mv(`${pathToFiles}${tempNamaFile}`, (err) => {
+                    if(err) {
+                        console.log('error save file')
+                        console.log(err)
+                        return res.status(500).send({ message: "Failed to save file" })
+                    }
+                    console.log('berhasil simpan')
+                })
+            }
+
             sql = `UPDATE Surat_Baptis_Anak SET ? WHERE id=?`
             result = await db(sql, [ {
                                         no_surat,
@@ -260,6 +313,7 @@ const update = async (req, res) => {
                                         tgl_ortu_menikah,
                                         nama_wali_baptis,
                                         tgl_krisma_wali_baptis,
+                                        file_syarat_baptis,
                                         ketua_lingkungan,
                                         ketua_lingkungan_approval,
                                         id_sekretariat,
