@@ -282,8 +282,8 @@ const post = async (req, res) => {
         id_sekretariat = null,
         sekretariat_approval = null,
         imam_pemberkat_approval = null,
-        ketua_lingkungan_approval = isKetuaLingkungan
-        if(isKetuaLingkungan == 0) ketua_lingkungan = null
+        ketua_lingkungan_approval = isKetuaLingkungan ? 1 : 0
+        if(isKetuaLingkungan === false) ketua_lingkungan = null
 
     try {
         let sql = `INSERT INTO Surat_Keterangan_Mati SET ?`
