@@ -187,7 +187,7 @@ const post = async (req, res) => {
         created_at = getTodayDate(),
         id_sekretariat = null,
         sekretariat_approval = null,
-        ketua_lingkungan_approval = isKetuaLingkungan ? 1 : 0
+        ketua_lingkungan_approval = (isKetuaLingkungan === true ? 1 : 0)
         if(isKetuaLingkungan === false) ketua_lingkungan = null
 
     try {
@@ -216,7 +216,7 @@ const post = async (req, res) => {
                 tgl_ortu_menikah,
                 nama_wali_baptis,
                 tgl_krisma_wali_baptis,
-                file_syarat_baptis,
+                file_syarat_baptis: tempNamaFile,
                 ketua_lingkungan,
                 ketua_lingkungan_approval,
                 id_sekretariat,
@@ -254,9 +254,11 @@ const update = async (req, res) => {
         ketua_lingkungan_approval,
         id_sekretariat,
         sekretariat_approval,
-    } = req.body
+    } = req.body,
     file_syarat_baptis = null
     file_syarat_baptis = req.files != null ? req.files.file_syarat_baptis : null
+
+    console.log(typeof req.files)
 
     // Saat ketua lingkungan blm approve dan user edit data,
     // ketua_lingkungan_approval harus di-set jadi 0
@@ -302,24 +304,28 @@ const update = async (req, res) => {
             }
 
             sql = `UPDATE Surat_Baptis_Anak SET ? WHERE id=?`
-            result = await db(sql, [ {
-                                        no_surat,
-                                        id_keluarga,
-                                        id_lingkungan,
-                                        id_anak,
-                                        nama_baptis,
-                                        cara_ortu_menikah,
-                                        tempat_ortu_menikah,
-                                        tgl_ortu_menikah,
-                                        nama_wali_baptis,
-                                        tgl_krisma_wali_baptis,
-                                        file_syarat_baptis,
-                                        ketua_lingkungan,
-                                        ketua_lingkungan_approval,
-                                        id_sekretariat,
-                                        sekretariat_approval,
-                                        updated_at,
-                                    }, id ]) 
+            let data = {
+                no_surat,
+                id_keluarga,
+                id_lingkungan,
+                id_anak,
+                nama_baptis,
+                cara_ortu_menikah,
+                tempat_ortu_menikah,
+                tgl_ortu_menikah,
+                nama_wali_baptis,
+                tgl_krisma_wali_baptis,
+                ketua_lingkungan,
+                ketua_lingkungan_approval,
+                id_sekretariat,
+                sekretariat_approval,
+                updated_at,
+            }
+            if(file_syarat_baptis != null) {
+                data.file_syarat_baptis = tempNamaFile
+            }
+
+            result = await db(sql, [ data, id ]) 
     
             res.status(200).send({
                 message: "Success updating data",

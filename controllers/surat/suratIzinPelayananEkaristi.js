@@ -210,7 +210,7 @@ const post = async (req, res) => {
       sekretariat_approval = null,
       id_romo = null,
       romo_approval = null,
-      ketua_lingkungan_approval = isKetuaLingkungan ? 1 : 0
+      ketua_lingkungan_approval = (isKetuaLingkungan === true ? 1 : 0)
         if(isKetuaLingkungan === false) ketua_lingkungan = null
 
   try {
