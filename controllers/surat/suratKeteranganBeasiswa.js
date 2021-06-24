@@ -18,10 +18,11 @@ const getAll = async (req, res) => {
                     U.no_telp,
                     S.sekolah,
                     S.kelas,
-                    S.id_ortu,
-                    O.nama AS nama_ortu,
-                    O.alamat AS alamat_ortu,
-                    O.no_telp AS no_telp_ortu,
+                    Ayah.nama AS nama_ayah,
+                    Ibu.nama AS nama_ibu,
+                    Ayah.alamat AS alamat_ortu,
+                    Ayah.pekerjaan AS pekerjaan_ayah,
+                    Ibu.pekerjaan AS pekerjaan_ibu,
                     S.status_beasiswa,
                     S.permohonan,
                     S.file_syarat_beasiswa,
@@ -34,7 +35,10 @@ const getAll = async (req, res) => {
                     DATE_FORMAT(S.updated_at, '%d-%m-%Y') AS updated_at,
                     DATE_FORMAT(S.deleted_at, '%d-%m-%Y') AS deleted_at
                 FROM Surat_Keterangan_Beasiswa S JOIN Umat U on (S.id_siswa=U.id)
-                JOIN (SELECT * FROM Umat) O on (S.id_ortu=O.id)`
+                    JOIN (SELECT * FROM Umat) O on (S.id_ortu=O.id)
+                    JOIN Detail_Umat D ON (S.id_siswa=D.id_umat)
+                    JOIN (SELECT * FROM Umat) Ayah on (D.id_ayah=Ayah.id) 
+                    JOIN (SELECT * FROM Umat) Ibu on (D.id_ibu=Ibu.id) `
         let result = await db(sql)
 
         res.status(200).send({
@@ -68,10 +72,11 @@ const getById = async (req, res) => {
                     U.no_telp,
                     S.sekolah,
                     S.kelas,
-                    S.id_ortu,
-                    O.nama AS nama_ortu,
-                    O.alamat AS alamat_ortu,
-                    O.no_telp AS no_telp_ortu,
+                    Ayah.nama AS nama_ayah,
+                    Ibu.nama AS nama_ibu,
+                    Ayah.alamat AS alamat_ortu,
+                    Ayah.pekerjaan AS pekerjaan_ayah,
+                    Ibu.pekerjaan AS pekerjaan_ibu,
                     S.status_beasiswa,
                     S.permohonan,
                     S.file_syarat_beasiswa,
@@ -84,7 +89,10 @@ const getById = async (req, res) => {
                     DATE_FORMAT(S.updated_at, '%d-%m-%Y') AS updated_at,
                     DATE_FORMAT(S.deleted_at, '%d-%m-%Y') AS deleted_at
             FROM Surat_Keterangan_Beasiswa S JOIN Umat U on (S.id_siswa=U.id)
-            JOIN (SELECT * FROM Umat) O on (S.id_ortu=O.id) 
+                JOIN (SELECT * FROM Umat) O on (S.id_ortu=O.id) 
+                JOIN Detail_Umat D ON (S.id_siswa=D.id_umat)
+                JOIN (SELECT * FROM Umat) Ayah on (D.id_ayah=Ayah.id) 
+                JOIN (SELECT * FROM Umat) Ibu on (D.id_ibu=Ibu.id) 
             WHERE S.id = ?`
         let result = await db(sql, [ id ])
 
@@ -125,10 +133,11 @@ const getByIdLingkungan = async (req, res) => {
                     U.no_telp,
                     S.sekolah,
                     S.kelas,
-                    S.id_ortu,
-                    O.nama AS nama_ortu,
-                    O.alamat AS alamat_ortu,
-                    O.no_telp AS no_telp_ortu,
+                    Ayah.nama AS nama_ayah,
+                    Ibu.nama AS nama_ibu,
+                    Ayah.alamat AS alamat_ortu,
+                    Ayah.pekerjaan AS pekerjaan_ayah,
+                    Ibu.pekerjaan AS pekerjaan_ibu,
                     S.status_beasiswa,
                     S.permohonan,
                     S.file_syarat_beasiswa,
@@ -141,7 +150,10 @@ const getByIdLingkungan = async (req, res) => {
                     DATE_FORMAT(S.updated_at, '%d-%m-%Y') AS updated_at,
                     DATE_FORMAT(S.deleted_at, '%d-%m-%Y') AS deleted_at
             FROM Surat_Keterangan_Beasiswa S JOIN Umat U on (S.id_siswa=U.id)
-            JOIN (SELECT * FROM Umat) O on (S.id_ortu=O.id) 
+                JOIN (SELECT * FROM Umat) O on (S.id_ortu=O.id) 
+                JOIN Detail_Umat D ON (S.id_siswa=D.id_umat)
+                JOIN (SELECT * FROM Umat) Ayah on (D.id_ayah=Ayah.id) 
+                JOIN (SELECT * FROM Umat) Ibu on (D.id_ibu=Ibu.id) 
             WHERE S.id_lingkungan = ?`
         let result = await db(sql, [ id ])
 
@@ -182,10 +194,11 @@ const getByIdKeluarga = async (req, res) => {
                     U.no_telp,
                     S.sekolah,
                     S.kelas,
-                    S.id_ortu,
-                    O.nama AS nama_ortu,
-                    O.alamat AS alamat_ortu,
-                    O.no_telp AS no_telp_ortu,
+                    Ayah.nama AS nama_ayah,
+                    Ibu.nama AS nama_ibu,
+                    Ayah.alamat AS alamat_ortu,
+                    Ayah.pekerjaan AS pekerjaan_ayah,
+                    Ibu.pekerjaan AS pekerjaan_ibu,
                     S.status_beasiswa,
                     S.permohonan,
                     S.file_syarat_beasiswa,
@@ -198,7 +211,10 @@ const getByIdKeluarga = async (req, res) => {
                     DATE_FORMAT(S.updated_at, '%d-%m-%Y') AS updated_at,
                     DATE_FORMAT(S.deleted_at, '%d-%m-%Y') AS deleted_at
             FROM Surat_Keterangan_Beasiswa S JOIN Umat U on (S.id_siswa=U.id)
-            JOIN (SELECT * FROM Umat) O on (S.id_ortu=O.id) 
+                JOIN (SELECT * FROM Umat) O on (S.id_ortu=O.id) 
+                JOIN Detail_Umat D ON (S.id_siswa=D.id_umat)
+                JOIN (SELECT * FROM Umat) Ayah on (D.id_ayah=Ayah.id) 
+                JOIN (SELECT * FROM Umat) Ibu on (D.id_ibu=Ibu.id) 
             WHERE S.id_keluarga = ?`
         let result = await db(sql, [ id ])
 
