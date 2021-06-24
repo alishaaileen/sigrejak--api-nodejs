@@ -23,13 +23,14 @@ const getAll = async (req, res) => {
                     S.tgl_ortu_menikah,
                     S.nama_wali_baptis,
                     S.tgl_krisma_wali_baptis,
+                    D.file_akta_lahir,
                     S.file_syarat_baptis,
                     S.ketua_lingkungan,
                     S.ketua_lingkungan_approval,
                     S.id_sekretariat,
                     S.sekretariat_approval,
                     S.tgl_baptis,
-                    S.romo_pembaptis,
+                    S.id_romo_pembaptis,
                     DATE_FORMAT(S.created_at, '%d-%m-%Y') AS created_at,
                     DATE_FORMAT(S.updated_at, '%d-%m-%Y') AS updated_at,
                     DATE_FORMAT(S.deleted_at, '%d-%m-%Y') AS deleted_at 
@@ -76,13 +77,14 @@ const getById = async (req, res) => {
                     S.tgl_ortu_menikah,
                     S.nama_wali_baptis,
                     S.tgl_krisma_wali_baptis,
+                    D.file_akta_lahir,
                     S.file_syarat_baptis,
                     S.ketua_lingkungan,
                     S.ketua_lingkungan_approval,
                     S.id_sekretariat,
                     S.sekretariat_approval,
                     S.tgl_baptis,
-                    S.romo_pembaptis,
+                    S.id_romo_pembaptis,
                     DATE_FORMAT(S.created_at, '%d-%m-%Y') AS created_at,
                     DATE_FORMAT(S.updated_at, '%d-%m-%Y') AS updated_at,
                     DATE_FORMAT(S.deleted_at, '%d-%m-%Y') AS deleted_at 
@@ -92,6 +94,67 @@ const getById = async (req, res) => {
                 JOIN (SELECT id, nama FROM Umat) Ibu ON (D.id_ibu=Ibu.id) 
                 JOIN Lingkungan L ON (S.id_lingkungan=L.id)
             WHERE S.id = ?`
+        let result = await db(sql, [ id ])
+
+        if(result.length === 0) {
+            res.status(404).send({
+                message: "Data not found",
+            })
+        } else {
+            res.status(200).send({
+                message: "Success retrieving data",
+                result: result,
+            })
+        }
+    } catch (error) {
+        console.log(error.message)
+        res.status(500).send({
+            message: "Failed to retrieve data",
+            error: error.message
+        })
+    }
+}
+
+const getByIdLingkungan = async (req, res) => {
+    const { id } = req.params
+
+    try {
+        let sql = 
+            `SELECT S.id,
+                    S.no_surat,
+                    S.id_keluarga,
+                    S.id_lingkungan,
+                    S.id_anak,
+                    A.nama,
+                    S.nama_baptis,
+                    A.tempat_lahir,
+                    A.tgl_lahir,
+                    Ayah.nama AS nama_ayah,
+                    Ibu.nama AS nama_ibu,
+                    Ayah.alamat AS alamat_ortu,
+                    Ayah.no_telp AS no_telp_ortu,
+                    S.cara_ortu_menikah,
+                    S.tempat_ortu_menikah,
+                    S.tgl_ortu_menikah,
+                    S.nama_wali_baptis,
+                    S.tgl_krisma_wali_baptis,
+                    D.file_akta_lahir,
+                    S.file_syarat_baptis,
+                    S.ketua_lingkungan,
+                    S.ketua_lingkungan_approval,
+                    S.id_sekretariat,
+                    S.sekretariat_approval,
+                    S.tgl_baptis,
+                    S.id_romo_pembaptis,
+                    DATE_FORMAT(S.created_at, '%d-%m-%Y') AS created_at,
+                    DATE_FORMAT(S.updated_at, '%d-%m-%Y') AS updated_at,
+                    DATE_FORMAT(S.deleted_at, '%d-%m-%Y') AS deleted_at 
+            FROM Surat_Baptis_Anak S JOIN Umat A ON (S.id_anak=A.id)
+                JOIN Detail_Umat D ON (A.id=D.id_umat)
+                JOIN (SELECT id, nama, no_telp, alamat FROM Umat) Ayah ON (D.id_ayah=Ayah.id)
+                JOIN (SELECT id, nama FROM Umat) Ibu ON (D.id_ibu=Ibu.id) 
+                JOIN Lingkungan L ON (S.id_lingkungan=L.id)
+            WHERE S.id_lingkungan = ?`
         let result = await db(sql, [ id ])
 
         if(result.length === 0) {
@@ -136,13 +199,14 @@ const getByIdKeluarga = async (req, res) => {
                     S.tgl_ortu_menikah,
                     S.nama_wali_baptis,
                     S.tgl_krisma_wali_baptis,
+                    D.file_akta_lahir,
                     S.file_syarat_baptis,
                     S.ketua_lingkungan,
                     S.ketua_lingkungan_approval,
                     S.id_sekretariat,
                     S.sekretariat_approval,
                     S.tgl_baptis,
-                    S.romo_pembaptis,
+                    S.id_romo_pembaptis,
                     DATE_FORMAT(S.created_at, '%d-%m-%Y') AS created_at,
                     DATE_FORMAT(S.updated_at, '%d-%m-%Y') AS updated_at,
                     DATE_FORMAT(S.deleted_at, '%d-%m-%Y') AS deleted_at 
@@ -374,6 +438,7 @@ const remove = async (req, res) => {
 module.exports = {
     getAll,
     getById,
+    getByIdLingkungan,
     getByIdKeluarga,
     post,
     update,
