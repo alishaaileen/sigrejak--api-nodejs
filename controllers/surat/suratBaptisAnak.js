@@ -246,7 +246,7 @@ const post = async (req, res) => {
             ketua_lingkungan,
             isKetuaLingkungan,
         } = req.body,
-        { file_syarat_baptis } = req.files
+        { file_syarat_baptis } = req.files,
 
         created_at = getTodayDate(),
         id_sekretariat = null,
