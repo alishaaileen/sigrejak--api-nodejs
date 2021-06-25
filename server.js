@@ -31,6 +31,7 @@ const suratKeteranganPindah = require('./routes/surat/suratKeteranganPindah')
     , suratPelayananMinyakSuci = require('./routes/surat/suratPelayananMinyakSuci')
     , suratKeteranganMati = require('./routes/surat/suratKeteranganMati')
     , suratKomuniPenguatan = require('./routes/surat/suratKomuniPenguatan')
+    , suratKeteranganCalonPengantin = require('./routes/surat/suratKeteranganCalonPengantin')
 
 const cetakSurat = require('./routes/surat/cetakSurat')
 
@@ -55,6 +56,7 @@ app.use('/surat-baptis-anak', suratBaptisAnak)
 app.use('/surat-pelayanan-minyak-suci', suratPelayananMinyakSuci)
 app.use('/surat-keterangan-mati', suratKeteranganMati)
 app.use('/surat-komuni-penguatan', suratKomuniPenguatan)
+app.use('/surat-keterangan-calon-pengantin', suratKeteranganCalonPengantin)
 
 app.use('/cetak', cetakSurat)
 
