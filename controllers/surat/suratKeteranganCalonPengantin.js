@@ -346,6 +346,8 @@ const update = async (req, res) => {
         ketua_lingkungan_approval,
         id_sekretariat,
         sekretariat_approval,
+        id_romo,
+        romo_approval,
     } = req.body,
     file_syarat = null
     file_syarat = req.files != null ? req.files.file_syarat : null
@@ -416,6 +418,8 @@ const update = async (req, res) => {
                 ketua_lingkungan_approval,
                 id_sekretariat,
                 sekretariat_approval,
+                id_romo,
+                romo_approval,
                 updated_at,
             }
             if(file_syarat != null) {
