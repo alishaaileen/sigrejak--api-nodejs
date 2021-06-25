@@ -240,8 +240,7 @@ const getByIdKeluarga = async (req, res) => {
 }
 
 const post = async (req, res) => {
-    let no_surat = generateNomorSurat("F4"),
-        {
+    let {
             id_keluarga,
             id_lingkungan,
             id_umat,
@@ -259,6 +258,7 @@ const post = async (req, res) => {
         } = req.body,
         { file_syarat } = req.files,
 
+        no_surat = (jenis_surat === 1 ? generateNomorSurat("F6") : generateNomorSurat("F7")),
         created_at = getTodayDate(),
         id_sekretariat = null,
         sekretariat_approval = null,

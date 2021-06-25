@@ -25,6 +25,8 @@ const getData = async (jenisSurat, id) => {
     return getDataSuratKeteranganMati(id)
   } else if(jenisSurat === 'surat-keterangan-beasiswa') {
     return getDataSuratKeteranganBeasiswa(id)
+  } else if(jenisSurat === 'surat-komuni-penguatan') {
+    return getDataSuratKomuniPenguatan(id)
   }
 }
 
@@ -35,6 +37,7 @@ const getTemplateSurat = (jenisSurat) => {
   else if (jenisSurat === 'surat-keterangan-pindah') return 'suratKeteranganPindah'
   else if (jenisSurat === 'surat-keterangan-mati') return 'suratKeteranganMati'
   else if (jenisSurat === 'surat-keterangan-beasiswa') return 'suratKeteranganBeasiswa'
+  else if (jenisSurat === 'surat-komuni-penguatan') return 'suratKomuniPenguatan'
 } 
 
 const cetakSurat = async (req, res) => {
@@ -404,6 +407,53 @@ const getDataSuratKeteranganBeasiswa = async (id) => {
         JOIN (SELECT * FROM Umat) Ayah on (D.id_ayah=Ayah.id) 
         JOIN (SELECT * FROM Umat) Ibu on (D.id_ibu=Ibu.id) 
         JOIN Admin Romo ON (S.id_romo=Romo.id)
+        JOIN Lingkungan L ON (S.id_lingkungan=L.id)
+    WHERE S.id = ?`
+    let result = await db(sql, [ id ])
+    
+    if(result.length === 0) {
+      return 404
+    } else {
+      return result[0]
+    }
+  } catch (error) {
+    console.log(error.message)
+  }
+}
+
+const getDataSuratKomuniPenguatan = async (id) => {
+  try {
+    let sql = 
+    `SELECT S.id,
+            S.no_surat,
+            S.id_keluarga,
+            S.id_lingkungan,
+            L.nama_lingkungan,
+            S.id_umat,
+            U.nama,
+            U.nama_baptis,
+            U.tempat_lahir,
+            U.tgl_lahir,
+            U.alamat,
+            U.no_telp,
+            S.jenis_surat,
+            S.paroki_baptis,
+            S.tgl_baptis,
+            S.no_surat_baptis,
+            S.sekolah,
+            S.kelas,
+            Ayah.nama AS nama_ayah,
+            Ibu.nama AS nama_ibu,
+            S.nama_pelindung,
+            S.nama_wali_penguatan,
+            S.tgl_krisma_wali,
+            S.ketua_lingkungan,
+            S.ketua_lingkungan_approval,
+            DATE_FORMAT(S.created_at, '%d-%m-%Y') AS created_at
+        FROM Surat_Komuni_Penguatan S JOIN Umat U on (S.id_umat=U.id)
+        JOIN Detail_Umat D ON (S.id_umat=D.id_umat)
+        JOIN (SELECT * FROM Umat) Ayah on (D.id_ayah=Ayah.id) 
+        JOIN (SELECT * FROM Umat) Ibu on (D.id_ibu=Ibu.id) 
         JOIN Lingkungan L ON (S.id_lingkungan=L.id)
     WHERE S.id = ?`
     let result = await db(sql, [ id ])

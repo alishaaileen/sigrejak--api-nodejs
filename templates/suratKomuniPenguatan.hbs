@@ -1,0 +1,217 @@
+<html>
+  <head>
+    <title>Surat Komuni I/Penguatan</title>
+    <style>
+      body{
+        padding: 30px 50px;
+        position: relative;
+      }
+
+      .title{
+        text-align: center;
+        font-weight: 600;
+      }
+      .text-center { text-align: center; }
+      .text-right { text-align: right; }
+      .line-height-normal { line-height: 1rem !important;}
+
+      .logo{
+        margin: 0 auto;
+        width: 80px;
+      }
+      .divider{
+        width: 100%;
+        height: 10px;
+        border-top: 3px solid #000;
+        border-top: 1px solid #000;
+      }
+
+      p {
+        line-height: 1.5rem;
+      }
+
+      .ttd{
+        width: 30%;
+        margin: auto;
+        position: relative;
+      }
+
+      .end {
+        margin-top: 30px;
+      }
+
+      .footer {
+        position: absolute;
+        bottom: 30;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="head">
+      <div class="logo">
+        <img
+          src="http://localhost:5000/logo.jpg"
+          style="width: inherit;"
+        />
+      </div>
+      <h1 class="title line-height-normal">GEREJA HSP MARIA TAK BERCELA</h1>
+      <p class="text-center line-height-normal">
+        Jalan Kumetiran 13 Telp. 0274-512817, 518586 <br>
+        Yogyakarta 55272
+      </p>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="top">
+      <p class="line-height-normal">LINGKUNGAN: {{ nama_lingkungan }}</p>
+
+      <h2 class="title line-height-normal">Surat Komuni I/Penguatan</h2>
+      <p class="text-center">{{ no_surat }}</p>
+    </div>
+    
+    <div class="content">
+      <table style="width: 90%; margin: auto;">
+        <tr>
+          <td>
+            <p>Nama lengkap</p>
+          </td>
+          <td>
+            <p>: {{ nama }}</p>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <p>Nama baptis</p>
+          </td>
+          <td>
+            <p>: {{ nama_baptis }}</p>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <p>Tempat/tgl lahir</p>
+          </td>
+          <td>
+            <p>: {{ tempat_lahir }}/{{ tgl_lahir }}</p>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <p>Paroki tempat baptis</p>
+          </td>
+          <td>
+            <p>: {{ paroki_baptis }}</p>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <p>Nomor surat baptis</p>
+          </td>
+          <td>
+            <p>: {{ no_surat_baptis }}</p>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <p>Alamat</p>
+          </td>
+          <td>
+            <p>: {{ alamat }}</p>
+          </td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>
+            <p>Telp/HP: {{ no_telp }}</p>
+          </td>
+        </tr>
+        <tr>
+          <td>Nama sekolah/kelas</td>
+          <td>
+            <p>: {{ sekolah }}/{{ kelas }}</p>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <p>Nama ayah</p>
+          </td>
+          <td>
+            <p>: {{ nama_ayah }}</p>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <p>Nama ibu</p>
+          </td>
+          <td>
+            <p>: {{ nama_ibu }}</p>
+          </td>
+        </tr>
+        <tr>
+          <td>Nama Santo/a pelindung</td>
+          <td>
+            <p>: {{ nama_pelindung }}</p>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <p>Nama wali penguatan</p>
+          </td>
+          <td>
+            <p>: {{ nama_wali_penguatan }}</p>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <p>Tanggal penguatan wali</p>
+          </td>
+          <td>
+            <p>: {{ tgl_krisma_wali }}</p>
+          </td>
+        </tr>
+      </table>
+    </div>
+
+    <div class="end">
+      <p class="text-right line-height-normal" style="line-height: 0;">
+        Yogyakarta, {{ created_at }}
+      </p>
+
+      <div style="display: flex;">
+        <div class="text-center ttd">
+          <p>
+            Ketua Lingkungan
+            <br>
+            <br>
+            <br>
+          </p>
+          <p class="nama-ttd">{{ ketua_lingkungan }}</p>
+        </div>
+        <div class="text-center ttd">
+          <p>
+            Orang tua
+            <br>
+            <br>
+            <br>
+          </p>
+          <p class="nama-ttd">{{ nama_ayah }}</p>
+        </div>
+        <div class="text-center ttd">
+          <p>
+            Calon
+            <br>
+            <br>
+            <br>
+          </p>
+          <p class="nama-ttd">{{ nama }}</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer">
+      <em>
+      </em>
+    </div>
+  </body>
+</html>
