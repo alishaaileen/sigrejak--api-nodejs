@@ -1,5 +1,5 @@
 const db = require('../../connection')
-    , { getTodayDate, generateNomorSurat, generateFileName } = require('../../utils')
+    , { getTodayDate, generateNomorSurat, generateFileName, deleteFile } = require('../../utils')
     , path = require('path')
 
 const getAll = async (req, res) => {
@@ -304,7 +304,6 @@ const post = async (req, res) => {
 
 const update = async (req, res) => {
     let {
-        no_surat,
         id_keluarga,
         id_lingkungan,
         id_anak,
@@ -334,6 +333,7 @@ const update = async (req, res) => {
 
     let updated_at = getTodayDate()
     let { id } = req.params
+    let tempNamaFile
     
     try {
         let sql = `SELECT * FROM Surat_Baptis_Anak WHERE id = ?`
@@ -369,7 +369,6 @@ const update = async (req, res) => {
 
             sql = `UPDATE Surat_Baptis_Anak SET ? WHERE id=?`
             let data = {
-                no_surat,
                 id_keluarga,
                 id_lingkungan,
                 id_anak,

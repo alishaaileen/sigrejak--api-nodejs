@@ -1,5 +1,5 @@
 const db = require('../../connection')
-    , { getTodayDate, generateNomorSurat, generateFileName } = require('../../utils')
+    , { getTodayDate, generateNomorSurat, generateFileName, deleteFile } = require('../../utils')
     , path = require('path')
 
 const getAll = async (req, res) => {
@@ -307,7 +307,6 @@ const post = async (req, res) => {
 
 const update = async (req, res) => {
     let {
-        no_surat,
         id_keluarga,
         id_lingkungan,
         id_umat,
@@ -328,7 +327,7 @@ const update = async (req, res) => {
     file_syarat = null
     file_syarat = req.files != null ? req.files.file_syarat : null
 
-    console.log(typeof req.files)
+    console.log(req.files)
 
     // Saat ketua lingkungan blm approve dan user edit data,
     // ketua_lingkungan_approval harus di-set jadi 0
@@ -340,6 +339,7 @@ const update = async (req, res) => {
 
     let updated_at = getTodayDate()
     let { id } = req.params
+    let tempNamaFile
     
     try {
         let sql = `SELECT * FROM Surat_Komuni_Penguatan WHERE id = ?`
@@ -378,7 +378,6 @@ const update = async (req, res) => {
 
             sql = `UPDATE Surat_Komuni_Penguatan SET ? WHERE id=?`
             let data = {
-                no_surat,
                 id_keluarga,
                 id_lingkungan,
                 id_umat,
