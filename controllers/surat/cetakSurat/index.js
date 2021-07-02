@@ -73,7 +73,7 @@ const cetakSurat = async (req, res) => {
     console.log('done generate pdf')
 
     res.set('Content-Type', 'application/pdf');
-    res.set('Content-Disposition', `attachment; filename="${data.no_surat}.pdf"`);
+    res.set('Content-Disposition', `attachment; filename="meki.pdf"`);
     res.status(200).send(pdfBuffer);
 
     await browser.close()

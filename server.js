@@ -5,7 +5,17 @@ const bodyParser = require('body-parser')
 const cors = require('cors')
 const { checkUser } = require('./utils')
 
-const app = express();
+const app = express()
+const http = require("http").createServer(app)
+const io = require("socket.io")(http, {
+    cors: {
+      origin: "http://localhost:8080",
+      methods: ["GET", "POST"],
+      allowedHeaders: ["Content-Type"],
+      credentials: true
+    }
+  })
+
 app.use(express.json());
 app.use(cors());
 app.use(bodyParser.urlencoded());
@@ -60,6 +70,57 @@ app.use('/surat-keterangan-calon-pengantin', suratKeteranganCalonPengantin)
 
 app.use('/cetak', cetakSurat)
 
-app.listen(process.env.APP_PORT, () => {
+
+
+
+
+http.listen(process.env.APP_PORT, () => {
     console.log(`Server is running on PORT :${process.env.APP_PORT}`)
+    
+});
+
+
+
+// Socket Middleware utk cek username
+io.use((socket, next) => {
+    const username = socket.handshake.auth.username;
+    if (!username) {
+        return next(new Error("invalid username"));
+    }
+    socket.username = username;
+    next();
+});
+
+
+io.on("connection", function (socket) {
+    let users = []
+
+    // List connected users
+    io.on("connection", (socket) => {
+        const users = [];
+        for (let [id, socket] of io.of("/").sockets) {
+          users.push({
+            userID: id,
+            username: socket.username,
+          });
+        }
+        socket.emit("users", users);
+    });
+
+    // print to check if a user is connected
+    console.log("User connected", socket.id);
+
+    socket.on('send_message', (data) => {
+        let socketId = users[data.receiver]
+        io.to(socketId).emit('new_message', data)
+    })
+
+
+    // forward the private message to the right recipient
+    socket.on("private message", ({ content, to }) => {
+        socket.to(to).emit("private message", {
+        content,
+        from: socket.id,
+        });
+    });
 });

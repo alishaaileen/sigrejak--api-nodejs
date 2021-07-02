@@ -53,6 +53,7 @@ const getById = async (req, res) => {
             `SELECT S.id,
                     S.no_surat,
                     S.id_keluarga,
+                    K.nama_keluarga,
                     S.id_lingkungan,
                     S.ketua_lingkungan,
                     S.id_umat,
@@ -76,6 +77,7 @@ const getById = async (req, res) => {
                     DATE_FORMAT(S.deleted_at, '%d-%m-%Y') AS deleted_at
             FROM Surat_Keterangan S JOIN Umat U on (S.id_umat=U.id) 
                 JOIN (SELECT * FROM Umat) O ON (S.id_ortu=O.id) 
+                JOIN Keluarga K ON (S.id_keluarga=K.id)
             WHERE S.id = ?`
             let result = await db(sql, [ id ])
 
