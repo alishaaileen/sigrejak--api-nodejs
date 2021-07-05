@@ -1,5 +1,5 @@
 const db = require('../../connection')
-    , { getTodayDate, generateNomorSurat, generateFileName, deleteFile } = require('../../utils')
+    , { getTodayDate, getDateTime, generateNomorSurat, generateFileName, deleteFile } = require('../../utils')
     , path = require('path')
 
 const getAll = async (req, res) => {
@@ -249,10 +249,15 @@ const post = async (req, res) => {
         { file_syarat_baptis } = req.files,
 
         created_at = getTodayDate(),
-        id_sekretariat = null,
-        sekretariat_approval = null,
-        ketua_lingkungan_approval = (isKetuaLingkungan === true ? 1 : 0)
-        if(isKetuaLingkungan === false) ketua_lingkungan = null
+        ketua_lingkungan_approval = 0,
+        ketua_lingkungan_approval_stamp = null
+
+        if(isKetuaLingkungan === true) {
+            ketua_lingkungan_approval = 1
+            ketua_lingkungan_approval_stamp = getDateTime()
+        } else {
+            ketua_lingkungan = null
+        }
 
     try {
         let pathToFiles = `files/`
@@ -283,8 +288,7 @@ const post = async (req, res) => {
                 file_syarat_baptis: tempNamaFile,
                 ketua_lingkungan,
                 ketua_lingkungan_approval,
-                id_sekretariat,
-                sekretariat_approval,
+                ketua_lingkungan_approval_stamp,
                 created_at,
             }
         ])
@@ -313,10 +317,6 @@ const update = async (req, res) => {
         tgl_ortu_menikah,
         nama_wali_baptis,
         tgl_krisma_wali_baptis,
-        ketua_lingkungan,
-        ketua_lingkungan_approval,
-        id_sekretariat,
-        sekretariat_approval,
     } = req.body,
     file_syarat_baptis = null
     file_syarat_baptis = req.files != null ? req.files.file_syarat_baptis : null
@@ -378,10 +378,6 @@ const update = async (req, res) => {
                 tgl_ortu_menikah,
                 nama_wali_baptis,
                 tgl_krisma_wali_baptis,
-                ketua_lingkungan,
-                ketua_lingkungan_approval,
-                id_sekretariat,
-                sekretariat_approval,
                 updated_at,
             }
             if(file_syarat_baptis != null) {
@@ -399,6 +395,53 @@ const update = async (req, res) => {
         console.log(error.message)
         res.status(500).send({
             message: "Failed updating data",
+            error: error.message,
+        })
+    }
+}
+
+const verify = async (req, res) => {
+    let { id } = req.params,
+        {
+            role,
+            ketua_lingkungan,
+            ketua_lingkungan_approval,
+            id_sekretariat,
+            sekretariat_approval,
+        } = req.body,
+        data = {}
+
+    if(role === 'ketua') {
+        data.ketua_lingkungan = ketua_lingkungan
+        data.ketua_lingkungan_approval = ketua_lingkungan_approval
+        data.ketua_lingkungan_approval_stamp = getDateTime()
+    } else {
+        data.id_sekretariat = id_sekretariat
+        data.sekretariat_approval = sekretariat_approval
+        data.sekretariat_approval_stamp = getDateTime()
+    }
+        
+    try {
+        let sql = `SELECT * FROM Surat_Baptis_Anak WHERE id = ?`
+        let result = await db(sql, [ id ])
+        
+        if (result.length === 0) {
+            res.status(404).send({
+                message: "Data not found",
+            })
+        } else {
+            sql =  `UPDATE Surat_Baptis_Anak SET ? WHERE id=?`
+            result = await db(sql, [ data, id ])
+
+            res.status(200).send({
+                message: "Success verify data",
+                result: result,
+            })
+        }
+    } catch (error) {
+        console.log(error.message)
+        res.status(500).send({
+            message: "Failed verify data",
             error: error.message,
         })
     }
@@ -441,5 +484,6 @@ module.exports = {
     getByIdKeluarga,
     post,
     update,
+    verify,
     remove
 }

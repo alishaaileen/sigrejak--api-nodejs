@@ -1,3 +1,4 @@
+const db = require('../connection')
 const jwt = require('jsonwebtoken')
     , { hashSync, genSaltSync } = require('bcryptjs')
     , fs = require('fs')
@@ -19,17 +20,22 @@ const hashPassword = (plainPassword) => {
 
 const getTodayDate = () => {
     // current timestamp in milliseconds
-    let ts = Date.now(),
-
-        date_ob = new Date(ts),
-        date = date_ob.getDate(),
-        month = date_ob.getMonth() + 1,
-        year = date_ob.getFullYear(),
+    let today = Date.now()
+      , date = new Date(today)
 
     // concat date & time in YYYY-MM-DD format
-        fullDate = `${year}/${month}/${date}`
+    let fullDate = `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`
     
     return fullDate
+}
+
+const getDateTime = () => {
+    const fullDate = getTodayDate()
+    const temp = Date.now()
+    const today = new Date(temp)
+    const time = `${today.getHours()}:${today.getMinutes()}:${today.getSeconds()}`;
+    
+    return (fullDate + ' ' + time)
 }
 
 const checkUser = (req, res, next) => {
@@ -56,16 +62,30 @@ const checkUser = (req, res, next) => {
     }
 }
 
-const generateNomorSurat = (kodeSurat) => {
+const getJumlahSuratBasedOnTahun = async (tableName, year) => {
+    const sql = `SELECT COUNT(id) AS jumlah
+                FROM ${tableName}
+                WHERE YEAR(created_at) = ${year}`
+    
+    let result = await db(sql)
+
+    return result[0].jumlah
+}
+
+const generateNomorSurat = async (kodeSurat, idLingkungan, tableName) => {
     // current timestamp in milliseconds
     let ts = Date.now(),
         date_ob = new Date(ts),
         month = date_ob.getMonth() + 1,
         year = date_ob.getFullYear(),
-        number = Math.floor(Math.random() * 1000) + 1;
+        lastNumber = await getJumlahSuratBasedOnTahun(tableName, year)
+
+    // Pengubahan 2 digit
+    idLingkungan = idLingkungan < 10 ? `0${idLingkungan}` : idLingkungan
+    month = month < 10 ? `0${month}` : month
     
     // 015 is the code for Paroki of Kumetiran
-    return `015.${kodeSurat}/${number}/${month}/${year}`
+    return `015.${kodeSurat}.${idLingkungan}/${lastNumber + 1}/${month}/${year}`
 }
 
 const generateFileName = (kode, fileType) => {
@@ -87,6 +107,7 @@ module.exports = {
     generateRandomString,
     hashPassword,
     getTodayDate,
+    getDateTime,
     checkUser,
     generateNomorSurat,
     generateFileName,
