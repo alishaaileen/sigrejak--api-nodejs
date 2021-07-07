@@ -8,6 +8,7 @@ router.get('/keluarga/:id', komuniPenguatanController.getByIdKeluarga)
 router.get('/lingkungan/:id', komuniPenguatanController.getByIdLingkungan)
 router.post('/add', komuniPenguatanController.post)
 router.patch('/:id', komuniPenguatanController.update)
+router.patch('/verifikasi/:id', komuniPenguatanController.verify)
 router.delete('/:id', komuniPenguatanController.remove)
 
 module.exports = router

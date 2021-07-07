@@ -1,5 +1,5 @@
 const db = require('../../connection')
-const { getTodayDate, generateNomorSurat } = require('../../utils')
+const { getTodayDate, getDateTime, generateNomorSurat } = require('../../utils')
 
 const getAll = async (req, res) => {
     try {
@@ -23,12 +23,15 @@ const getAll = async (req, res) => {
                     S.id_lingkungan_baru,
                     S.nama_lingkungan_baru,
                     S.paroki_baru,
-                    S.ketua_lingkungan_approval,
                     S.ketua_lingkungan,
+                    S.ketua_lingkungan_approval,
+                    S.ketua_lingkungan_approval_stamp,
                     S.id_sekretariat,
                     S.sekretariat_approval,
+                    S.sekretariat_approval_stamp,
                     S.id_romo,
                     S.romo_approval,
+                    S.romo_approval_stamp,
                     DATE_FORMAT(S.created_at, '%d-%m-%Y') AS created_at,
                     DATE_FORMAT(S.updated_at, '%d-%m-%Y') AS updated_at,
                     DATE_FORMAT(S.deleted_at, '%d-%m-%Y') AS deleted_at 
@@ -73,12 +76,15 @@ const getById = async (req, res) => {
                     S.id_lingkungan_baru,
                     S.nama_lingkungan_baru,
                     S.paroki_baru,
+                    S.ketua_lingkungan,
                     S.ketua_lingkungan_approval,
+                    S.ketua_lingkungan_approval_stamp,
                     S.id_sekretariat,
                     S.sekretariat_approval,
-                    S.ketua_lingkungan,
+                    S.sekretariat_approval_stamp,
                     S.id_romo,
                     S.romo_approval,
+                    S.romo_approval_stamp,
                     DATE_FORMAT(S.created_at, '%d-%m-%Y') AS created_at,
                     DATE_FORMAT(S.updated_at, '%d-%m-%Y') AS updated_at,
                     DATE_FORMAT(S.deleted_at, '%d-%m-%Y') AS deleted_at 
@@ -130,12 +136,15 @@ const getByIdLingkungan = async (req, res) => {
                     S.id_lingkungan_baru,
                     S.nama_lingkungan_baru,
                     S.paroki_baru,
+                    S.ketua_lingkungan,
                     S.ketua_lingkungan_approval,
+                    S.ketua_lingkungan_approval_stamp,
                     S.id_sekretariat,
                     S.sekretariat_approval,
-                    S.ketua_lingkungan,
+                    S.sekretariat_approval_stamp,
                     S.id_romo,
                     S.romo_approval,
+                    S.romo_approval_stamp,
                     DATE_FORMAT(S.created_at, '%d-%m-%Y') AS created_at,
                     DATE_FORMAT(S.updated_at, '%d-%m-%Y') AS updated_at,
                     DATE_FORMAT(S.deleted_at, '%d-%m-%Y') AS deleted_at 
@@ -187,12 +196,15 @@ const getByIdKeluarga = async (req, res) => {
                     S.id_lingkungan_baru,
                     S.nama_lingkungan_baru,
                     S.paroki_baru,
+                    S.ketua_lingkungan,
                     S.ketua_lingkungan_approval,
+                    S.ketua_lingkungan_approval_stamp,
                     S.id_sekretariat,
                     S.sekretariat_approval,
-                    S.ketua_lingkungan,
+                    S.sekretariat_approval_stamp,
                     S.id_romo,
                     S.romo_approval,
+                    S.romo_approval_stamp,
                     DATE_FORMAT(S.created_at, '%d-%m-%Y') AS created_at,
                     DATE_FORMAT(S.updated_at, '%d-%m-%Y') AS updated_at,
                     DATE_FORMAT(S.deleted_at, '%d-%m-%Y') AS deleted_at 
@@ -215,8 +227,7 @@ const getByIdKeluarga = async (req, res) => {
 }
 
 const post = async (req, res) => {
-    let no_surat = generateNomorSurat("F11"),
-        {
+    let {
             id_keluarga,
             paroki_lama,
             id_lingkungan_lama,
@@ -234,12 +245,16 @@ const post = async (req, res) => {
             isKetuaLingkungan
         } = req.body,
         created_at = getTodayDate(),
-        id_sekretariat = null,
-        sekretariat_approval = null,
-        id_romo = null,
-        romo_approval = null,
-        ketua_lingkungan_approval = (isKetuaLingkungan === true ? 1 : 0)
-        if(isKetuaLingkungan === false) ketua_lingkungan = null
+        ketua_lingkungan_approval = 0,
+        ketua_lingkungan_approval_stamp = null,
+        no_surat = generateNomorSurat('F11', id_lingkungan, 'Surat_Keterangan')
+    
+    if(isKetuaLingkungan === true) {
+        ketua_lingkungan_approval = 1
+        ketua_lingkungan_approval_stamp = getDateTime()
+    } else {
+        ketua_lingkungan = null
+    }
 
     try {
         let sql = `INSERT INTO Surat_Keterangan_Pindah SET ?`
@@ -249,7 +264,6 @@ const post = async (req, res) => {
                 id_keluarga,
                 paroki_lama,
                 id_lingkungan_lama,
-                ketua_lingkungan,
                 id_umat,
                 tgl_domisili_lama,
                 alamat_lama,
@@ -260,11 +274,9 @@ const post = async (req, res) => {
                 id_lingkungan_baru,
                 nama_lingkungan_baru,
                 paroki_baru,
+                ketua_lingkungan,
                 ketua_lingkungan_approval,
-                id_sekretariat,
-                sekretariat_approval,
-                id_romo,
-                romo_approval,
+                ketua_lingkungan_approval_stamp,
                 created_at,
             }
         ])
@@ -288,7 +300,6 @@ const update = async (req, res) => {
         id_keluarga,
         paroki_lama,
         id_lingkungan_lama,
-        ketua_lingkungan,
         id_umat,
         tgl_domisili_lama,
         alamat_lama,
@@ -299,11 +310,6 @@ const update = async (req, res) => {
         paroki_baru,
         id_lingkungan_baru,
         nama_lingkungan_baru,
-        ketua_lingkungan_approval,
-        id_sekretariat,
-        sekretariat_approval,
-        id_romo,
-        romo_approval,
     } = req.body
     let updated_at = getTodayDate()
     let { id } = req.params
@@ -323,7 +329,6 @@ const update = async (req, res) => {
                                         id_keluarga,
                                         paroki_lama,
                                         id_lingkungan_lama,
-                                        ketua_lingkungan,
                                         id_umat,
                                         tgl_domisili_lama,
                                         alamat_lama,
@@ -334,11 +339,6 @@ const update = async (req, res) => {
                                         paroki_baru,
                                         id_lingkungan_baru,
                                         nama_lingkungan_baru,
-                                        ketua_lingkungan_approval,
-                                        id_sekretariat,
-                                        sekretariat_approval,
-                                        id_romo,
-                                        romo_approval,
                                         updated_at,
                                     }, id ]) 
     
@@ -351,6 +351,56 @@ const update = async (req, res) => {
         console.log(error.message)
         res.status(500).send({
             message: "Failed updating data",
+            error: error.message,
+        })
+    }
+}
+
+const verify = async (req, res) => {
+    let { id } = req.params,
+        {
+            role,
+            ketua_lingkungan,
+            id_sekretariat,
+            id_romo,
+        } = req.body,
+        data = {}
+  
+    if(role === 'ketua lingkungan') {
+        data.ketua_lingkungan = ketua_lingkungan
+        data.ketua_lingkungan_approval = 1
+        data.ketua_lingkungan_approval_stamp = getDateTime()
+    } else if (role === 'sekretariat'){
+        data.id_sekretariat = id_sekretariat
+        data.sekretariat_approval = 1
+        data.sekretariat_approval_stamp = getDateTime()
+    } else if (role === 'romo paroki') {
+        data.id_romo = id_romo
+        data.romo_approval = 1
+        data.romo_approval_stamp = getDateTime()
+    }
+        
+    try {
+        let sql = `SELECT * FROM Surat_Keterangan_Pindah WHERE id = ?`
+        let result = await db(sql, [ id ])
+        
+        if (result.length === 0) {
+            res.status(404).send({
+                message: "Data not found",
+            })
+        } else {
+            sql =  `UPDATE Surat_Keterangan_Pindah SET ? WHERE id=?`
+            result = await db(sql, [ data, id ])
+  
+            res.status(200).send({
+                message: "Success verify data",
+                result: result,
+            })
+        }
+    } catch (error) {
+        console.log(error.message)
+        res.status(500).send({
+            message: "Failed verify data",
             error: error.message,
         })
     }
@@ -393,5 +443,6 @@ module.exports = {
     getByIdKeluarga,
     post,
     update,
+    verify,
     remove
 }

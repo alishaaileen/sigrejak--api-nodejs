@@ -81,7 +81,9 @@ const getById = async (req, res) => {
                     S.file_syarat_baptis,
                     S.ketua_lingkungan,
                     S.ketua_lingkungan_approval,
+                    S.ketua_lingkungan_approval,
                     S.id_sekretariat,
+                    S.sekretariat_approval,
                     S.sekretariat_approval,
                     S.tgl_baptis,
                     S.id_romo_pembaptis,
@@ -142,7 +144,9 @@ const getByIdLingkungan = async (req, res) => {
                     S.file_syarat_baptis,
                     S.ketua_lingkungan,
                     S.ketua_lingkungan_approval,
+                    S.ketua_lingkungan_approval,
                     S.id_sekretariat,
+                    S.sekretariat_approval,
                     S.sekretariat_approval,
                     S.tgl_baptis,
                     S.id_romo_pembaptis,
@@ -203,7 +207,9 @@ const getByIdKeluarga = async (req, res) => {
                     S.file_syarat_baptis,
                     S.ketua_lingkungan,
                     S.ketua_lingkungan_approval,
+                    S.ketua_lingkungan_approval,
                     S.id_sekretariat,
+                    S.sekretariat_approval,
                     S.sekretariat_approval,
                     S.tgl_baptis,
                     S.id_romo_pembaptis,
@@ -232,8 +238,7 @@ const getByIdKeluarga = async (req, res) => {
 }
 
 const post = async (req, res) => {
-    let no_surat = generateNomorSurat("F4"),
-        {
+    let {
             id_keluarga,
             id_lingkungan,
             id_anak,
@@ -247,17 +252,22 @@ const post = async (req, res) => {
             isKetuaLingkungan,
         } = req.body,
         { file_syarat_baptis } = req.files,
-
         created_at = getTodayDate(),
         ketua_lingkungan_approval = 0,
         ketua_lingkungan_approval_stamp = null
 
-        if(isKetuaLingkungan === true) {
-            ketua_lingkungan_approval = 1
-            ketua_lingkungan_approval_stamp = getDateTime()
-        } else {
-            ketua_lingkungan = null
-        }
+    let no_surat = await generateNomorSurat('F4', id_lingkungan, 'Surat_Keterangan_Beasiswa')
+    
+    // Maksud dari (isKetuaLingkungan === 'true') gunanya
+    // untuk mengubah isKetuaLingkungan jadi Boolean.
+    // Karena dari front end itu pake FormData(),
+    // semua data jadi String.
+    if((isKetuaLingkungan === 'true') === true) {
+        ketua_lingkungan_approval = 1
+        ketua_lingkungan_approval_stamp = getDateTime()
+    } else  {
+        ketua_lingkungan = null
+    }
 
     try {
         let pathToFiles = `files/`
@@ -327,9 +337,9 @@ const update = async (req, res) => {
     // ketua_lingkungan_approval harus di-set jadi 0
     // karena by default dari front end itu undefined
     // Karna di front end pakenya FormData()
-    if (ketua_lingkungan_approval === undefined) {
-        ketua_lingkungan_approval = 0
-    }
+    // if (ketua_lingkungan_approval === undefined) {
+    //     ketua_lingkungan_approval = 0
+    // }
 
     let updated_at = getTodayDate()
     let { id } = req.params

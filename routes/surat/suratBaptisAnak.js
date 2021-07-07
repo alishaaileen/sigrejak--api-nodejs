@@ -8,6 +8,7 @@ router.get('/keluarga/:id', baptisAnakController.getByIdKeluarga)
 router.get('/lingkungan/:id', baptisAnakController.getByIdLingkungan)
 router.post('/add', baptisAnakController.post)
 router.patch('/:id', baptisAnakController.update)
+router.patch('/verifikasi/:id', baptisAnakController.verify)
 router.delete('/:id', baptisAnakController.remove)
 
 module.exports = router

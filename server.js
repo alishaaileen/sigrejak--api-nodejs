@@ -34,6 +34,7 @@ const suratKeteranganPindah = require('./routes/surat/suratKeteranganPindah')
     , suratKeteranganCalonPengantin = require('./routes/surat/suratKeteranganCalonPengantin')
 
 const cetakSurat = require('./routes/surat/cetakSurat')
+    , logSurat = require('./routes/logSurat')
 
 
 // Files path to access images, zips, etc
@@ -59,6 +60,7 @@ app.use('/surat-komuni-penguatan', suratKomuniPenguatan)
 app.use('/surat-keterangan-calon-pengantin', suratKeteranganCalonPengantin)
 
 app.use('/cetak', cetakSurat)
+app.use('/log-surat', logSurat)
 
 app.listen(process.env.APP_PORT, () => {
     console.log(`Server is running on PORT :${process.env.APP_PORT}`)

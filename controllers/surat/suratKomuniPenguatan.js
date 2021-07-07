@@ -1,5 +1,5 @@
 const db = require('../../connection')
-    , { getTodayDate, generateNomorSurat, generateFileName, deleteFile } = require('../../utils')
+    , { getTodayDate, getDateTime, generateNomorSurat, generateFileName, deleteFile } = require('../../utils')
     , path = require('path')
 
 const getAll = async (req, res) => {
@@ -31,8 +31,10 @@ const getAll = async (req, res) => {
                     S.file_syarat,
                     S.ketua_lingkungan,
                     S.ketua_lingkungan_approval,
+                    S.ketua_lingkungan_approval_stamp,
                     S.id_sekretariat,
                     S.sekretariat_approval,
+                    S.sekretariat_approval_stamp,
                     DATE_FORMAT(S.created_at, '%d-%m-%Y') AS created_at,
                     DATE_FORMAT(S.updated_at, '%d-%m-%Y') AS updated_at,
                     DATE_FORMAT(S.deleted_at, '%d-%m-%Y') AS deleted_at 
@@ -87,8 +89,10 @@ const getById = async (req, res) => {
                     S.file_syarat,
                     S.ketua_lingkungan,
                     S.ketua_lingkungan_approval,
+                    S.ketua_lingkungan_approval_stamp,
                     S.id_sekretariat,
                     S.sekretariat_approval,
+                    S.sekretariat_approval_stamp,
                     DATE_FORMAT(S.created_at, '%d-%m-%Y') AS created_at,
                     DATE_FORMAT(S.updated_at, '%d-%m-%Y') AS updated_at,
                     DATE_FORMAT(S.deleted_at, '%d-%m-%Y') AS deleted_at 
@@ -150,8 +154,10 @@ const getByIdLingkungan = async (req, res) => {
                     S.file_syarat,
                     S.ketua_lingkungan,
                     S.ketua_lingkungan_approval,
+                    S.ketua_lingkungan_approval_stamp,
                     S.id_sekretariat,
                     S.sekretariat_approval,
+                    S.sekretariat_approval_stamp,
                     DATE_FORMAT(S.created_at, '%d-%m-%Y') AS created_at,
                     DATE_FORMAT(S.updated_at, '%d-%m-%Y') AS updated_at,
                     DATE_FORMAT(S.deleted_at, '%d-%m-%Y') AS deleted_at 
@@ -213,8 +219,10 @@ const getByIdKeluarga = async (req, res) => {
                     S.file_syarat,
                     S.ketua_lingkungan,
                     S.ketua_lingkungan_approval,
+                    S.ketua_lingkungan_approval_stamp,
                     S.id_sekretariat,
                     S.sekretariat_approval,
+                    S.sekretariat_approval_stamp,
                     DATE_FORMAT(S.created_at, '%d-%m-%Y') AS created_at,
                     DATE_FORMAT(S.updated_at, '%d-%m-%Y') AS updated_at,
                     DATE_FORMAT(S.deleted_at, '%d-%m-%Y') AS deleted_at 
@@ -256,14 +264,25 @@ const post = async (req, res) => {
             ketua_lingkungan,
             isKetuaLingkungan,
         } = req.body,
-        { file_syarat } = req.files,
+        { file_syarat } = req.files,no_surat
 
-        no_surat = (jenis_surat === 1 ? generateNomorSurat("F6") : generateNomorSurat("F7")),
+        kode = (jenis_surat === 1 ? 'F6' : 'F7'), // 1 = Komuni I; 2 = Penguatan
+
+        no_surat = generateNomorSurat(kode, id_lingkungan, 'Surat_Komuni_Penguatan')
         created_at = getTodayDate(),
-        id_sekretariat = null,
-        sekretariat_approval = null,
-        ketua_lingkungan_approval = (isKetuaLingkungan === true ? 1 : 0)
-        if(isKetuaLingkungan === false) ketua_lingkungan = null
+        ketua_lingkungan_approval = 0,
+        ketua_lingkungan_approval_stamp = null
+    
+    // Maksud dari (isKetuaLingkungan === 'true') gunanya
+    // untuk mengubah isKetuaLingkungan jadi Boolean.
+    // Karena dari front end itu pake FormData(),
+    // semua data jadi String.
+    if((isKetuaLingkungan === 'true') === true) {
+        ketua_lingkungan_approval = 1
+        ketua_lingkungan_approval_stamp = getDateTime()
+    } else  {
+        ketua_lingkungan = null
+    }
 
     try {
         let pathToFiles = `files/`
@@ -298,8 +317,7 @@ const post = async (req, res) => {
                 file_syarat: tempNamaFile,
                 ketua_lingkungan,
                 ketua_lingkungan_approval,
-                id_sekretariat,
-                sekretariat_approval,
+                ketua_lingkungan_approval_stamp,
                 created_at,
             }
         ])
@@ -331,10 +349,6 @@ const update = async (req, res) => {
         nama_pelindung,
         nama_wali_penguatan,
         tgl_krisma_wali,
-        ketua_lingkungan,
-        ketua_lingkungan_approval,
-        id_sekretariat,
-        sekretariat_approval,
     } = req.body,
     file_syarat = null
     file_syarat = req.files != null ? req.files.file_syarat : null
@@ -345,9 +359,9 @@ const update = async (req, res) => {
     // ketua_lingkungan_approval harus di-set jadi 0
     // karena by default dari front end itu undefined
     // Karna di front end pakenya FormData()
-    if (ketua_lingkungan_approval === undefined) {
-        ketua_lingkungan_approval = 0
-    }
+    // if (ketua_lingkungan_approval === undefined) {
+    //     ketua_lingkungan_approval = 0
+    // }
 
     let updated_at = getTodayDate()
     let { id } = req.params
@@ -402,10 +416,6 @@ const update = async (req, res) => {
                 nama_pelindung,
                 nama_wali_penguatan,
                 tgl_krisma_wali,
-                ketua_lingkungan,
-                ketua_lingkungan_approval,
-                id_sekretariat,
-                sekretariat_approval,
                 updated_at,
             }
             if(file_syarat != null) {
@@ -423,6 +433,56 @@ const update = async (req, res) => {
         console.log(error.message)
         res.status(500).send({
             message: "Failed updating data",
+            error: error.message,
+        })
+    }
+}
+
+const verify = async (req, res) => {
+    let { id } = req.params,
+        {
+            role,
+            ketua_lingkungan,
+            id_sekretariat,
+            id_romo,
+        } = req.body,
+        data = {}
+  
+    if(role === 'ketua lingkungan') {
+        data.ketua_lingkungan = ketua_lingkungan
+        data.ketua_lingkungan_approval = 1
+        data.ketua_lingkungan_approval_stamp = getDateTime()
+    } else if (role === 'sekretariat'){
+        data.id_sekretariat = id_sekretariat
+        data.sekretariat_approval = 1
+        data.sekretariat_approval_stamp = getDateTime()
+    } else if (role === 'romo paroki') {
+        data.id_romo = id_romo
+        data.romo_approval = 1
+        data.romo_approval_stamp = getDateTime()
+    }
+        
+    try {
+        let sql = `SELECT * FROM Surat_Komuni_Penguatan WHERE id = ?`
+        let result = await db(sql, [ id ])
+        
+        if (result.length === 0) {
+            res.status(404).send({
+                message: "Data not found",
+            })
+        } else {
+            sql =  `UPDATE Surat_Komuni_Penguatan SET ? WHERE id=?`
+            result = await db(sql, [ data, id ])
+  
+            res.status(200).send({
+                message: "Success verify data",
+                result: result,
+            })
+        }
+    } catch (error) {
+        console.log(error.message)
+        res.status(500).send({
+            message: "Failed verify data",
             error: error.message,
         })
     }
@@ -465,5 +525,6 @@ module.exports = {
     getByIdKeluarga,
     post,
     update,
+    verify,
     remove
 }

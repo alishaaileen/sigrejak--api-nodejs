@@ -8,6 +8,7 @@ router.get('/keluarga/:id', keteranganController.getByIdKeluarga)
 router.get('/lingkungan/:id', keteranganController.getByIdLingkungan)
 router.post('/add', keteranganController.post)
 router.patch('/:id', keteranganController.update)
+router.patch('/verify/:id', keteranganController.verify)
 router.delete('/:id', keteranganController.remove)
 
 module.exports = router
