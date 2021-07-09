@@ -480,7 +480,7 @@ const verify = async (req, res) => {
         } = req.body,
         data = {}
 
-    if(role === 'ketua') {
+    if(role === 'ketua lingkungan') {
         data.ketua_lingkungan = ketua_lingkungan
         data.ketua_lingkungan_approval = 1
         data.ketua_lingkungan_approval_stamp = getDateTime()
