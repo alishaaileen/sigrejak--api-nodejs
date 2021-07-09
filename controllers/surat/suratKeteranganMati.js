@@ -1,5 +1,6 @@
 const db = require('../../connection')
-const { getTodayDate, getDateTime, generateNomorSurat } = require('../../utils')
+    , { getTodayDate, getDateTime, generateNomorSurat } = require('../../utils')
+    , tableName = 'Surat_Keterangan_Mati'
 
 const getAll = async (req, res) => {
     try {
@@ -40,7 +41,7 @@ const getAll = async (req, res) => {
                     DATE_FORMAT(S.created_at, '%d-%m-%Y') AS created_at,
                     DATE_FORMAT(S.updated_at, '%d-%m-%Y') AS updated_at,
                     DATE_FORMAT(S.deleted_at, '%d-%m-%Y') AS deleted_at 
-            FROM Surat_Keterangan_Mati S JOIN Umat U ON (S.id_umat=U.id)`
+            FROM ${tableName} S JOIN Umat U ON (S.id_umat=U.id)`
         let result = await db(sql)
 
         res.status(200).send({
@@ -101,7 +102,7 @@ const getById = async (req, res) => {
                     DATE_FORMAT(S.created_at, '%d-%m-%Y') AS created_at,
                     DATE_FORMAT(S.updated_at, '%d-%m-%Y') AS updated_at,
                     DATE_FORMAT(S.deleted_at, '%d-%m-%Y') AS deleted_at 
-            FROM Surat_Keterangan_Mati S JOIN Umat U ON (S.id_umat=U.id)
+            FROM ${tableName} S JOIN Umat U ON (S.id_umat=U.id)
                 JOIN Detail_Umat D ON (U.id=D.id_umat) 
                 JOIN Admin I ON (S.id_imam_pemberkat=I.id)
             WHERE S.id = ?`
@@ -171,7 +172,7 @@ const getByIdLingkungan = async (req, res) => {
                     DATE_FORMAT(S.created_at, '%d-%m-%Y') AS created_at,
                     DATE_FORMAT(S.updated_at, '%d-%m-%Y') AS updated_at,
                     DATE_FORMAT(S.deleted_at, '%d-%m-%Y') AS deleted_at 
-            FROM Surat_Keterangan_Mati S JOIN Umat U ON (S.id_umat=U.id)
+            FROM ${tableName} S JOIN Umat U ON (S.id_umat=U.id)
                 JOIN Detail_Umat D ON (U.id=D.id_umat) 
                 JOIN Admin I ON (S.id_imam_pemberkat=I.id)
             WHERE S.id_lingkungan = ?`
@@ -241,7 +242,7 @@ const getByIdKeluarga = async (req, res) => {
                     DATE_FORMAT(S.created_at, '%d-%m-%Y') AS created_at,
                     DATE_FORMAT(S.updated_at, '%d-%m-%Y') AS updated_at,
                     DATE_FORMAT(S.deleted_at, '%d-%m-%Y') AS deleted_at 
-            FROM Surat_Keterangan_Mati S JOIN Umat U ON (S.id_umat=U.id)
+            FROM ${tableName} S JOIN Umat U ON (S.id_umat=U.id)
                 JOIN Detail_Umat D ON (U.id=D.id_umat) 
                 JOIN Admin I ON (S.id_imam_pemberkat=I.id)
             WHERE S.id_keluarga = ?`
@@ -286,7 +287,7 @@ const post = async (req, res) => {
             isKetuaLingkungan,
         } = req.body,
         created_at = getTodayDate(),
-        no_surat = generateNomorSurat('F10', id_lingkungan, 'Surat_Keterangan_Mati'),
+        no_surat = generateNomorSurat('F10', id_lingkungan, tableName),
         ketua_lingkungan_approval = 0,
         ketua_lingkungan_approval_stamp = null
     
@@ -298,7 +299,7 @@ const post = async (req, res) => {
     }
 
     try {
-        let sql = `INSERT INTO Surat_Keterangan_Mati SET ?`
+        let sql = `INSERT INTO ${tableName} SET ?`
         let result = await db(sql, [
             {
                 no_surat,
@@ -370,7 +371,7 @@ const update = async (req, res) => {
     let { id } = req.params
     
     try {
-        let sql = `SELECT * FROM Surat_Keterangan_Mati WHERE id = ?`
+        let sql = `SELECT * FROM ${tableName} WHERE id = ?`
         let result = await db(sql, [ id ])
         
         if (result.length === 0) {
@@ -378,7 +379,7 @@ const update = async (req, res) => {
                 message: "Data not found",
             })
         } else {
-            sql = `UPDATE Surat_Keterangan_Mati SET ? WHERE id=?`
+            sql = `UPDATE ${tableName} SET ? WHERE id=?`
             result = await db(sql, [ {
                                         no_surat,
                                         id_keluarga,
@@ -441,7 +442,7 @@ const verify = async (req, res) => {
     }
         
     try {
-        let sql = `SELECT * FROM Surat_Keterangan_Mati WHERE id = ?`
+        let sql = `SELECT * FROM ${tableName} WHERE id = ?`
         let result = await db(sql, [ id ])
         
         if (result.length === 0) {
@@ -449,7 +450,7 @@ const verify = async (req, res) => {
                 message: "Data not found",
             })
         } else {
-            sql =  `UPDATE Surat_Keterangan_Mati SET ? WHERE id=?`
+            sql =  `UPDATE ${tableName} SET ? WHERE id=?`
             result = await db(sql, [ data, id ])
   
             res.status(200).send({
@@ -471,7 +472,7 @@ const remove = async (req, res) => {
         deleted_at = getTodayDate()
 
     try {
-        let sql = `SELECT * FROM Surat_Keterangan_Mati WHERE id = ?`
+        let sql = `SELECT * FROM ${tableName} WHERE id = ?`
         let result = await db(sql, [ id ])
         
         if (result.length === 0) {
@@ -479,7 +480,7 @@ const remove = async (req, res) => {
                 message: "Data not found",
             })
         } else {
-            sql =  `UPDATE Surat_Keterangan_Mati SET ? WHERE id=?`
+            sql =  `UPDATE ${tableName} SET ? WHERE id=?`
             result = await db(sql, [ { deleted_at }, id ])
 
             res.status(200).send({

@@ -2,7 +2,7 @@ const db = require('../../connection')
     , { v4: uuidv4 } = require('uuid')
     , { getTodayDate, getDateTime, generateNomorSurat } = require('../../utils')
     , LogSuratcontroller = require('../logSurat')
-    , tableName = '${tableName}'
+    , tableName = 'Surat_Izin_Pelayanan_Ekaristi'
 
 const getAll = async (req, res) => {
   try {

@@ -1,6 +1,6 @@
 const db = require('../../connection')
     , { getTodayDate, getDateTime, generateNomorSurat } = require('../../utils')
-    , tableName = '${tableName}'
+    , tableName = 'Surat_Pelayanan_Minyak_Suci'
 
 const getAll = async (req, res) => {
     try {

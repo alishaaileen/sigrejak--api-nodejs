@@ -1,7 +1,7 @@
 const db = require('../../connection')
     , { getTodayDate, getDateTime, generateNomorSurat, generateFileName, deleteFile } = require('../../utils')
     , path = require('path')
-    , tableName = '${tableName}'
+    , tableName = 'Surat_Keterangan_Calon_Pengantin'
 
 const getAll = async (req, res) => {
     try {

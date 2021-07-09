@@ -257,7 +257,7 @@ const post = async (req, res) => {
         ketua_lingkungan_approval = 0,
         ketua_lingkungan_approval_stamp = null
     
-    let no_surat = await generateNomorSurat('F2', id_lingkungan, '${tableName}')
+    let no_surat = await generateNomorSurat('F2', id_lingkungan, tableName)
     
     // Maksud dari (isKetuaLingkungan === 'true') gunanya
     // untuk mengubah isKetuaLingkungan jadi Boolean.
