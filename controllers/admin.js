@@ -1,7 +1,7 @@
 require('dotenv').config();
 const db = require('../connection')
 const jwt = require('jsonwebtoken')
-const {compareSync } = require('bcryptjs')
+const { compareSync } = require('bcryptjs')
 const { generateRandomString, hashPassword } = require('../utils')
 const { getTodayDate } = require('../utils')
 
@@ -30,10 +30,15 @@ const getAllByRole = async (req, res) => {
     let { roleId } = req.params
 
     try {
-        let sql = 
-            `SELECT id, nama, email, no_telp, role 
+        // CODE HARUS DIUBAH!!! SEMENTARA GINI
+        let sql = `SELECT id, nama, email, no_telp, role 
+                    FROM Admin 
+                    WHERE role=?`
+        if(parseInt(roleId) === 4) {
+            sql = `SELECT id, nama, email, no_telp, role 
             FROM Admin 
-            WHERE role=?`
+            WHERE role=? OR role=3`
+        }
         let admins = await db(sql, [ roleId ])
 
         res.status(200).send({

@@ -36,11 +36,65 @@ const getAll = async (req, res) => {
                     DATE_FORMAT(S.created_at, '%d-%m-%Y') AS created_at,
                     DATE_FORMAT(S.updated_at, '%d-%m-%Y') AS updated_at,
                     DATE_FORMAT(S.deleted_at, '%d-%m-%Y') AS deleted_at 
-            FROM ${tableName} S JOIN Umat A ON (S.id_anak=A.id)
+            FROM Surat_Baptis_Anak S JOIN Umat A ON (S.id_anak=A.id)
                 JOIN Detail_Umat D ON (A.id=D.id_umat)
                 JOIN (SELECT id, nama, no_telp, alamat FROM Umat) Ayah ON (D.id_ayah=Ayah.id)
                 JOIN (SELECT id, nama FROM Umat) Ibu ON (D.id_ibu=Ibu.id) 
                 JOIN Lingkungan L ON (S.id_lingkungan=L.id)`
+                
+        let result = await db(sql)
+
+        res.status(200).send({
+            message: "Success retrieving data",
+            result: result,
+        })
+    } catch (error) {
+        console.log(error.message)
+        res.status(500).send({
+            message: "Failed to retrieve data",
+            error: error.message
+        })
+    }
+}
+
+const getAllSchedule = async (req, res) => {
+    try {
+        let sql = 
+            `SELECT S.id,
+                    S.no_surat,
+                    S.id_keluarga,
+                    S.id_lingkungan,
+                    S.id_anak,
+                    A.nama,
+                    S.nama_baptis,
+                    A.tempat_lahir,
+                    A.tgl_lahir,
+                    Ayah.nama AS nama_ayah,
+                    Ibu.nama AS nama_ibu,
+                    Ayah.alamat AS alamat_ortu,
+                    Ayah.no_telp AS no_telp_ortu,
+                    S.cara_ortu_menikah,
+                    S.tempat_ortu_menikah,
+                    S.tgl_ortu_menikah,
+                    S.nama_wali_baptis,
+                    S.tgl_krisma_wali_baptis,
+                    D.file_akta_lahir,
+                    S.file_syarat_baptis,
+                    S.ketua_lingkungan,
+                    S.ketua_lingkungan_approval,
+                    S.id_sekretariat,
+                    S.sekretariat_approval,
+                    S.jadwal_baptis,
+                    S.id_romo_pembaptis,
+                    DATE_FORMAT(S.created_at, '%d-%m-%Y') AS created_at,
+                    DATE_FORMAT(S.updated_at, '%d-%m-%Y') AS updated_at,
+                    DATE_FORMAT(S.deleted_at, '%d-%m-%Y') AS deleted_at 
+            FROM Surat_Baptis_Anak S JOIN Umat A ON (S.id_anak=A.id)
+                JOIN Detail_Umat D ON (A.id=D.id_umat)
+                JOIN (SELECT id, nama, no_telp, alamat FROM Umat) Ayah ON (D.id_ayah=Ayah.id)
+                JOIN (SELECT id, nama FROM Umat) Ibu ON (D.id_ibu=Ibu.id) 
+                JOIN Lingkungan L ON (S.id_lingkungan=L.id)
+            WHERE S.jadwal_baptis IS NOT NULL`
         let result = await db(sql)
 
         res.status(200).send({
@@ -92,7 +146,7 @@ const getById = async (req, res) => {
                     DATE_FORMAT(S.created_at, '%d-%m-%Y') AS created_at,
                     DATE_FORMAT(S.updated_at, '%d-%m-%Y') AS updated_at,
                     DATE_FORMAT(S.deleted_at, '%d-%m-%Y') AS deleted_at 
-            FROM ${tableName} S JOIN Umat A ON (S.id_anak=A.id)
+            FROM Surat_Baptis_Anak S JOIN Umat A ON (S.id_anak=A.id)
                 JOIN Detail_Umat D ON (A.id=D.id_umat)
                 JOIN (SELECT id, nama, no_telp, alamat FROM Umat) Ayah ON (D.id_ayah=Ayah.id)
                 JOIN (SELECT id, nama FROM Umat) Ibu ON (D.id_ibu=Ibu.id) 
@@ -155,7 +209,7 @@ const getByIdLingkungan = async (req, res) => {
                     DATE_FORMAT(S.created_at, '%d-%m-%Y') AS created_at,
                     DATE_FORMAT(S.updated_at, '%d-%m-%Y') AS updated_at,
                     DATE_FORMAT(S.deleted_at, '%d-%m-%Y') AS deleted_at 
-            FROM ${tableName} S JOIN Umat A ON (S.id_anak=A.id)
+            FROM Surat_Baptis_Anak S JOIN Umat A ON (S.id_anak=A.id)
                 JOIN Detail_Umat D ON (A.id=D.id_umat)
                 JOIN (SELECT id, nama, no_telp, alamat FROM Umat) Ayah ON (D.id_ayah=Ayah.id)
                 JOIN (SELECT id, nama FROM Umat) Ibu ON (D.id_ibu=Ibu.id) 
@@ -218,7 +272,7 @@ const getByIdKeluarga = async (req, res) => {
                     DATE_FORMAT(S.created_at, '%d-%m-%Y') AS created_at,
                     DATE_FORMAT(S.updated_at, '%d-%m-%Y') AS updated_at,
                     DATE_FORMAT(S.deleted_at, '%d-%m-%Y') AS deleted_at 
-            FROM ${tableName} S JOIN Umat A ON (S.id_anak=A.id)
+            FROM Surat_Baptis_Anak S JOIN Umat A ON (S.id_anak=A.id)
                 JOIN Detail_Umat D ON (A.id=D.id_umat)
                 JOIN (SELECT id, nama, no_telp, alamat FROM Umat) Ayah ON (D.id_ayah=Ayah.id)
                 JOIN (SELECT id, nama FROM Umat) Ibu ON (D.id_ibu=Ibu.id) 
@@ -231,7 +285,7 @@ const getByIdKeluarga = async (req, res) => {
             result: result,
         })
     } catch (error) {
-        console.log(error.message)
+        console.log(error)
         res.status(500).send({
             message: "Failed to retrieve data",
             error: error.message
@@ -259,7 +313,7 @@ const post = async (req, res) => {
         ketua_lingkungan_approval = 0,
         ketua_lingkungan_approval_stamp = null
 
-    let no_surat = await generateNomorSurat('F4', id_lingkungan, tableName)
+    let no_surat = await generateNomorSurat('F4', id_lingkungan, 'Surat_Baptis_Anak')
     
     // Maksud dari (isKetuaLingkungan === 'true') gunanya
     // untuk mengubah isKetuaLingkungan jadi Boolean.
@@ -285,7 +339,7 @@ const post = async (req, res) => {
             }
         })
 
-        let sql = `INSERT INTO ${tableName} SET ?`
+        let sql = `INSERT INTO Surat_Baptis_Anak SET ?`
         let result = await db(sql, [ {
                 id,
                 no_surat,
@@ -348,7 +402,7 @@ const update = async (req, res) => {
     let tempNamaFile
     
     try {
-        let sql = `SELECT * FROM ${tableName} WHERE id = ?`
+        let sql = `SELECT * FROM Surat_Baptis_Anak WHERE id = ?`
         let result = await db(sql, [ id ])
         
         if (result.length === 0) {
@@ -379,7 +433,7 @@ const update = async (req, res) => {
                 })
             }
 
-            sql = `UPDATE ${tableName} SET ? WHERE id=?`
+            sql = `UPDATE Surat_Baptis_Anak SET ? WHERE id=?`
             let data = {
                 id_keluarga,
                 id_lingkungan,
@@ -417,28 +471,27 @@ const verify = async (req, res) => {
         {
             role,
             ketua_lingkungan,
-            ketua_lingkungan_approval,
             id_sekretariat,
-            sekretariat_approval,
             jadwal_baptis,
             id_romo_pembaptis,
+            nama_baptis,
         } = req.body,
         data = {}
 
     if(role === 'ketua') {
         data.ketua_lingkungan = ketua_lingkungan
-        data.ketua_lingkungan_approval = ketua_lingkungan_approval
+        data.ketua_lingkungan_approval = 1
         data.ketua_lingkungan_approval_stamp = getDateTime()
     } else {
         data.id_sekretariat = id_sekretariat
-        data.sekretariat_approval = sekretariat_approval
+        data.sekretariat_approval = 1
         data.sekretariat_approval_stamp = getDateTime()
         data.jadwal_baptis = jadwal_baptis
         data.id_romo_pembaptis = id_romo_pembaptis
     }
         
     try {
-        let sql = `SELECT * FROM ${tableName} WHERE id = ?`
+        let sql = `SELECT * FROM Surat_Baptis_Anak WHERE id = ?`
         let result = await db(sql, [ id ])
         
         if (result.length === 0) {
@@ -447,7 +500,7 @@ const verify = async (req, res) => {
             })
         } else {
             // verify
-            sql =  `UPDATE ${tableName} SET ? WHERE id=?`
+            sql =  `UPDATE Surat_Baptis_Anak SET ? WHERE id=?`
             result = await db(sql, [ data, id ])
 
             res.status(200).send({
@@ -456,12 +509,19 @@ const verify = async (req, res) => {
             })
 
             if(role === 'sekretariat') {
+                // Update tgl baptis
                 sql =  `UPDATE Detail_Umat SET ?
-                        WHERE id=(SELECT id_anak FROM ${tableName} WHERE id=?)?`
+                        WHERE id_umat=(SELECT id_anak FROM Surat_Baptis_Anak WHERE id=?)`
                 result = await db(sql, [ {
-                    jadwal_baptis: jadwal_baptis
+                    tgl_baptis: jadwal_baptis.substring(0,10)
                 }, id ])
-                console.log(result)
+
+                // Update nama baptis
+                sql =  `UPDATE Umat SET ?
+                        WHERE id=(SELECT id_anak FROM Surat_Baptis_Anak WHERE id=?)`
+                result = await db(sql, [ {
+                    nama_baptis: nama_baptis,
+                }, id ])
             }
         }
     } catch (error) {
@@ -478,7 +538,7 @@ const remove = async (req, res) => {
         deleted_at = getTodayDate()
 
     try {
-        let sql = `SELECT * FROM ${tableName} WHERE id = ?`
+        let sql = `SELECT * FROM Surat_Baptis_Anak WHERE id = ?`
         let result = await db(sql, [ id ])
         
         if (result.length === 0) {
@@ -486,7 +546,7 @@ const remove = async (req, res) => {
                 message: "Data not found",
             })
         } else {
-            sql =  `UPDATE ${tableName} SET ? WHERE id=?`
+            sql =  `UPDATE Surat_Baptis_Anak SET ? WHERE id=?`
             result = await db(sql, [ { deleted_at }, id ])
 
             res.status(200).send({
@@ -505,6 +565,7 @@ const remove = async (req, res) => {
 
 module.exports = {
     getAll,
+    getAllSchedule,
     getById,
     getByIdLingkungan,
     getByIdKeluarga,
