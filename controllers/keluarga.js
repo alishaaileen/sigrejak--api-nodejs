@@ -1,8 +1,9 @@
 require('dotenv').config();
 const db = require('../connection')
-const jwt = require('jsonwebtoken')
-const {compareSync } = require('bcryptjs')
-const { generateRandomString, hashPassword } = require('../utils')
+    , jwt = require('jsonwebtoken')
+    , { v4: uuidv4 } = require('uuid')
+    , {compareSync } = require('bcryptjs')
+    , { generateRandomString, hashPassword } = require('../utils')
 
 const getAll = async (req, res) => {
     try {
@@ -63,50 +64,24 @@ const getById = async (req, res) => {
     }
 }
 
-// Cek apakah username sudah dipakai atau belum
-const checkUsernameExist = async (username, id = null) => {
+// Cek apakah username/email sudah dipakai atau belum
+const checkUsernameOrEmailExist = async (input, keyword, id = null) => {
     let sql, result
     
     try {
         if (id === null) {
-            sql = `SELECT * FROM Keluarga WHERE username=?`
-            result = await db(sql, [ username ])
+            sql = `SELECT * FROM Keluarga WHERE ${keyword}=?`
+            result = await db(sql, [ input ])
         } else {
-            sql = `
-                SELECT * FROM Keluarga WHERE username=?
+            sql =
+                `SELECT * FROM Keluarga WHERE ${keyword}=?
                 EXCEPT
                 SELECT * FROM Keluarga WHERE id=?`
-            result = await db(sql, [ username, id ])
+            result = await db(sql, [ input, id ])
         }
 
         if (result.length > 0) {
-            return true // this means, the error is true
-        } else {
-            return false
-        }
-    } catch (error) {
-        return true
-    }
-}
-
-// Cek apakah email sudah dipakai atau belum
-const checkEmailExist = async (email, id = null) => {
-    let sql, result
-
-    try {
-        if (id === null) {
-            sql = `SELECT * FROM Keluarga WHERE email=?`
-            result = await db(sql, [ email ])
-        } else {
-            sql = `
-                SELECT * FROM Keluarga WHERE username=?
-                EXCEPT
-                SELECT * FROM Keluarga WHERE id=?`
-            result = await db(sql, [ email, id ])
-        }
-
-        if (result.length > 0) {
-            return true // this means, the error is true
+            return true // this means it exist, the error is true
         } else {
             return false
         }
@@ -116,19 +91,22 @@ const checkEmailExist = async (email, id = null) => {
 }
 
 const post = async (req, res) => {
-    let {
-        nama_keluarga,
-        nama_kepala_keluarga,
-        no_telp_kepala_keluarga,
-        username,
-        email,
-    } = req.body
+    let id = uuidv4(),
+        {
+            nama_keluarga,
+            nama_kepala_keluarga,
+            no_telp_kepala_keluarga,
+            username,
+            email,
+        } = req.body
 
-    if ( checkUsernameExist(username) ) {
+    console.log(await checkUsernameOrEmailExist(username, 'username'))
+
+    if ( await checkUsernameOrEmailExist(username, 'username') ) {
         res.status(409).send({ message: "Username sudah dipakai" })
         return
     }
-    if ( checkEmailExist(email) ) {
+    if ( await checkUsernameOrEmailExist(email, 'email') ) {
         res.status(409).send({ message: "Email sudah dipakai" })
         return
     }
@@ -138,19 +116,17 @@ const post = async (req, res) => {
         console.log(plainPassword)
         let password = hashPassword(plainPassword)
         
-        sql =
-            `INSERT INTO Keluarga SET ?`
+        sql = `INSERT INTO Keluarga SET ?`
         
-        result = await db(sql, [ 
-            {
-                nama_keluarga,
-                nama_kepala_keluarga,
-                no_telp_kepala_keluarga,
-                username,
-                email,
-                password,
-            }
-        ])
+        result = await db(sql, [ {
+            id,
+            nama_keluarga,
+            nama_kepala_keluarga,
+            no_telp_kepala_keluarga,
+            username,
+            email,
+            password,
+        } ])
         
         res.status(200).send({
             message: "Success adding data",
@@ -175,11 +151,11 @@ const update = async (req, res) => {
     } = req.body
     const { id } = req.params
 
-    if ( await checkUsernameExist(username, id) ) {
+    if ( await checkUsernameOrEmailExist(username, 'username',id) ) {
         res.status(409).send({ message: "Username sudah dipakai" })
         return
     }
-    if ( await checkEmailExist(email, id) ) {
+    if ( await checkUsernameOrEmailExist(email, 'email',id) ) {
         res.status(409).send({ message: "Email sudah dipakai" })
         return
     }

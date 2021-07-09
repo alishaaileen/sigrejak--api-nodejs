@@ -1,5 +1,6 @@
 const db = require('../connection')
-const { getTodayDate } = require('../utils')
+    , { v4: uuidv4 } = require('uuid')
+    , { getTodayDate } = require('../utils')
 
 const getAll = async (req, res) => {
     try {
@@ -133,28 +134,28 @@ const getById = async (req, res) => {
 }
 
 const post = async (req, res) => {
-    let {
-        nama,
-        tempat_lahir,
-        tgl_lahir,
-        jenis_kelamin,
-        nama_baptis,
-        alamat,
-        no_telp,
-        pekerjaan,
-        is_dead,
-        is_umat_active,
-        keluarga_id,
-        lingkungan_id,
-    } = req.body
+    let id = uuidv4(),
+        {
+            nama,
+            tempat_lahir,
+            tgl_lahir,
+            jenis_kelamin,
+            nama_baptis,
+            alamat,
+            no_telp,
+            pekerjaan,
+            is_dead,
+            is_umat_active,
+            keluarga_id,
+            lingkungan_id,
+        } = req.body
     let created_at = getTodayDate()
 
     try {
-        let sql =
-            `INSERT INTO Umat SET ?`
+        let sql = `INSERT INTO Umat SET ?`
         
-        let result = await db(sql, [ 
-            {
+        let result = await db(sql, [ {
+                id,
                 nama,
                 tempat_lahir,
                 tgl_lahir,
@@ -168,8 +169,7 @@ const post = async (req, res) => {
                 keluarga_id,
                 lingkungan_id,
                 created_at,
-            }
-        ])
+            } ])
         
         res.status(200).send({
             message: "Success adding data",

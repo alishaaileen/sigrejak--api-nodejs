@@ -1,4 +1,5 @@
 const db = require('../connection')
+    , { v4: uuidv4 } = require('uuid')
     , { generateFileName } = require('../utils')
     , fs = require('fs')
     , path = require('path')
@@ -48,21 +49,22 @@ const getByIdUmat = async (req, res) => {
 }
 
 const post = async (req, res) => {
-    let {
-        id_umat,
-        tgl_baptis,
-        tgl_komuni,
-        tgl_penguatan,
-        file_akta_lahir,
-        file_ktp,
-        id_ayah,
-        id_ibu,
-    } = req.body
+    let id = uuidv4(),
+        {
+            id_umat,
+            tgl_baptis,
+            tgl_komuni,
+            tgl_penguatan,
+            file_akta_lahir,
+            file_ktp,
+            id_ayah,
+            id_ibu,
+        } = req.body
 
     try {
         let sql = `INSERT INTO Detail_Umat SET ?`
-        let result = await db(sql, [ 
-            {
+        let result = await db(sql, [ {
+                id,
                 id_umat,
                 tgl_baptis,
                 tgl_komuni,
@@ -71,8 +73,7 @@ const post = async (req, res) => {
                 file_ktp,
                 id_ayah,
                 id_ibu,
-            }
-        ])
+            } ])
         
         res.status(200).send({
             message: "Success adding data",

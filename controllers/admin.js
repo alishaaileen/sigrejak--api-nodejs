@@ -1,9 +1,10 @@
 require('dotenv').config();
 const db = require('../connection')
-const jwt = require('jsonwebtoken')
-const { compareSync } = require('bcryptjs')
-const { generateRandomString, hashPassword } = require('../utils')
-const { getTodayDate } = require('../utils')
+    , jwt = require('jsonwebtoken')
+    , { v4: uuidv4 } = require('uuid')
+    , { compareSync } = require('bcryptjs')
+    , { generateRandomString, hashPassword } = require('../utils')
+    , { getTodayDate } = require('../utils')
 
 const getAll = async (req, res) => {
     try {
@@ -85,25 +86,24 @@ const getById = async (req, res) => {
 
 const post = async (req, res) => {
     try {
-        let plainPassword = generateRandomString(6)
+        let id = uuidv4()
+            , { nama, email, no_telp, role } = req.body
+            , created_at = getTodayDate()
+            , plainPassword = generateRandomString(10)
+            , password = hashPassword(plainPassword)
         console.log(plainPassword)
-        let password = hashPassword(plainPassword)
-        let { nama, email, no_telp, role } = req.body
-        let created_at = getTodayDate()
     
-        let sql =
-            `INSERT INTO Admin SET ?`
+        let sql = `INSERT INTO Admin SET ?`
         
-        let result = await db(sql, [ 
-            {
+        let result = await db(sql, [ {
+                id,
                 nama,
                 email,
                 no_telp,
                 password,
                 role,
                 created_at
-            }
-        ])
+            } ])
         
         res.status(200).send({
             message: "Success adding data",

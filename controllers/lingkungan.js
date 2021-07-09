@@ -1,11 +1,14 @@
 const db = require('../connection')
+    , { v4: uuidv4 } = require('uuid')
 
 const getAll = async (req, res) => {
     try {
         let sql =
             `SELECT L.id,
+                    L.kode,
                     L.ketua_lingkungan_id,
                     L.nama_lingkungan,
+                    K.nama_keluarga,
                     K.nama_kepala_keluarga AS "nama_ketua_lingkungan",
                     K.no_telp_kepala_keluarga AS "no_hp",
                     K.email
@@ -31,8 +34,10 @@ const getById = async (req, res) => {
     try {
         let sql = 
             `SELECT L.id,
+                    L.kode,
                     L.ketua_lingkungan_id,
                     L.nama_lingkungan,
+                    K.nama_keluarga,
                     K.nama_kepala_keluarga AS "nama_ketua_lingkungan",
                     K.no_telp_kepala_keluarga AS "no_hp",
                     K.email
@@ -65,8 +70,10 @@ const getByKetuaLingkunganId = async (req, res) => {
     try {
         let sql = 
             `SELECT L.id,
+                    L.kode,
                     L.ketua_lingkungan_id,
                     L.nama_lingkungan,
+                    K.nama_keluarga,
                     K.nama_kepala_keluarga AS "nama_ketua_lingkungan",
                     K.no_telp_kepala_keluarga AS "no_hp",
                     K.email
@@ -94,20 +101,19 @@ const getByKetuaLingkunganId = async (req, res) => {
 }
 
 const post = async (req, res) => {
-    let {
-        nama_lingkungan,
-        ketua_lingkungan_id,
-    } = req.body
+    let id = uuidv4(),
+        {
+            nama_lingkungan,
+            ketua_lingkungan_id,
+        } = req.body
 
     try {
-        let sql =
-            `INSERT INTO Lingkungan SET ?`
-        let result = await db(sql, [ 
-            {
+        let sql = `INSERT INTO Lingkungan SET ?`
+        let result = await db(sql, [ {
+                id,
                 nama_lingkungan,
                 ketua_lingkungan_id,
-            }
-        ])
+            } ])
         
         res.status(200).send({
             message: "Success adding data",

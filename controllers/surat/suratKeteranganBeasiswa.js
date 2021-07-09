@@ -1,4 +1,5 @@
 const db = require('../../connection')
+    , { v4: uuidv4 } = require('uuid')
     , { getTodayDate, getDateTime, generateNomorSurat, generateFileName, deleteFile } = require('../../utils')
     , path = require('path')
     , tableName = 'Surat_Keterangan_Beasiswa'
@@ -241,7 +242,8 @@ const getByIdKeluarga = async (req, res) => {
 }
 
 const post = async (req, res) => {
-    let {
+    let id = uuidv4(),
+        {
             id_keluarga,
             id_lingkungan,
             ketua_lingkungan,
@@ -286,6 +288,7 @@ const post = async (req, res) => {
         let sql = `INSERT INTO ${tableName} SET ?`
         let result = await db(sql, [ 
             {
+                id,
                 no_surat,
                 id_keluarga,
                 id_lingkungan,

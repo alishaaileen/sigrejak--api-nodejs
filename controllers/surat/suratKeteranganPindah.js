@@ -1,4 +1,5 @@
 const db = require('../../connection')
+    , { v4: uuidv4 } = require('uuid')
     , { getTodayDate, getDateTime, generateNomorSurat } = require('../../utils')
     , tableName = 'Surat_Keterangan_Pindah'
 
@@ -228,7 +229,8 @@ const getByIdKeluarga = async (req, res) => {
 }
 
 const post = async (req, res) => {
-    let {
+    let id =uuidv4(),
+        {
             id_keluarga,
             paroki_lama,
             id_lingkungan_lama,
@@ -261,6 +263,7 @@ const post = async (req, res) => {
         let sql = `INSERT INTO ${tableName} SET ?`
         let result = await db(sql, [ 
             {
+                id,
                 no_surat,
                 id_keluarga,
                 paroki_lama,
