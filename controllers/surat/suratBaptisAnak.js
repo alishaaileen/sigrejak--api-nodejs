@@ -1,6 +1,7 @@
 const db = require('../../connection')
     , { v4: uuidv4 } = require('uuid')
-    , { getTodayDate, getDateTime, generateNomorSurat, generateFileName, deleteFile } = require('../../utils')
+    , { getTodayDate, getDateTime, getKodeLingkungan,
+        generateNomorSurat, generateFileName, deleteFile } = require('../../utils')
     , path = require('path')
     , tableName = 'Surat_Baptis_Anak'
 
@@ -311,9 +312,10 @@ const post = async (req, res) => {
         { file_syarat_baptis } = req.files,
         created_at = getTodayDate(),
         ketua_lingkungan_approval = 0,
-        ketua_lingkungan_approval_stamp = null
+        ketua_lingkungan_approval_stamp = null,
+      kode_lingkungan = await getKodeLingkungan(id_lingkungan)
 
-    let no_surat = await generateNomorSurat('F4', id_lingkungan, tableName)
+    let no_surat = await generateNomorSurat('F4', kode_lingkungan, tableName)
     
     // Maksud dari (isKetuaLingkungan === 'true') gunanya
     // untuk mengubah isKetuaLingkungan jadi Boolean.

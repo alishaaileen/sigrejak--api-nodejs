@@ -18,6 +18,12 @@ const hashPassword = (plainPassword) => {
     return hashSync(plainPassword, salt)
 }
 
+const getKodeLingkungan = async (idLingkungan) => {
+    const temp = await db('SELECT kode FROM Lingkungan WHERE id=?', idLingkungan)
+
+    return temp[0].kode
+}
+
 const getTodayDate = () => {
     // current timestamp in milliseconds
     let today = Date.now()
@@ -106,6 +112,7 @@ const deleteFile = async (pathToFiles, fileName) => {
 module.exports = {
     generateRandomString,
     hashPassword,
+    getKodeLingkungan,
     getTodayDate,
     getDateTime,
     checkUser,

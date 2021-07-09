@@ -271,7 +271,7 @@ const post = async (req, res) => {
 
         kode = (jenis_surat === 1 ? 'F6' : 'F7'), // 1 = Komuni I; 2 = Penguatan
 
-        no_surat = generateNomorSurat(kode, id_lingkungan, tableName)
+        no_surat = generateNomorSurat(kode, kode_lingkungan, tableName)
         created_at = getTodayDate(),
         ketua_lingkungan_approval = 0,
         ketua_lingkungan_approval_stamp = null

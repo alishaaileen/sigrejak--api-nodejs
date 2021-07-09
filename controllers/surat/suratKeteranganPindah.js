@@ -250,7 +250,7 @@ const post = async (req, res) => {
         created_at = getTodayDate(),
         ketua_lingkungan_approval = 0,
         ketua_lingkungan_approval_stamp = null,
-        no_surat = generateNomorSurat('F11', id_lingkungan, 'Surat_Keterangan')
+        no_surat = generateNomorSurat('F11', kode_lingkungan, tableName)
     
     if(isKetuaLingkungan === true) {
         ketua_lingkungan_approval = 1

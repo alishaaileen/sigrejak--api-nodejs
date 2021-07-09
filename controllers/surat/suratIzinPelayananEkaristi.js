@@ -1,6 +1,6 @@
 const db = require('../../connection')
     , { v4: uuidv4 } = require('uuid')
-    , { getTodayDate, getDateTime, generateNomorSurat } = require('../../utils')
+    , { getTodayDate, getDateTime, getKodeLingkungan, generateNomorSurat } = require('../../utils')
     , LogSuratcontroller = require('../logSurat')
     , tableName = 'Surat_Izin_Pelayanan_Ekaristi'
 
@@ -222,9 +222,10 @@ const post = async (req, res) => {
       } = req.body,
       created_at = getTodayDate(),
       ketua_lingkungan_approval = 0,
-      ketua_lingkungan_approval_stamp = null
+      ketua_lingkungan_approval_stamp = null,
+      kode_lingkungan = await getKodeLingkungan(id_lingkungan)
   
-  let no_surat = await generateNomorSurat('F1', id_lingkungan, tableName)
+  let no_surat = await generateNomorSurat('F1', kode_lingkungan, tableName)
       
   if(isKetuaLingkungan === true) {
     ketua_lingkungan_approval = 1
