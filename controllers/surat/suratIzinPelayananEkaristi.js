@@ -1,6 +1,7 @@
 const db = require('../../connection')
     , { v4: uuidv4 } = require('uuid')
-    , { getTodayDate, getDateTime, getKodeLingkungan, generateNomorSurat } = require('../../utils')
+    , { getTodayDate, getDateTime, getJumlahSuratNotApproved, 
+      getKodeLingkungan, generateNomorSurat } = require('../../utils')
     , LogSuratcontroller = require('../logSurat')
     , tableName = 'Surat_Izin_Pelayanan_Ekaristi'
 
@@ -201,6 +202,14 @@ const getByIdLingkungan = async (req, res) => {
           error: error.message
       })
   }
+}
+
+const getJumlahSuratNotApprovedByRole = async (req, res) => {
+  const { jenisSurat, approval } = req.params
+
+  const jumlah = await getJumlahSuratNotApproved(jenisSurat, approval)
+
+  return jumlah[0].jumlah_not_approved
 }
 
 const post = async (req, res) => {
@@ -432,6 +441,7 @@ module.exports = {
   getById,
   getByIdKeluarga,
   getByIdLingkungan,
+  getJumlahSuratNotApprovedByRole,
   post,
   update,
   verify,

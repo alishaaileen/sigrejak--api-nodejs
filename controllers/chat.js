@@ -23,6 +23,26 @@ const getByIdSurat = async (req, res) => {
     }
 }
 
+const getCountUnreadChatByIdSurat = async (req, res) => {
+    let { id_surat } = req.params
+
+    try {
+        let sql = `SELECT COUNT(id) AS count_unread FROM ${tableName} WHERE id_surat=? AND ${tableName}.read != 1`
+        let result = await db(sql, [ id_surat ])
+
+        res.status(200).send({
+            message: "Success counting unread chat",
+            result: result,
+        })
+    } catch (error) {
+        console.log(error.message)
+        res.status(500).send({
+            message: "Failed to retrieve data",
+            error: error.message
+        })
+    }
+}
+
 const post = async (req, res) => {
     let id = uuidv4(),
         waktu_kirim = getDateTime(),
@@ -59,8 +79,8 @@ const readAllChat = async (req, res) => {
     let { id_surat } = req.params
 
     try {
-        let sql = `UPDATE ${tableName} SET ? WHERE id_surat=? AND read=0`
-        await db(sql, [ { read: 1 }, id_surat ])
+        let sql = `UPDATE ${tableName} SET ? WHERE id_surat=? AND ${tableName}.read=0`
+        let result = await db(sql, [ { read: 1 }, id_surat ])
         
         res.status(200).send({
             message: "Success update read chat",
@@ -77,6 +97,7 @@ const readAllChat = async (req, res) => {
 
 module.exports = {
     getByIdSurat,
+    getCountUnreadChatByIdSurat,
     post,
     readAllChat,
 }

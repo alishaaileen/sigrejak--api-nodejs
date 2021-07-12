@@ -78,6 +78,27 @@ const getJumlahSuratBasedOnTahun = async (tableName, year) => {
     return result[0].jumlah
 }
 
+const getJumlahSuratNotApproved = async (jenisSurat, approval) => {
+    try {
+        let sql =
+            `SELECT COUNT(id) AS jumlah_not_approved
+            FROM ${tableName}
+            WHERE deleted_at IS NULL AND ${approval} != 1`
+            let result = await db(sql)
+  
+        res.status(200).send({
+            message: "Success retrieving data",
+            result: result,
+        })
+    } catch (error) {
+        console.log(error.message)
+        res.status(500).send({
+            message: "Failed to retrieve data",
+            error: error.message
+        })
+    }
+}
+
 const generateNomorSurat = async (kodeSurat, idLingkungan, tableName) => {
     // current timestamp in milliseconds
     let ts = Date.now(),
@@ -117,6 +138,7 @@ module.exports = {
     getDateTime,
     checkUser,
     generateNomorSurat,
+    getJumlahSuratNotApproved,
     generateFileName,
     deleteFile,
 }
