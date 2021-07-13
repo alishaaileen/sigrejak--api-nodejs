@@ -1,6 +1,7 @@
 const db = require('../../connection')
     , { v4: uuidv4 } = require('uuid')
-    , { getTodayDate, getDateTime, generateNomorSurat } = require('../../utils')
+    , { getTodayDate, getDateTime, getKodeLingkungan, generateNomorSurat } = require('../../utils')
+    , LogSuratcontroller = require('../logSurat')
     , tableName = 'Surat_Pelayanan_Minyak_Suci'
 
 const getAll = async (req, res) => {
@@ -233,7 +234,9 @@ const post = async (req, res) => {
         created_at = getTodayDate(),
         ketua_lingkungan_approval = 0,
         ketua_lingkungan_approval_stamp = null,
-        no_surat = await generateNomorSurat('F9', kode_lingkungan, tableName)
+        kode_lingkungan = await getKodeLingkungan(id_lingkungan)
+
+    let no_surat = await generateNomorSurat('F9', kode_lingkungan, tableName)
 
     if(isKetuaLingkungan === true) {
         ketua_lingkungan_approval = 1
@@ -270,6 +273,13 @@ const post = async (req, res) => {
                 created_at,
             }
         ])
+
+        // Catat ke log surat
+        LogSuratcontroller.post(id, 0, 0)
+
+        if(isKetuaLingkungan === true) {
+            LogSuratcontroller.post(id, 2, 1)
+        }
         
         res.status(200).send({
             message: "Success adding data",
@@ -339,6 +349,9 @@ const update = async (req, res) => {
                                         updated_at,
                                     }, id ]) 
     
+            // Catat ke log surat
+            LogSuratcontroller.post(id, 1, 0)
+            
             res.status(200).send({
                 message: "Success updating data",
                 result: result,
@@ -360,19 +373,23 @@ const verify = async (req, res) => {
             ketua_lingkungan,
             id_sekretariat,
         } = req.body,
-        data = {}
+        data = {},
+        roleId
   
     if(role === 'ketua lingkungan') {
         data.ketua_lingkungan = ketua_lingkungan
         data.ketua_lingkungan_approval = 1
         data.ketua_lingkungan_approval_stamp = getDateTime()
+        roleId = 1
     } else if (role === 'sekretariat'){
         data.id_sekretariat = id_sekretariat
         data.sekretariat_approval = 1
         data.sekretariat_approval_stamp = getDateTime()
+        roleId = 2
     } else if (role === 'pastor pelayan') {
         data.pastor_pelayan_approval = 1
         data.pastor_pelayan_approval_stamp = getDateTime()
+        roleId = 5
     }
         
     try {
@@ -386,6 +403,9 @@ const verify = async (req, res) => {
         } else {
             sql =  `UPDATE ${tableName} SET ? WHERE id=?`
             result = await db(sql, [ data, id ])
+
+            // Catat ke log surat
+            LogSuratcontroller.post(id, 2, roleId)
   
             res.status(200).send({
                 message: "Success verify data",
@@ -416,6 +436,9 @@ const remove = async (req, res) => {
         } else {
             sql =  `UPDATE ${tableName} SET ? WHERE id=?`
             result = await db(sql, [ { deleted_at }, id ])
+
+            // Catat ke log surat
+            LogSuratcontroller.post(id, 3, 0)
 
             res.status(200).send({
                 message: "Success deleting data",

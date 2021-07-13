@@ -62,8 +62,8 @@ const post = async (id_surat, kejadianId, roleId = 0) => {
             'Ketua Lingkungan', // 1
             'Sekretariat', // 2
             'Romo Paroki', // 3
-            'Imam', // 4 - Imam baptis 
-            'Pastor Pelayan' // 5 - Pastor utk baptis
+            'Imam', // 4
+            'Pastor Pelayan' // 5 - Pastor
         ]
 
     try {

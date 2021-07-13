@@ -1,14 +1,14 @@
 const express = require('express')
 const router = express.Router()
-const komuniPenguatanController = require('../../controllers/surat/suratKomuniPenguatan')
+const controller = require('../../controllers/surat/suratKomuniPenguatan')
 
-router.get('/', komuniPenguatanController.getAll)
-router.get('/:id', komuniPenguatanController.getById)
-router.get('/keluarga/:id', komuniPenguatanController.getByIdKeluarga)
-router.get('/lingkungan/:id', komuniPenguatanController.getByIdLingkungan)
-router.post('/add', komuniPenguatanController.post)
-router.patch('/:id', komuniPenguatanController.update)
-router.patch('/verifikasi/:id', komuniPenguatanController.verify)
-router.delete('/:id', komuniPenguatanController.remove)
+router.get('/', controller.getAll)
+router.get('/:id', controller.getById)
+router.get('/keluarga/:id', controller.getByIdKeluarga)
+router.get('/lingkungan/:id', controller.getByIdLingkungan)
+router.post('/add', controller.post)
+router.patch('/:id', controller.update)
+router.patch('/verifikasi/:id', controller.verify)
+router.delete('/:id', controller.remove)
 
 module.exports = router

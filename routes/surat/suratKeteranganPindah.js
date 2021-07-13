@@ -1,13 +1,14 @@
 const express = require('express')
 const router = express.Router()
-const keteranganPindahController = require('../../controllers/surat/suratKeteranganPindah')
+const controller = require('../../controllers/surat/suratKeteranganPindah')
 
-router.get('/', keteranganPindahController.getAll)
-router.get('/:id', keteranganPindahController.getById)
-router.get('/keluarga/:id', keteranganPindahController.getByIdKeluarga)
-router.get('/lingkungan/:id', keteranganPindahController.getByIdLingkungan)
-router.post('/add', keteranganPindahController.post)
-router.patch('/:id', keteranganPindahController.update)
-router.delete('/:id', keteranganPindahController.remove)
+router.get('/', controller.getAll)
+router.get('/:id', controller.getById)
+router.get('/keluarga/:id', controller.getByIdKeluarga)
+router.get('/lingkungan/:id', controller.getByIdLingkungan)
+router.post('/add', controller.post)
+router.patch('/verifikasi/:id', controller.verify)
+router.patch('/:id', controller.update)
+router.delete('/:id', controller.remove)
 
 module.exports = router

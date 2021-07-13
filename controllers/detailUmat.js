@@ -48,42 +48,26 @@ const getByIdUmat = async (req, res) => {
     }
 }
 
-const post = async (req, res) => {
-    let id = uuidv4(),
-        {
-            id_umat,
-            tgl_baptis,
-            tgl_komuni,
-            tgl_penguatan,
-            file_akta_lahir,
-            file_ktp,
-            id_ayah,
-            id_ibu,
-        } = req.body
+const post = async (id_umat) => {
+    let id = uuidv4()
 
     try {
         let sql = `INSERT INTO Detail_Umat SET ?`
         let result = await db(sql, [ {
                 id,
-                id_umat,
-                tgl_baptis,
-                tgl_komuni,
-                tgl_penguatan,
-                file_akta_lahir,
-                file_ktp,
-                id_ayah,
-                id_ibu,
+                id_umat
             } ])
         
-        res.status(200).send({
-            message: "Success adding data",
-            result: result,
-        })
+        // res.status(200).send({
+        //     message: "Success adding data",
+        //     result: result,
+        // })
     } catch (error) {
-        res.status(500).send({
-            message: "Failed adding data",
-            error: error.message,
-        })
+        console.log(error)
+        // res.status(500).send({
+        //     message: "Failed adding data",
+        //     error: error.message,
+        // })
     }
 }
 

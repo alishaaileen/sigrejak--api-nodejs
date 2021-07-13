@@ -1,6 +1,7 @@
 const db = require('../connection')
     , { v4: uuidv4 } = require('uuid')
     , { getTodayDate } = require('../utils')
+    , DetailUmatController = require('./detailUmat')
 
 const getAll = async (req, res) => {
     try {
@@ -171,6 +172,9 @@ const post = async (req, res) => {
                 created_at,
             } ])
         
+        // Buat detail umat
+        DetailUmatController.post(id)
+        
         res.status(200).send({
             message: "Success adding data",
             result: result,
@@ -250,7 +254,6 @@ const update = async (req, res) => {
 const remove = async (req, res) => {
     let { id } = req.params
     let deleted_at = getTodayDate()
-    // let is_umat_active = 0
 
     try {
         let sql =

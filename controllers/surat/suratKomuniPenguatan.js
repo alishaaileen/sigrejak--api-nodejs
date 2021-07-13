@@ -1,6 +1,8 @@
 const db = require('../../connection')
     , { v4: uuidv4 } = require('uuid')
-    , { getTodayDate, getDateTime, generateNomorSurat, generateFileName, deleteFile } = require('../../utils')
+    , { getTodayDate, getDateTime, getKodeLingkungan,
+        generateNomorSurat, generateFileName, deleteFile } = require('../../utils')
+    , LogSuratcontroller = require('../logSurat')
     , path = require('path')
     , tableName = 'Surat_Komuni_Penguatan'
 
@@ -267,14 +269,14 @@ const post = async (req, res) => {
             ketua_lingkungan,
             isKetuaLingkungan,
         } = req.body,
-        { file_syarat } = req.files,no_surat
-
-        kode = (jenis_surat === 1 ? 'F6' : 'F7'), // 1 = Komuni I; 2 = Penguatan
-
-        no_surat = generateNomorSurat(kode, kode_lingkungan, tableName)
+        { file_syarat } = req.files,
         created_at = getTodayDate(),
         ketua_lingkungan_approval = 0,
-        ketua_lingkungan_approval_stamp = null
+        ketua_lingkungan_approval_stamp = null,
+        kode = (jenis_surat === 1 ? 'F6' : 'F7'), // 1 = Komuni I; 2 = Penguatan
+        kode_lingkungan = await getKodeLingkungan(id_lingkungan)
+
+    let no_surat = await generateNomorSurat(kode, kode_lingkungan, tableName)
     
     // Maksud dari (isKetuaLingkungan === 'true') gunanya
     // untuk mengubah isKetuaLingkungan jadi Boolean.
@@ -325,6 +327,13 @@ const post = async (req, res) => {
                 created_at,
             }
         ])
+
+        // Catat ke log surat
+        LogSuratcontroller.post(id, 0, 0)
+
+        if(isKetuaLingkungan === true) {
+            LogSuratcontroller.post(id, 2, 1)
+        }
         
         res.status(200).send({
             message: "Success adding data",
@@ -426,7 +435,10 @@ const update = async (req, res) => {
                 data.file_syarat = tempNamaFile
             }
 
-            result = await db(sql, [ data, id ]) 
+            result = await db(sql, [ data, id ])
+
+            // Catat ke log surat
+            LogSuratcontroller.post(id, 1, 0)
     
             res.status(200).send({
                 message: "Success updating data",
@@ -450,20 +462,19 @@ const verify = async (req, res) => {
             id_sekretariat,
             id_romo,
         } = req.body,
-        data = {}
+        data = {},
+        roleId
   
     if(role === 'ketua lingkungan') {
         data.ketua_lingkungan = ketua_lingkungan
         data.ketua_lingkungan_approval = 1
         data.ketua_lingkungan_approval_stamp = getDateTime()
+        roleId = 1
     } else if (role === 'sekretariat'){
         data.id_sekretariat = id_sekretariat
         data.sekretariat_approval = 1
         data.sekretariat_approval_stamp = getDateTime()
-    } else if (role === 'romo paroki') {
-        data.id_romo = id_romo
-        data.romo_approval = 1
-        data.romo_approval_stamp = getDateTime()
+        roleId = 2
     }
         
     try {
@@ -477,6 +488,9 @@ const verify = async (req, res) => {
         } else {
             sql =  `UPDATE ${tableName} SET ? WHERE id=?`
             result = await db(sql, [ data, id ])
+
+            // Catat ke log surat
+            LogSuratcontroller.post(id, 2, roleId)
   
             res.status(200).send({
                 message: "Success verify data",
@@ -507,6 +521,9 @@ const remove = async (req, res) => {
         } else {
             sql =  `UPDATE ${tableName} SET ? WHERE id=?`
             result = await db(sql, [ { deleted_at }, id ])
+
+            // Catat ke log surat
+            LogSuratcontroller.post(id, 3, 0)
 
             res.status(200).send({
                 message: "Success deleting data",
