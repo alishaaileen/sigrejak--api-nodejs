@@ -1,5 +1,6 @@
 require('dotenv').config();
 const express = require('express')
+const path = require('path')
 const fileUpload = require('express-fileupload')
 const bodyParser = require('body-parser')
 const cors = require('cors')
@@ -42,7 +43,7 @@ const cetakSurat = require('./routes/surat/cetakSurat')
 app.use('/files', express.static('files'))
 
 
-app.get('/', (req, res) => res.send('haii'))
+// app.get('/', (req, res) => res.send('haii'))
 app.use('/check-user', checkUser)
 app.use('/admin', adminRoutes)
 app.use('/lingkungan', lingkunganRoutes)
@@ -63,6 +64,18 @@ app.use('/surat-keterangan-calon-pengantin', suratKeteranganCalonPengantin)
 app.use('/cetak', cetakSurat)
 app.use('/log-surat', logSurat)
 app.use('/chat', chat)
+
+
+
+const serveStatic = require("serve-static")
+// Static folder for Vue JS dist
+app.use(serveStatic(path.join(__dirname, 'dist')));
+// Handle SPA
+app.get(/.*/, (req, res) => res.sendFile(__dirname + '/dist/index.html'));
+
+
+
+
 
 app.listen(process.env.APP_PORT, () => {
     console.log(`Server is running on PORT :${process.env.APP_PORT}`)
