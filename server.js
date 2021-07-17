@@ -71,7 +71,7 @@ const serveStatic = require("serve-static")
 // Static folder for Vue JS dist
 app.use(serveStatic(path.join(__dirname, 'dist')));
 // Handle SPA
-app.get(/.*/, (req, res) => res.sendFile(__dirname + '/public/inde.html'));
+app.get(/.*/, (req, res) => res.sendFile(__dirname + '/dist/index.html'));
 
 
 
