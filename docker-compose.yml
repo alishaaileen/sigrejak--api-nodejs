@@ -1,0 +1,46 @@
+version: "3.8"
+services:
+  # node:
+  #   container_name: node-sigrejak
+  #   image: node
+  #   ports:
+  #     - "5001:5001"
+
+  db:
+    container_name: mysql-sigrejak
+    image: mysql:latest
+    environment:
+      - MYSQL_ALLOW_EMPTY_PASSWORD=true
+      - MYSQL_PASSWORD= 
+      - MYSQL_DATABASE=sigrejak
+    volumes:
+      - "./var/mysql:/var/lib/mysql"
+    networks:
+      - sigrejak
+  
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - /usr/src/sigrejak/
+      - /usr/src/sigrejak/node_modules
+    environment:
+      - APP_PORT=5000
+      - DB_PORT=3306
+      - DB_HOST=mysql-sigrejak
+      - DB_USER=root
+      # - DB_PASS=
+      - MYSQL_DB=sigrejak
+      - NODE_ENV=production
+      - JWT_SECRET_KEY=ZcaQyGQ7wNGw+6CwAyKiqZV1CcQyTYxTTXSQhiSDCvgv2rQ9aTrQ/dBbbrcapQPTthdB9e164rylOU1+xmDWbk3kNRp40HxN12hHxMV6w15XyGm8duXReEi9XC5NJkvd1IL6UvjRkxNKwmm/YDGTysvH2ucRV2UOu/aVe3vA/GezXXLP20oHU2qugJ94hLehi5fSArxN/uFIPW7sbdU4wBtnXl3Mu39puWVvVQ8DvHvev5ca0lMshpq/o+jyhXrHyqR9Q2FeGhspuebp+yOje66ZMyIIhcqDjwZUQqEWwk70ZWPd8c4NnWvlkaGRd59qWoI6q+F4WubRqbScZlYQjg==
+    ports:
+      - 5000:5000
+    depends_on:
+      - db
+    networks:
+      - sigrejak
+
+networks:
+  sigrejak:
+    name: sigrejak
