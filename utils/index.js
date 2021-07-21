@@ -100,7 +100,7 @@ const getJumlahSuratNotApproved = async (jenisSurat, approval) => {
 }
 
 const generateNomorSurat = async (kodeSurat, idLingkungan, tableName) => {
-    // current timestamp in milliseconds
+    // Get waktu saat ini untuk menentukan bulan dan tahun
     let ts = Date.now(),
         date_ob = new Date(ts),
         month = date_ob.getMonth() + 1,

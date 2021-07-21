@@ -91,7 +91,6 @@ const post = async (req, res) => {
             , created_at = getTodayDate()
             , plainPassword = generateRandomString(10)
             , password = hashPassword(plainPassword)
-        console.log(plainPassword)
     
         let sql = `INSERT INTO Admin SET ?`
         
@@ -107,7 +106,7 @@ const post = async (req, res) => {
         
         res.status(200).send({
             message: "Success adding data",
-            result: result,
+            result: {...result, generatedPassword: plainPassword},
         })
     } catch (error) {
         console.log(error.message)
@@ -213,29 +212,23 @@ const login = async (req, res) => {
         let admin = await db(sql,  email )
      
         if(admin.length === 0) {
-            res.status(404).send({
-                message: "Invalid email or password",
-            })
-        }
-        else {
+            res.status(404).send({ message: "Invalid email or password" })
+        } else {
             if(compareSync(password, admin[0].password)) {
                 let token = jwt.sign({
                     id: admin[0].id
-            }, process.env.JWT_SECRET_KEY, { expiresIn: "9999h"})
+                }, process.env.JWT_SECRET_KEY, { expiresIn: "9999h"})
                 res.status(200).send({
                     message: "Success logged in",
                     token: token
                 })
             } else {
-                res.status(401).send({
-                    message: "Invalid email or password",
-                })
+                res.status(401).send({ message: "Invalid email or password" })
             }
         }
     } catch (error) {
     
         res.status(500).send({
-           
             error: true,
             message:error
         })

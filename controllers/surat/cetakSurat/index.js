@@ -29,6 +29,8 @@ const getData = async (jenisSurat, id) => {
     return getDataSuratKomuniPenguatan(id)
   } else if(jenisSurat === 'surat-keterangan-calon-pengantin') {
     return getDataSuratKeteranganCalonPengantin(id)
+  } else if(jenisSurat === 'surat-baptis-anak') {
+    return getDataSuratBaptisAnak(id)
   }
 }
 
@@ -41,6 +43,7 @@ const getTemplateSurat = (jenisSurat) => {
   else if (jenisSurat === 'surat-keterangan-beasiswa') return 'suratKeteranganBeasiswa'
   else if (jenisSurat === 'surat-komuni-penguatan') return 'suratKomuniPenguatan'
   else if (jenisSurat === 'surat-keterangan-calon-pengantin') return 'suratKeteranganCalonPengantin'
+  else if (jenisSurat === 'surat-baptis-anak') return 'suratBaptisAnak'
 } 
 
 const cetakSurat = async (req, res) => {
@@ -89,7 +92,6 @@ const cetakSurat = async (req, res) => {
 // ==================================================================
 // QUERIES ==========================================================
 // ==================================================================
-
 
 const getDataSuratKeterangan = async (id) => {
   try {
@@ -509,6 +511,58 @@ const getDataSuratKeteranganCalonPengantin = async (id) => {
         JOIN (SELECT * FROM Umat) Ayah on (D.id_ayah=Ayah.id) 
         JOIN (SELECT * FROM Umat) Ibu on (D.id_ibu=Ibu.id) 
         JOIN Admin Romo ON (S.id_romo=Romo.id)
+        JOIN Lingkungan L ON (S.id_lingkungan=L.id)
+    WHERE S.id = ?`
+    let result = await db(sql, [ id ])
+    
+    if(result.length === 0) {
+      return 404
+    } else {
+      return result[0]
+    }
+  } catch (error) {
+    console.log(error.message)
+  }
+}
+
+const getDataSuratBaptisAnak = async (id) => {
+  try {
+    let sql = 
+    `SELECT S.id,
+            S.no_surat,
+            S.id_keluarga,
+            S.id_lingkungan,
+            L.nama_lingkungan,
+            S.id_anak,
+            A.nama,
+            S.nama_baptis,
+            A.tempat_lahir,
+            A.tgl_lahir,
+            Ayah.nama AS nama_ayah,
+            Ibu.nama AS nama_ibu,
+            Ayah.alamat AS alamat_ortu,
+            Ayah.no_telp AS no_telp_ortu,
+            S.cara_ortu_menikah,
+            S.tempat_ortu_menikah,
+            S.tgl_ortu_menikah,
+            S.nama_wali_baptis,
+            S.tgl_krisma_wali_baptis,
+            S.file_syarat_baptis,
+            S.ketua_lingkungan,
+            S.ketua_lingkungan_approval,
+            S.ketua_lingkungan_approval,
+            S.id_sekretariat,
+            S.sekretariat_approval,
+            S.sekretariat_approval,
+            S.jadwal_baptis,
+            S.id_romo_pembaptis,
+            Romo.nama AS nama_romo,
+            DATE_FORMAT(S.created_at, '%d-%m-%Y') AS created_at
+        FROM Surat_Baptis_Anak S JOIN Umat A on (S.id_anak=A.id)
+        JOIN Detail_Umat D ON (S.id_anak=D.id_umat)
+        JOIN (SELECT * FROM Umat) Ayah on (D.id_ayah=Ayah.id) 
+        JOIN (SELECT * FROM Umat) Ibu on (D.id_ibu=Ibu.id) 
+        JOIN Admin Romo ON (S.id_romo_pembaptis=Romo.id)
         JOIN Lingkungan L ON (S.id_lingkungan=L.id)
     WHERE S.id = ?`
     let result = await db(sql, [ id ])
