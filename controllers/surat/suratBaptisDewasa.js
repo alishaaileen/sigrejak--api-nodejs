@@ -29,23 +29,23 @@ const getAll = async (req, res) => {
                     S.tempat_menikah,
                     S.tgl_menikah,
                     S.pembatalan_perkawinan,
-                    S.tgl_mulai_belajar_agama
-                    S.tgl_mulai_ikut_ekaristi
-                    S.tgl_mulai_kegiatan_lingkungan
-                    S.nama_guru
-                    S.nama_wali
-                    S.tgl_krisma_wali
-                    S.tempat_krisma_wali
+                    S.tgl_mulai_belajar_agama,
+                    S.tgl_mulai_ikut_ekaristi,
+                    S.tgl_mulai_kegiatan_lingkungan,
+                    S.nama_guru,
+                    S.nama_wali,
+                    S.tgl_krisma_wali,
+                    S.tempat_krisma_wali,
                     S.file_syarat_baptis,
-                    S.tempat_tahap_satu
-                    S.tgl_tahap_satu
-                    S.id_romo_tahap_satu
-                    S.tempat_tahap_dua
-                    S.tgl_tahap_dua
-                    S.id_romo_tahap_dua
-                    S.tempat_baptis
-                    S.jadwal_baptis
-                    S.id_romo_pembaptis
+                    S.tempat_tahap_satu,
+                    S.tgl_tahap_satu,
+                    S.id_romo_tahap_satu,
+                    S.tempat_tahap_dua,
+                    S.tgl_tahap_dua,
+                    S.id_romo_tahap_dua,
+                    S.tempat_baptis,
+                    S.jadwal_baptis,
+                    S.id_romo_pembaptis,
                     S.ketua_lingkungan,
                     S.ketua_lingkungan_approval,
                     S.id_sekretariat,
@@ -99,23 +99,23 @@ const getAllSchedule = async (req, res) => {
                     S.tempat_menikah,
                     S.tgl_menikah,
                     S.pembatalan_perkawinan,
-                    S.tgl_mulai_belajar_agama
-                    S.tgl_mulai_ikut_ekaristi
-                    S.tgl_mulai_kegiatan_lingkungan
-                    S.nama_guru
-                    S.nama_wali
-                    S.tgl_krisma_wali
-                    S.tempat_krisma_wali
+                    S.tgl_mulai_belajar_agama,
+                    S.tgl_mulai_ikut_ekaristi,
+                    S.tgl_mulai_kegiatan_lingkungan,
+                    S.nama_guru,
+                    S.nama_wali,
+                    S.tgl_krisma_wali,
+                    S.tempat_krisma_wali,
                     S.file_syarat_baptis,
-                    S.tempat_tahap_satu
-                    S.tgl_tahap_satu
-                    S.id_romo_tahap_satu
-                    S.tempat_tahap_dua
-                    S.tgl_tahap_dua
-                    S.id_romo_tahap_dua
-                    S.tempat_baptis
-                    S.jadwal_baptis
-                    S.id_romo_pembaptis
+                    S.tempat_tahap_satu,
+                    S.tgl_tahap_satu,
+                    S.id_romo_tahap_satu,
+                    S.tempat_tahap_dua,
+                    S.tgl_tahap_dua,
+                    S.id_romo_tahap_dua,
+                    S.tempat_baptis,
+                    S.jadwal_baptis,
+                    S.id_romo_pembaptis,
                     S.ketua_lingkungan,
                     S.ketua_lingkungan_approval,
                     S.id_sekretariat,
@@ -171,23 +171,23 @@ const getById = async (req, res) => {
                     S.tempat_menikah,
                     S.tgl_menikah,
                     S.pembatalan_perkawinan,
-                    S.tgl_mulai_belajar_agama
-                    S.tgl_mulai_ikut_ekaristi
-                    S.tgl_mulai_kegiatan_lingkungan
-                    S.nama_guru
-                    S.nama_wali
-                    S.tgl_krisma_wali
-                    S.tempat_krisma_wali
+                    S.tgl_mulai_belajar_agama,
+                    S.tgl_mulai_ikut_ekaristi,
+                    S.tgl_mulai_kegiatan_lingkungan,
+                    S.nama_guru,
+                    S.nama_wali,
+                    S.tgl_krisma_wali,
+                    S.tempat_krisma_wali,
                     S.file_syarat_baptis,
-                    S.tempat_tahap_satu
-                    S.tgl_tahap_satu
-                    S.id_romo_tahap_satu
-                    S.tempat_tahap_dua
-                    S.tgl_tahap_dua
-                    S.id_romo_tahap_dua
-                    S.tempat_baptis
-                    S.jadwal_baptis
-                    S.id_romo_pembaptis
+                    S.tempat_tahap_satu,
+                    S.tgl_tahap_satu,
+                    S.id_romo_tahap_satu,
+                    S.tempat_tahap_dua,
+                    S.tgl_tahap_dua,
+                    S.id_romo_tahap_dua,
+                    S.tempat_baptis,
+                    S.jadwal_baptis,
+                    S.id_romo_pembaptis,
                     S.ketua_lingkungan,
                     S.ketua_lingkungan_approval,
                     S.id_sekretariat,
@@ -249,23 +249,23 @@ const getByIdLingkungan = async (req, res) => {
                     S.tempat_menikah,
                     S.tgl_menikah,
                     S.pembatalan_perkawinan,
-                    S.tgl_mulai_belajar_agama
-                    S.tgl_mulai_ikut_ekaristi
-                    S.tgl_mulai_kegiatan_lingkungan
-                    S.nama_guru
-                    S.nama_wali
-                    S.tgl_krisma_wali
-                    S.tempat_krisma_wali
+                    S.tgl_mulai_belajar_agama,
+                    S.tgl_mulai_ikut_ekaristi,
+                    S.tgl_mulai_kegiatan_lingkungan,
+                    S.nama_guru,
+                    S.nama_wali,
+                    S.tgl_krisma_wali,
+                    S.tempat_krisma_wali,
                     S.file_syarat_baptis,
-                    S.tempat_tahap_satu
-                    S.tgl_tahap_satu
-                    S.id_romo_tahap_satu
-                    S.tempat_tahap_dua
-                    S.tgl_tahap_dua
-                    S.id_romo_tahap_dua
-                    S.tempat_baptis
-                    S.jadwal_baptis
-                    S.id_romo_pembaptis
+                    S.tempat_tahap_satu,
+                    S.tgl_tahap_satu,
+                    S.id_romo_tahap_satu,
+                    S.tempat_tahap_dua,
+                    S.tgl_tahap_dua,
+                    S.id_romo_tahap_dua,
+                    S.tempat_baptis,
+                    S.jadwal_baptis,
+                    S.id_romo_pembaptis,
                     S.ketua_lingkungan,
                     S.ketua_lingkungan_approval,
                     S.id_sekretariat,
@@ -283,16 +283,10 @@ const getByIdLingkungan = async (req, res) => {
             WHERE S.id_lingkungan = ?`
         let result = await db(sql, [ id ])
 
-        if(result.length === 0) {
-            res.status(404).send({
-                message: "Data not found",
-            })
-        } else {
-            res.status(200).send({
-                message: "Success retrieving data",
-                result: result,
-            })
-        }
+        res.status(200).send({
+            message: "Success retrieving data",
+            result: result,
+        })
     } catch (error) {
         console.log(error.message)
         res.status(500).send({
@@ -327,23 +321,30 @@ const getByIdKeluarga = async (req, res) => {
                     S.tempat_menikah,
                     S.tgl_menikah,
                     S.pembatalan_perkawinan,
-                    S.tgl_mulai_belajar_agama
-                    S.tgl_mulai_ikut_ekaristi
-                    S.tgl_mulai_kegiatan_lingkungan
-                    S.nama_guru
-                    S.nama_wali
-                    S.tgl_krisma_wali
-                    S.tempat_krisma_wali
+                    S.status_perkawinan,
+                    S.calon_pasangan,
+                    S.tgl_menikah_calon,
+                    S.cara_menikah,
+                    S.tempat_menikah,
+                    S.tgl_menikah,
+                    S.pembatalan_perkawinan,
+                    S.tgl_mulai_belajar_agama,
+                    S.tgl_mulai_ikut_ekaristi,
+                    S.tgl_mulai_kegiatan_lingkungan,
+                    S.nama_guru,
+                    S.nama_wali,
+                    S.tgl_krisma_wali,
+                    S.tempat_krisma_wali,
                     S.file_syarat_baptis,
-                    S.tempat_tahap_satu
-                    S.tgl_tahap_satu
-                    S.id_romo_tahap_satu
-                    S.tempat_tahap_dua
-                    S.tgl_tahap_dua
-                    S.id_romo_tahap_dua
-                    S.tempat_baptis
-                    S.jadwal_baptis
-                    S.id_romo_pembaptis
+                    S.tempat_tahap_satu,
+                    S.tgl_tahap_satu,
+                    S.id_romo_tahap_satu,
+                    S.tempat_tahap_dua,
+                    S.tgl_tahap_dua,
+                    S.id_romo_tahap_dua,
+                    S.tempat_baptis,
+                    S.jadwal_baptis,
+                    S.id_romo_pembaptis,
                     S.ketua_lingkungan,
                     S.ketua_lingkungan_approval,
                     S.id_sekretariat,

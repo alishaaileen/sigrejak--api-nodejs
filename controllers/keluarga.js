@@ -100,8 +100,6 @@ const post = async (req, res) => {
             email,
         } = req.body
 
-    console.log(await checkUsernameOrEmailExist(username, 'username'))
-
     if ( await checkUsernameOrEmailExist(username, 'username') ) {
         res.status(409).send({ message: "Username sudah dipakai" })
         return
@@ -113,7 +111,6 @@ const post = async (req, res) => {
 
     try {
         let plainPassword = generateRandomString(6)
-        console.log(plainPassword)
         let password = hashPassword(plainPassword)
         
         sql = `INSERT INTO Keluarga SET ?`
@@ -130,7 +127,7 @@ const post = async (req, res) => {
         
         res.status(200).send({
             message: "Success adding data",
-            result: result,
+            result: {...result, generatedPassword: plainPassword},
         })
     } catch (error) {
         console.log(error.message)

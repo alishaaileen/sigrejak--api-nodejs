@@ -173,16 +173,10 @@ const getByIdLingkungan = async (req, res) => {
             WHERE S.id_lingkungan = ?`
         let result = await db(sql, [ id ])
 
-        if(result.length === 0) {
-            res.status(404).send({
-                message: "Data not found",
-            })
-        } else {
-            res.status(200).send({
-                message: "Success retrieving data",
-                result: result,
-            })
-        }
+        res.status(200).send({
+            message: "Success retrieving data",
+            result: result,
+        })
     } catch (error) {
         console.log(error.message)
         res.status(500).send({

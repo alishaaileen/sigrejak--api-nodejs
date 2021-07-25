@@ -205,11 +205,42 @@ const getByIdLingkungan = async (req, res) => {
 }
 
 const getJumlahSuratNotApprovedByRole = async (req, res) => {
-  const { jenisSurat, approval } = req.params
+  const { role } = req.params
 
-  const jumlah = await getJumlahSuratNotApproved(jenisSurat, approval)
+  const jumlah = await getJumlahSuratNotApproved('surat-izin-pelayanan-ekaristi', approval)
 
   return jumlah[0].jumlah_not_approved
+}
+
+// get All surat tapi tidak semua data
+const getAllBriefInfo = async (req, res) => {
+  try {
+    let sql =
+      `SELECT id,
+              no_surat,
+              id_keluarga,
+              id_lingkungan,
+              ketua_lingkungan,
+              ketua_lingkungan_approval,
+              id_sekretariat,
+              sekretariat_approval,
+              id_romo,
+              romo_approval,
+              created_at,
+      FROM ${tableName}`
+    let result = await db(sql)
+
+    res.status(200).send({
+      message: "Success retrieving data",
+      result: result,
+    })
+  } catch (error) {
+    console.log(error.message)
+    res.status(500).send({
+      message: "Failed to retrieve data",
+      error: error.message
+    })
+  }
 }
 
 const post = async (req, res) => {
@@ -442,6 +473,7 @@ module.exports = {
   getByIdKeluarga,
   getByIdLingkungan,
   getJumlahSuratNotApprovedByRole,
+  getAllBriefInfo,
   post,
   update,
   verify,
