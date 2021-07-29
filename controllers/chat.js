@@ -24,10 +24,14 @@ const getByIdSurat = async (req, res) => {
 }
 
 const getCountUnreadChatByIdSurat = async (req, res) => {
-    let { id_surat } = req.params
+    let { id_surat, id_keluarga } = req.params
 
     try {
-        let sql = `SELECT COUNT(id) AS count_unread FROM ${tableName} WHERE id_surat=? AND ${tableName}.read != 1`
+        let sql =
+                `SELECT COUNT(id) AS count_unread
+                FROM ${tableName}
+                WHERE id_surat=? AND id_pengirim != '${id_keluarga}' AND ${tableName}.read != 1`
+
         let result = await db(sql, [ id_surat ])
 
         res.status(200).send({
@@ -47,7 +51,7 @@ const post = async (req, res) => {
     let id = uuidv4(),
         waktu_kirim = getDateTime(),
         read = 0,
-        { id_surat, pengirim, teks } = req.body
+        { id_surat, id_pengirim, teks } = req.body
 
     try {
         let sql = `INSERT INTO ${tableName} SET ?`
@@ -55,7 +59,7 @@ const post = async (req, res) => {
             {
                 id,
                 id_surat,
-                pengirim,
+                id_pengirim,
                 teks,
                 waktu_kirim,
                 read,
@@ -76,11 +80,11 @@ const post = async (req, res) => {
 }
 
 const readAllChat = async (req, res) => {
-    let { id_surat } = req.params
+    let { id_surat, id_keluarga } = req.params
 
     try {
-        let sql = `UPDATE ${tableName} SET ? WHERE id_surat=? AND ${tableName}.read=0`
-        let result = await db(sql, [ { read: 1 }, id_surat ])
+        let sql = `UPDATE ${tableName} SET ? WHERE id_surat=? AND id_pengirim!=? AND ${tableName}.read=0`
+        let result = await db(sql, [ { read: 1 }, id_surat, id_keluarga ])
         
         res.status(200).send({
             message: "Success update read chat",

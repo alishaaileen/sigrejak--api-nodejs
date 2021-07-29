@@ -5,6 +5,8 @@ const fs = require('fs-extra')
 const hbs = require('handlebars')
 const path = require('path')
 
+const hariList = ['Minggu','Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu']
+
 const compile = async (templateName, data) => {
   const filePath = path.join(`templates/`, `${templateName}.hbs`)
   const html = await fs.readFile(filePath, 'utf-8')
@@ -134,6 +136,7 @@ const getDataSuratKeterangan = async (id) => {
 }
 
 const getDataSuratIzinEkaristi = async (id) => {
+
   try {
     let sql = 
     `SELECT S.id,
@@ -144,7 +147,7 @@ const getDataSuratIzinEkaristi = async (id) => {
             K.no_telp_kepala_keluarga,
             S.id_lingkungan,
             L.nama_lingkungan,
-            DATE_FORMAT(S.tgl_pelaksanaan, '%d-%m-%Y') AS tgl_pelaksanaan,
+            S.tgl_pelaksanaan,
             S.waktu_mulai,
             S.waktu_selesai,
             S.intensi,
@@ -170,8 +173,24 @@ const getDataSuratIzinEkaristi = async (id) => {
     if(result.length === 0) {
       return 404
     } else {
+      //  GET nama hari utl tgl domisili lama
+      let tempTgl = new Date(result[0].tgl_pelaksanaan)
+      result[0].hari = hariList[tempTgl.getDay()]
+      
+      //  UBAH format YYYY-MM-DD jadi DD-MM-YYYY
+      let date = tempTgl.getDate()
+      , month = tempTgl.getMonth()
+      , year = tempTgl.getFullYear()
+
+      //  UBAH tgl dan bulan jadi 2 digit kalo cuma 1 digit
+      date = date < 10 ? `0${date}` : date
+      month = month < 10 ? `0${month}` : month
+
+      result[0].tgl_pelaksanaan = `${date}-${month}-${year}`
+
       result[0].waktu_mulai = result[0].waktu_mulai.substring(0,5)
       result[0].waktu_selesai = result[0].waktu_selesai.substring(0,5)
+
       return result[0]
     }
   } catch (error) {
@@ -270,8 +289,6 @@ const getDataSuratKeteranganPindah = async (id) => {
     if(result.length === 0) {
       return 404
     } else {
-      const hariList = ['Minggu','Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu']
-
       //  GET nama hari utl tgl domisili lama
       let tempTgl = new Date(result[0].tgl_domisili_lama)
       result[0].hari_domisili_lama = hariList[tempTgl.getDay()]

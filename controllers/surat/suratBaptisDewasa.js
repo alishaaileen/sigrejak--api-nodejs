@@ -36,6 +36,7 @@ const getAll = async (req, res) => {
                     S.nama_wali,
                     S.tgl_krisma_wali,
                     S.tempat_krisma_wali,
+                    D.file_akta_lahir,
                     S.file_syarat_baptis,
                     S.tempat_tahap_satu,
                     S.tgl_tahap_satu,
@@ -106,6 +107,7 @@ const getAllSchedule = async (req, res) => {
                     S.nama_wali,
                     S.tgl_krisma_wali,
                     S.tempat_krisma_wali,
+                    D.file_akta_lahir,
                     S.file_syarat_baptis,
                     S.tempat_tahap_satu,
                     S.tgl_tahap_satu,
@@ -171,6 +173,7 @@ const getById = async (req, res) => {
                     S.tempat_menikah,
                     S.tgl_menikah,
                     S.pembatalan_perkawinan,
+                    D.file_akta_lahir,
                     S.tgl_mulai_belajar_agama,
                     S.tgl_mulai_ikut_ekaristi,
                     S.tgl_mulai_kegiatan_lingkungan,
@@ -249,6 +252,7 @@ const getByIdLingkungan = async (req, res) => {
                     S.tempat_menikah,
                     S.tgl_menikah,
                     S.pembatalan_perkawinan,
+                    D.file_akta_lahir,
                     S.tgl_mulai_belajar_agama,
                     S.tgl_mulai_ikut_ekaristi,
                     S.tgl_mulai_kegiatan_lingkungan,
@@ -321,6 +325,7 @@ const getByIdKeluarga = async (req, res) => {
                     S.tempat_menikah,
                     S.tgl_menikah,
                     S.pembatalan_perkawinan,
+                    D.file_akta_lahir,
                     S.status_perkawinan,
                     S.calon_pasangan,
                     S.tgl_menikah_calon,
@@ -420,11 +425,11 @@ const post = async (req, res) => {
 
     try {
         let pathToFiles = `files/`
-        let tempNamaFile = generateFileName('baptis-anak', path.extname(file_syarat_baptis.name))
+        let tempNamaFile = generateFileName('baptis-dewasa', path.extname(file_syarat_baptis.name))
 
         file_syarat_baptis.mv(`${pathToFiles}${tempNamaFile}`, (err) => {
             if(err) {
-                console.log("syarat baptis anak error: "+err)
+                console.log("syarat baptis dewasa error: "+err)
                 return res.status(500).send({
                     message: "Failed to save file",
                 })
@@ -486,24 +491,23 @@ const update = async (req, res) => {
         id_lingkungan,
         id_umat,
         nama_baptis,
-        cara_ortu_menikah,
-        tempat_ortu_menikah,
-        tgl_ortu_menikah,
-        nama_wali_baptis,
-        tgl_krisma_wali_baptis,
+        status_perkawinan,
+        calon_pasangan,
+        tgl_menikah_calon,
+        cara_menikah,
+        tempat_menikah,
+        tgl_menikah,
+        pembatalan_perkawinan,
+        tgl_mulai_belajar_agama,
+        tgl_mulai_ikut_ekaristi,
+        tgl_mulai_kegiatan_lingkungan,
+        nama_guru,
+        nama_wali,
+        tgl_krisma_wali,
+        tempat_krisma_wali,
     } = req.body,
     file_syarat_baptis = null
     file_syarat_baptis = req.files != null ? req.files.file_syarat_baptis : null
-
-    console.log(typeof req.files)
-
-    // Saat ketua lingkungan blm approve dan user edit data,
-    // ketua_lingkungan_approval harus di-set jadi 0
-    // karena by default dari front end itu undefined
-    // Karna di front end pakenya FormData()
-    // if (ketua_lingkungan_approval === undefined) {
-    //     ketua_lingkungan_approval = 0
-    // }
 
     let updated_at = getTodayDate()
     let { id } = req.params
@@ -529,7 +533,7 @@ const update = async (req, res) => {
                     }
                 }
     
-                tempNamaFile = generateFileName('baptis-anak', path.extname(file_syarat_baptis.name))
+                tempNamaFile = generateFileName('baptis-dewasa', path.extname(file_syarat_baptis.name))
     
                 file_syarat_baptis.mv(`${pathToFiles}${tempNamaFile}`, (err) => {
                     if(err) {
@@ -547,11 +551,20 @@ const update = async (req, res) => {
                 id_lingkungan,
                 id_umat,
                 nama_baptis,
-                cara_ortu_menikah,
-                tempat_ortu_menikah,
-                tgl_ortu_menikah,
-                nama_wali_baptis,
-                tgl_krisma_wali_baptis,
+                status_perkawinan,
+                calon_pasangan,
+                tgl_menikah_calon,
+                cara_menikah,
+                tempat_menikah,
+                tgl_menikah,
+                pembatalan_perkawinan,
+                tgl_mulai_belajar_agama,
+                tgl_mulai_ikut_ekaristi,
+                tgl_mulai_kegiatan_lingkungan,
+                nama_guru,
+                nama_wali,
+                tgl_krisma_wali,
+                tempat_krisma_wali,
                 updated_at,
             }
             if(file_syarat_baptis != null) {
@@ -583,7 +596,14 @@ const verify = async (req, res) => {
             role,
             ketua_lingkungan,
             id_sekretariat,
+            tempat_tahap_satu,
+            tgl_tahap_satu,
+            id_romo_tahap_satu,
+            tempat_tahap_dua,
+            tgl_tahap_dua,
+            id_romo_tahap_dua,
             jadwal_baptis,
+            tempat_baptis,
             id_romo_pembaptis,
             nama_baptis,
         } = req.body,
@@ -598,10 +618,19 @@ const verify = async (req, res) => {
         data.id_sekretariat = id_sekretariat
         data.sekretariat_approval = 1
         data.sekretariat_approval_stamp = getDateTime()
+        data.tempat_tahap_satu = tempat_tahap_satu
+        data.tgl_tahap_satu = tgl_tahap_satu
+        data.id_romo_tahap_satu = id_romo_tahap_satu
+        data.tempat_tahap_dua = tempat_tahap_dua
+        data.tgl_tahap_dua = tgl_tahap_dua
+        data.id_romo_tahap_dua = id_romo_tahap_dua
         data.jadwal_baptis = jadwal_baptis
+        data.tempat_baptis = tempat_baptis
         data.id_romo_pembaptis = id_romo_pembaptis
         roleId = 2
     }
+
+    console.log(data.id_romo_tahap_satu)
         
     try {
         let sql = `SELECT * FROM ${tableName} WHERE id = ?`

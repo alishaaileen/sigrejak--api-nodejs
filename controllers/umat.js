@@ -173,7 +173,7 @@ const post = async (req, res) => {
             } ])
         
         // Buat detail umat
-        DetailUmatController.post(id)
+        await DetailUmatController.post(id)
         
         res.status(200).send({
             message: "Success adding data",

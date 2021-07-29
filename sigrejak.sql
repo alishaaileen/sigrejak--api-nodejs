@@ -391,10 +391,10 @@ CREATE TABLE IF NOT EXISTS `sigrejak`.`Surat_Baptis_Dewasa` (
   
   `status_perkawinan` VARCHAR(50) NOT NULL,
   `calon_pasangan` VARCHAR(255),
-  `tgl_menikah_calon` DATE,
+  `tgl_menikah_calon` DATE DEFAULT NULL,
   `cara_menikah` VARCHAR(150),
   `tempat_menikah` VARCHAR(255),
-  `tgl_menikah` DATE,
+  `tgl_menikah` DATE DEFAULT NULL,
   `pembatalan_perkawinan` VARCHAR(150),
   
   `tgl_mulai_belajar_agama` DATE NOT NULL,
@@ -409,15 +409,15 @@ CREATE TABLE IF NOT EXISTS `sigrejak`.`Surat_Baptis_Dewasa` (
   
   `file_syarat_baptis` VARCHAR(255) NOT NULL,
   
-  `tempat_tahap_satu` VARCHAR(255),
-  `tgl_tahap_satu` DATE,
   `id_romo_tahap_satu` VARCHAR(36),
-  `tempat_tahap_dua` VARCHAR(255),
-  `tgl_tahap_dua` DATE,
+  `tgl_tahap_satu` DATE,
+  `tempat_tahap_satu` VARCHAR(255),
   `id_romo_tahap_dua` VARCHAR(36),
-  `tempat_baptis` VARCHAR(255),
-  `jadwal_baptis` DATETIME,
+  `tgl_tahap_dua` DATE,
+  `tempat_tahap_dua` VARCHAR(255),
   `id_romo_pembaptis` VARCHAR(36),
+  `jadwal_baptis` DATETIME,
+  `tempat_baptis` VARCHAR(255),
   
   `ketua_lingkungan` VARCHAR(255),
   `ketua_lingkungan_approval` TINYINT,
@@ -439,6 +439,12 @@ CREATE TABLE IF NOT EXISTS `sigrejak`.`Surat_Baptis_Dewasa` (
   CONSTRAINT `fk_surat_baptis_dewasa_umat`
     FOREIGN KEY (`id_umat`)
     REFERENCES `sigrejak`.`Umat` (`id`),
+  CONSTRAINT `fk_surat_baptis_dewasa_romo_tahap_satu`
+    FOREIGN KEY (`id_romo_tahap_satu`)
+    REFERENCES `sigrejak`.`Admin` (`id`),
+  CONSTRAINT `fk_surat_baptis_dewasa_romo_tahap_dua`
+    FOREIGN KEY (`id_romo_tahap_satu`)
+    REFERENCES `sigrejak`.`Admin` (`id`),
   CONSTRAINT `fk_surat_baptis_dewasa_romo_pembaptis`
     FOREIGN KEY (`id_romo_pembaptis`)
     REFERENCES `sigrejak`.`Admin` (`id`),
@@ -657,7 +663,7 @@ DEFAULT CHARACTER SET = utf8mb3;
 CREATE TABLE IF NOT EXISTS `sigrejak`.`Chat` (
   `id` VARCHAR(36) NOT NULL,
   `id_surat` VARCHAR(36) NOT NULL,
-  `pengirim` TINYINT NOT NULL, -- 0 = ketua lingkungan; 1 = keluarga
+  `id_pengirim` VARCHAR(36) NOT NULL,
   `teks` TEXT NOT NULL,
   `waktu_kirim` DATETIME NOT NULL,
   `read` TINYINT NOT NULL,
