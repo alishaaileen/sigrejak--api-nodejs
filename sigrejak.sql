@@ -1,9 +1,3 @@
--- MySQL Workbench Forward Engineering
-
-SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
-SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
-SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION';
-
 -- -----------------------------------------------------
 -- Schema mydb
 -- -----------------------------------------------------
@@ -381,78 +375,67 @@ DEFAULT CHARACTER SET = utf8mb3;
 -- -----------------------------------------------------
 -- Table `sigrejak`.`Surat_Baptis_Dewasa`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `sigrejak`.`Surat_Baptis_Dewasa` (
-  `id` VARCHAR(36) NOT NULL,
-  `no_surat` VARCHAR(50) UNIQUE NOT NULL,
-  `id_keluarga` VARCHAR(36) NOT NULL,
-  `id_lingkungan` VARCHAR(36) NOT NULL,
-  `id_umat` VARCHAR(36) NOT NULL,
-  `nama_baptis` VARCHAR(255) NOT NULL,
-  
-  `status_perkawinan` VARCHAR(50) NOT NULL,
-  `calon_pasangan` VARCHAR(255),
-  `tgl_menikah_calon` DATE DEFAULT NULL,
-  `cara_menikah` VARCHAR(150),
-  `tempat_menikah` VARCHAR(255),
-  `tgl_menikah` DATE DEFAULT NULL,
-  `pembatalan_perkawinan` VARCHAR(150),
-  
-  `tgl_mulai_belajar_agama` DATE NOT NULL,
-  `tgl_mulai_ikut_ekaristi` DATE NOT NULL,
-  `tgl_mulai_kegiatan_lingkungan` DATE NOT NULL,
-  
-  `nama_guru` VARCHAR(255) NOT NULL,
-  
-  `nama_wali` VARCHAR(255) NOT NULL,
-  `tgl_krisma_wali` DATE NOT NULL,
-  `tempat_krisma_wali` VARCHAR(255) NOT NULL,
-  
-  `file_syarat_baptis` VARCHAR(255) NOT NULL,
-  
-  `id_romo_tahap_satu` VARCHAR(36),
-  `tgl_tahap_satu` DATE,
-  `tempat_tahap_satu` VARCHAR(255),
-  `id_romo_tahap_dua` VARCHAR(36),
-  `tgl_tahap_dua` DATE,
-  `tempat_tahap_dua` VARCHAR(255),
-  `id_romo_pembaptis` VARCHAR(36),
-  `jadwal_baptis` DATETIME,
-  `tempat_baptis` VARCHAR(255),
-  
-  `ketua_lingkungan` VARCHAR(255),
-  `ketua_lingkungan_approval` TINYINT,
-  `ketua_lingkungan_approval_stamp` DATETIME,
-
-  `id_sekretariat` VARCHAR(36),
-  `sekretariat_approval` TINYINT,
-  `sekretariat_approval_stamp` DATETIME,
-  `created_at` DATE,
-  `updated_at` DATE,
-  `deleted_at` DATE,
-  PRIMARY KEY (`id`),
-  CONSTRAINT `fk_surat_baptis_dewasa_keluarga`
-    FOREIGN KEY (`id_keluarga`)
-    REFERENCES `sigrejak`.`Keluarga` (`id`),
-  CONSTRAINT `fk_surat_baptis_dewasa_lingkungan`
-    FOREIGN KEY (`id_lingkungan`)
-    REFERENCES `sigrejak`.`Lingkungan` (`id`),
-  CONSTRAINT `fk_surat_baptis_dewasa_umat`
-    FOREIGN KEY (`id_umat`)
-    REFERENCES `sigrejak`.`Umat` (`id`),
-  CONSTRAINT `fk_surat_baptis_dewasa_romo_tahap_satu`
-    FOREIGN KEY (`id_romo_tahap_satu`)
-    REFERENCES `sigrejak`.`Admin` (`id`),
-  CONSTRAINT `fk_surat_baptis_dewasa_romo_tahap_dua`
-    FOREIGN KEY (`id_romo_tahap_satu`)
-    REFERENCES `sigrejak`.`Admin` (`id`),
-  CONSTRAINT `fk_surat_baptis_dewasa_romo_pembaptis`
-    FOREIGN KEY (`id_romo_pembaptis`)
-    REFERENCES `sigrejak`.`Admin` (`id`),
-  CONSTRAINT `fk_surat_baptis_dewasa_sekretariat`
-    FOREIGN KEY (`id_sekretariat`)
-    REFERENCES `sigrejak`.`Admin` (`id`))
-ENGINE = InnoDB
-DEFAULT CHARACTER SET = utf8mb3;
+CREATE TABLE `Surat_Baptis_Dewasa` (
+  `id` varchar(36) NOT NULL,
+  `no_surat` varchar(50) NOT NULL,
+  `id_keluarga` varchar(36) NOT NULL,
+  `id_lingkungan` varchar(36) NOT NULL,
+  `id_umat` varchar(36) NOT NULL,
+  `nama_baptis` varchar(255) NOT NULL,
+  `status_perkawinan` varchar(50) NOT NULL,
+  `calon_pasangan` varchar(255) DEFAULT NULL,
+  `tgl_menikah_calon` date DEFAULT NULL,
+  `cara_menikah` varchar(150) DEFAULT NULL,
+  `tempat_menikah` varchar(255) DEFAULT NULL,
+  `tgl_menikah` date DEFAULT NULL,
+  `pembatalan_perkawinan` varchar(150) DEFAULT NULL,
+  `tgl_mulai_belajar_agama` date NOT NULL,
+  `tgl_mulai_ikut_ekaristi` date NOT NULL,
+  `tgl_mulai_kegiatan_lingkungan` date NOT NULL,
+  `nama_guru` varchar(255) NOT NULL,
+  `nama_wali` varchar(255) NOT NULL,
+  `tgl_krisma_wali` date NOT NULL,
+  `tempat_krisma_wali` varchar(255) NOT NULL,
+  `file_syarat_baptis` varchar(255) NOT NULL,
+  `id_romo_tahap_satu` varchar(36) DEFAULT NULL,
+  `tgl_tahap_satu` date DEFAULT NULL,
+  `tempat_tahap_satu` varchar(255) DEFAULT NULL,
+  `id_romo_tahap_dua` varchar(36) DEFAULT NULL,
+  `tgl_tahap_dua` date DEFAULT NULL,
+  `tempat_tahap_dua` varchar(255) DEFAULT NULL,
+  `id_romo_pembaptis` varchar(36) DEFAULT NULL,
+  `jadwal_baptis` datetime DEFAULT NULL,
+  `tempat_baptis` varchar(255) DEFAULT NULL,
+  `ketua_lingkungan` varchar(255) DEFAULT NULL,
+  `ketua_lingkungan_approval` tinyint(4) DEFAULT NULL,
+  `ketua_lingkungan_approval_stamp` datetime DEFAULT NULL,
+  `id_sekretariat` varchar(36) DEFAULT NULL,
+  `sekretariat_approval` tinyint(4) DEFAULT NULL,
+  `sekretariat_approval_stamp` datetime DEFAULT NULL,
+  `created_at` date DEFAULT NULL,
+  `updated_at` date DEFAULT NULL,
+  `deleted_at` date DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+--
+ALTER TABLE `Surat_Baptis_Dewasa`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `no_surat` (`no_surat`),
+  ADD KEY `fk_surat_baptis_dewasa_keluarga` (`id_keluarga`),
+  ADD KEY `fk_surat_baptis_dewasa_lingkungan` (`id_lingkungan`),
+  ADD KEY `fk_surat_baptis_dewasa_umat` (`id_umat`),
+  ADD KEY `fk_surat_baptis_dewasa_romo_tahap_dua` (`id_romo_tahap_satu`),
+  ADD KEY `fk_surat_baptis_dewasa_romo_pembaptis` (`id_romo_pembaptis`),
+  ADD KEY `fk_surat_baptis_dewasa_sekretariat` (`id_sekretariat`);
+--
+ALTER TABLE `Surat_Baptis_Dewasa`
+  ADD CONSTRAINT `fk_surat_baptis_dewasa_keluarga` FOREIGN KEY (`id_keluarga`) REFERENCES `Keluarga` (`id`),
+  ADD CONSTRAINT `fk_surat_baptis_dewasa_lingkungan` FOREIGN KEY (`id_lingkungan`) REFERENCES `Lingkungan` (`id`),
+  ADD CONSTRAINT `fk_surat_baptis_dewasa_romo_pembaptis` FOREIGN KEY (`id_romo_pembaptis`) REFERENCES `Admin` (`id`),
+  ADD CONSTRAINT `fk_surat_baptis_dewasa_romo_tahap_dua` FOREIGN KEY (`id_romo_tahap_satu`) REFERENCES `Admin` (`id`),
+  ADD CONSTRAINT `fk_surat_baptis_dewasa_romo_tahap_satu` FOREIGN KEY (`id_romo_tahap_satu`) REFERENCES `Admin` (`id`),
+  ADD CONSTRAINT `fk_surat_baptis_dewasa_sekretariat` FOREIGN KEY (`id_sekretariat`) REFERENCES `Admin` (`id`),
+  ADD CONSTRAINT `fk_surat_baptis_dewasa_umat` FOREIGN KEY (`id_umat`) REFERENCES `Umat` (`id`);
+COMMIT;
 
 -- -----------------------------------------------------
 -- Table `sigrejak`.`Surat_Komuni_Penguatan`
@@ -683,7 +666,3 @@ CREATE TABLE IF NOT EXISTS `sigrejak`.`Log_Surat` (
   PRIMARY KEY (`id`))
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb3;
-
-SET SQL_MODE=@OLD_SQL_MODE;
-SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
-SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
