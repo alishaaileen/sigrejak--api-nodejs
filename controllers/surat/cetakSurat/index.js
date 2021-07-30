@@ -597,7 +597,7 @@ const getDataSuratBaptisAnak = async (id) => {
   }
 }
 
-const getDataSuratBaptisAnak = async (id) => {
+const getDataSuratBaptisDewasa = async (id) => {
   try {
     let sql = 
     `SELECT S.id,
@@ -616,46 +616,50 @@ const getDataSuratBaptisAnak = async (id) => {
             Ibu.nama AS nama_ibu,
             S.status_perkawinan,
             S.calon_pasangan,
-            S.tgl_menikah_calon,
+            DATE_FORMAT(S.tgl_menikah_calon, '%d-%m-%Y') AS tgl_menikah_calon,
             S.cara_menikah,
             S.tempat_menikah,
-            S.tgl_menikah,
+            DATE_FORMAT(S.tgl_menikah, '%d-%m-%Y') AS tgl_menikah,
             S.pembatalan_perkawinan,
-            D.file_akta_lahir,
-            S.status_perkawinan,
-            S.calon_pasangan,
-            S.tgl_menikah_calon,
-            S.cara_menikah,
-            S.tempat_menikah,
-            S.tgl_menikah,
-            S.pembatalan_perkawinan,
-            S.tgl_mulai_belajar_agama,
-            S.tgl_mulai_ikut_ekaristi,
-            S.tgl_mulai_kegiatan_lingkungan,
+            DATE_FORMAT(S.tgl_mulai_belajar_agama, '%d-%m-%Y') AS tgl_mulai_belajar_agama,
+            DATE_FORMAT(S.tgl_mulai_ikut_ekaristi, '%d-%m-%Y') AS tgl_mulai_ikut_ekaristi,
+            DATE_FORMAT(S.tgl_mulai_kegiatan_lingkungan, '%d-%m-%Y') AS tgl_mulai_kegiatan_lingkungan,
             S.nama_guru,
             S.nama_wali,
-            S.tgl_krisma_wali,
-            S.tempat_krisma_wali,
+            DATE_FORMAT(S.tgl_krisma_wali, '%d-%m-%Y') AS tgl_krisma_wali,
+            DATE_FORMAT(S.tempat_krisma_wali, '%d-%m-%Y') AS tempat_krisma_wali,
             S.file_syarat_baptis,
             S.tempat_tahap_satu,
-            S.tgl_tahap_satu,
+            DATE_FORMAT(S.tgl_tahap_satu, '%d-%m-%Y') AS tgl_tahap_satu,
             S.id_romo_tahap_satu,
+            Satu.nama AS nama_romo_tahap_satu,
             S.tempat_tahap_dua,
-            S.tgl_tahap_dua,
+            DATE_FORMAT(S.tgl_tahap_dua, '%d-%m-%Y') AS tgl_tahap_dua,
             S.id_romo_tahap_dua,
+            Dua.nama AS nama_romo_tahap_dua,
             S.tempat_baptis,
             S.jadwal_baptis,
             S.id_romo_pembaptis,
             Romo.nama AS nama_romo,
+            S.ketua_lingkungan,
             DATE_FORMAT(S.created_at, '%d-%m-%Y') AS created_at
-        FROM Surat_Baptis_Anak S JOIN Umat A on (S.id_anak=A.id)
-        JOIN Detail_Umat D ON (S.id_anak=D.id_umat)
+        FROM Surat_Baptis_Dewasa S JOIN Umat U on (S.id_umat=U.id)
+        JOIN Detail_Umat D ON (S.id_umat=D.id_umat)
         JOIN (SELECT * FROM Umat) Ayah on (D.id_ayah=Ayah.id) 
         JOIN (SELECT * FROM Umat) Ibu on (D.id_ibu=Ibu.id) 
         JOIN Admin Romo ON (S.id_romo_pembaptis=Romo.id)
+        JOIN (SELECT * FROM Admin) Satu ON (S.id_romo_tahap_satu=Satu.id)
+        JOIN (SELECT * FROM Admin) Dua ON (S.id_romo_tahap_dua=Dua.id)
         JOIN Lingkungan L ON (S.id_lingkungan=L.id)
     WHERE S.id = ?`
     let result = await db(sql, [ id ])
+
+    result[0].calon_pasangan = result[0].calon_pasangan == null ? '-' : result[0].calon_pasangan
+    result[0].tgl_menikah_calon = result[0].tgl_menikah_calon == null ? '-' : result[0].tgl_menikah_calon
+    result[0].cara_menikah = result[0].cara_menikah == null ? '-' : result[0].cara_menikah
+    result[0].tempat_menikah = result[0].tempat_menikah == null ? '-' : result[0].tempat_menikah
+    result[0].tgl_menikah = result[0].tgl_menikah == null ? '-' : result[0].tgl_menikah
+    result[0].pembatalan_perkawinan = result[0].pembatalan_perkawinan == null ? '-' : result[0].pembatalan_perkawinan
     
     if(result.length === 0) {
       return 404

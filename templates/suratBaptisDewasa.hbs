@@ -1,0 +1,233 @@
+<html>
+  <head>
+    <title>Surat Baptis Dewasa</title>
+    <style>
+      body{
+        padding: 30px 50px;
+        position: relative;
+      }
+
+      .title{
+        text-align: center;
+        font-weight: 600;
+      }
+      .text-center { text-align: center; }
+      .text-right { text-align: right; }
+      .line-height-normal { line-height: 1rem !important;}
+
+      .logo{
+        margin: 0 auto;
+        width: 80px;
+      }
+      .divider{
+        width: 100%;
+        height: 3px;
+        border-top: 2px solid #000;
+        border-bottom: 1px solid #000;
+      }
+
+      p {
+        line-height: 1rem;
+      }
+
+      .ttd{
+        margin: auto;
+        position: relative;
+      }
+
+      .end {
+        margin-top: 20px;
+      }
+
+      .footer {
+        position: absolute;
+        bottom: 30;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="head">
+      <div class="logo">
+        <img
+          src="http://localhost:5000/logo.jpg"
+          style="width: inherit;"
+        />
+      </div>
+      <h1 class="title line-height-normal">GEREJA HSP MARIA TAK BERCELA</h1>
+      <p class="text-center line-height-normal">
+        Jalan Kumetiran 13 Telp. 0274-512817, 518586 <br>
+        Yogyakarta 55272
+      </p>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="top">
+      <p class="line-height-normal">LINGKUNGAN: {{ nama_lingkungan }}</p>
+
+      <h2 class="title line-height-normal">PENDAFTARAN BAPTIS DEWASA</h2>
+      <p class="text-center ">No.: {{ no_surat }}</p>
+    </div>
+    
+    <div class="content">
+      <table style="width: 90%; margin: auto;">
+        <tr>
+          <td>
+            Nama lengkap
+          </td>
+          <td>
+            : {{ nama }}
+          </td>
+        </tr>
+        <tr>
+          <td>
+            Nama baptis
+          </td>
+          <td>
+            : {{ nama_baptis }}
+          </td>
+        </tr>
+        <tr>
+          <td>
+            Tempat/tgl lahir
+          </td>
+          <td>
+            : {{ tempat_lahir }}/{{ tgl_lahir }}
+          </td>
+        </tr>
+        <tr>
+          <td>
+            Alamat
+          </td>
+          <td>
+            : {{ alamat }}
+          </td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>
+            Telp/HP: {{ no_telp }}
+          </td>
+        </tr>
+        <tr>
+          <td>
+            Nama Ayah
+          </td>
+          <td>
+            : {{ nama_ayah }}
+          </td>
+        </tr>
+        <tr>
+          <td>
+            Nama Ibu
+          </td>
+          <td>
+            : {{ nama_ibu }}
+          </td>
+        </tr>
+        <tr>
+          <td>
+            Status perkawinan
+          </td>
+          <td>
+            : {{ status_perkawinan }}
+          </td>
+        </tr>
+        <tr>
+          <td>
+            Akan menikah dengan
+          </td>
+          <td>
+            : {{ calon_pasangan }} Tgl: {{ tgl_menikah_calon }}
+          </td>
+        </tr>
+        <tr>
+          <td>
+            Sudah menikah secara
+          </td>
+          <td>
+            : {{ cara_menikah }}
+          </td>
+        </tr>
+        <tr>
+          <td>
+            Tempat
+          </td>
+          <td>
+            : {{ tempat_menikah }} Tgl: {{ tgl_menikah }}
+          </td>
+        </tr>
+      </table>
+      Perkawinan <b><i>telah diputuskan/dibatalkan</i></b> karena:
+      {{ pembatalan_perkawinan }}
+      <div>
+        Mengikuti pelajaran agama sejak: {{ tgl_mulai_belajar_agama }}
+        <br>
+        Mengikuti perayaan ekaristi sejak: {{ tgl_mulai_ikut_ekaristi }}
+        <br>
+        Mengikuti kegiatan lingkungan sejak: {{ tgl_mulai_kegiatan_lingkungan }}
+        <br>
+        Nama guru agama yang mengajar: {{ nama_guru }}
+        <br>
+        Nama wali baptis: {{ nama_wali }}
+        <br>
+        Tgl penguatan wali baptis: {{ tgl_krisma_wali }} di {{ tempat_krisma_wali }}
+      </div>
+      Pelaksanaan pemberkatan dan pembaptisan:
+      <table>
+        <tr>
+          <td>- Tahap I</td>
+          <td>: di {{ tempat_tahap_satu }}</td>
+          <td> tgl: {{ tgl_tahap_satu }}</td>
+          <td> oleh: {{ nama_romo_tahap_satu }}</td>
+        </tr>
+        <tr>
+          <td>- Tahap II</td>
+          <td>: di {{ tempat_tahap_dua }}</td>
+          <td> tgl: {{ tgl_tahap_dua }}</td>
+          <td> oleh: {{ nama_romo_tahap_dua }}</td>
+        </tr>
+        <tr>
+          <td>- Baptis</td>
+          <td>: di {{ tempat_baptis }}</td>
+          <td> tgl: {{ jadwal_baptis }}</td>
+          <td> oleh: {{ nama_romo_baptis }}</td>
+        </tr>
+      </table>
+    </div>
+
+    <div class="end">
+      <p class="text-right line-height-normal" style="margin-right: 80px;">
+        Yogyakarta, {{ created_at }}
+      </p>
+
+      <div style="display: flex; align-content: flex-end;">
+        <div class="text-center ttd">
+          Ketua Lingkungan
+          <br><br><br>
+          <p class="nama-ttd">{{ ketua_lingkungan }}</p>
+        </div>
+        <div class="text-center ttd">
+          Guru Agama
+          <br><br><br>
+          <p class="nama-ttd">{{ nama_guru }}</p>
+        </div>
+        <div class="text-center ttd">
+          Orangtua/Wali
+          <br><br><br>
+          <p class="nama-ttd">{{ nama_ayah }}</p>
+        </div>
+        <div class="text-center ttd">
+          Calon
+          <br><br><br>
+          <p class="nama-ttd">{{ nama }}</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer">
+      <em>
+      </em>
+    </div>
+  </body>
+</html>
