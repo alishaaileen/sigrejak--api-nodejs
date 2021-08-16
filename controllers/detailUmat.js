@@ -81,20 +81,15 @@ const update = async (req, res) => {
     } = req.body,
     file_akta_lahir = null,
     file_ktp = null
-    if(req.files != null) {
+    if(req.files) {
         if(req.files.file_akta_lahir) {
             file_akta_lahir = req.files.file_akta_lahir
-        } else {
-            file_akta_lahir = req.body.file_akta_lahir
         }
         if(req.files.file_ktp) {
             file_ktp = req.files.file_ktp
-        } else {
-            file_ktp = req.body.file_ktp
         }
     }
     let { idUmat } = req.params
-
     let tempNamaAkta, tempNamaKtp
     
     try {
@@ -106,17 +101,21 @@ const update = async (req, res) => {
                 message: "Data not found",
             })
         } else {
+            let data = {
+                tgl_baptis,
+                tgl_komuni,
+                tgl_penguatan,
+                id_ayah,
+                id_ibu,
+            }
             let pathToFiles = `files/`
-            if(typeof file_akta_lahir != 'string') { // ??????? gmn caranya biar bisa tau ga ada aplod an baru
+
+            if(file_akta_lahir != null) { // ??????? gmn caranya biar bisa tau ga ada aplod an baru
                 if(result[0].file_akta_lahir) {
                     fs.unlink(`${pathToFiles}${result[0].file_akta_lahir}`, (err) => {
                         if (err) {
-                            console.error(err)
-                            return res.status(500).send({
-                                message: "Failed to change akta lahir",
-                            })
+                            return res.status(500).send({ message: "Failed to change akta lahir" })
                         }
-                        console.log("file akta berhasil dihapus")
                     })
                 }
 
@@ -124,24 +123,21 @@ const update = async (req, res) => {
 
                 file_akta_lahir.mv(`${pathToFiles}${tempNamaAkta}`, (err) => {
                     if(err) {
-                        console.log("akta error: "+err)
-                        return res.status(500).send({
-                            message: "Failed to save akta lahir",
-                        })
+                        return res.status(500).send({ message: "Failed to change akta lahir" })
                     }
                 })
+
+                data.file_akta_lahir = tempNamaAkta
             }
 
-            if(typeof file_ktp != 'string') {
+            if(file_ktp != null) {
                 if(result[0].file_ktp) {
                     fs.unlink(`${pathToFiles}${result[0].file_ktp}`, (err) => {
                         if (err) {
-                            console.error("ktp error: "+err)
                             return res.status(500).send({
                                 message: "Failed to change ktp",
                             })
                         }
-                        console.log("file ktp berhasil dihapus")
                     })
                 }
 
@@ -155,18 +151,12 @@ const update = async (req, res) => {
                         })
                     }
                 })
+
+                data.file_ktp = tempNamaKtp
             }
 
             sql = `UPDATE Detail_Umat SET ? WHERE id_umat=?`
-            result = await db(sql, [ {
-                tgl_baptis,
-                tgl_komuni,
-                tgl_penguatan,
-                file_akta_lahir: tempNamaAkta||null,
-                file_ktp: tempNamaKtp||null,
-                id_ayah,
-                id_ibu,
-            }, idUmat ]) 
+            result = await db(sql, [ data, idUmat ]) 
     
             res.status(200).send({
                 message: "Success updating data",
