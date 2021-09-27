@@ -26,6 +26,20 @@ const getAll = async (req, res) => {
         })
     }
 }
+// 1 SU
+// 2 sekret
+// 3 romo paroki
+// 4 romo
+
+// bidang yg ada kan: 
+// 5 Liturgi,
+// 6 Yanmas,
+// 7 Pewartaan,
+// 8 Sarana Prasarana,
+// 9 Litbang.
+
+// Nnti ketua bidg mngkn diberi akses melihat proses,
+// mendapat rekap, dan memberi jawaban atas disposisi Romo bgt mbak
 
 const getAllByRole = async (req, res) => {
     let { roleId } = req.params
@@ -186,11 +200,18 @@ const remove = async (req, res) => {
                 message: "Data not found",
             })
         } else {
-            sql = `UPDATE Admin SET ? WHERE id=?`
-            result = await db(sql, [ { deleted_at }, id ])
-    
-            res.status(200).send({
-                message: "Success deleting data",
+            let msg, status
+            if (result[0].role === 1 || result[0].role >=5) {
+                msg = "Cannot remove permanent user"
+                status = 403
+            } else {
+                sql = `UPDATE Admin SET ? WHERE id=?`
+                result = await db(sql, [ { deleted_at }, id ])
+                msg = "Success deleting data"
+                status = 200
+            }
+            res.status(status).send({
+                message: msg,
                 result: result,
             })
         }

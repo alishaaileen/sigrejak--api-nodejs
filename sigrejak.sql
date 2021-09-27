@@ -156,14 +156,11 @@ CREATE TABLE IF NOT EXISTS `sigrejak`.`Surat_Keterangan_Pindah` (
   `id_lingkungan_baru` VARCHAR(36),
   `nama_lingkungan_baru` VARCHAR(255),
   `paroki_baru` VARCHAR(255),
-  `ketua_lingkungan_approval` TINYINT,
-  `ketua_lingkungan_approval_stamp` DATETIME,
-  `id_sekretariat` VARCHAR(36),
-  `sekretariat_approval` TINYINT,
-  `sekretariat_approval_stamp` DATETIME,
+  `ketua_lingkungan_approval_stamp` DATETIME DEFAULT NULL,
   `id_romo` VARCHAR(36),
-  `romo_approval` TINYINT,
-  `romo_approval_stamp` DATETIME,
+  `romo_approval_stamp` DATETIME DEFAULT NULL,
+  `id_sekretariat` VARCHAR(36),
+  `sekretariat_approval_stamp` DATETIME DEFAULT NULL,
   `created_at` DATE,
   `updated_at` DATE,
   `deleted_at` DATE,
@@ -202,14 +199,11 @@ CREATE TABLE IF NOT EXISTS `sigrejak`.`Surat_Keterangan` (
   `pendidikan` VARCHAR(255) NOT NULL,
   `id_ortu` VARCHAR(36),
   `keperluan` TEXT NOT NULL,
-  `ketua_lingkungan_approval` TINYINT,
-  `ketua_lingkungan_approval_stamp` DATETIME,
-  `id_sekretariat` VARCHAR(36),
-  `sekretariat_approval` TINYINT,
-  `sekretariat_approval_stamp` DATETIME,
+  `ketua_lingkungan_approval_stamp` DATETIME DEFAULT NULL,
   `id_romo` VARCHAR(36),
-  `romo_approval` TINYINT,
-  `romo_approval_stamp` DATETIME,
+  `romo_approval_stamp` DATETIME DEFAULT NULL,
+  `id_sekretariat` VARCHAR(36),
+  `sekretariat_approval_stamp` DATETIME,
   `created_at` DATE,
   `updated_at` DATE,
   `deleted_at` DATE,
@@ -252,15 +246,12 @@ CREATE TABLE IF NOT EXISTS `sigrejak`.`Surat_Izin_Pelayanan_Ekaristi` (
   `romo_pemimpin` VARCHAR(255) NOT NULL,
   `alamat_komunitas` VARCHAR(255) NOT NULL,
   `no_telp_komunitas` VARCHAR(20) NOT NULL,
-  `ketua_lingkungan` VARCHAR(255),
-  `ketua_lingkungan_approval` TINYINT,
-  `ketua_lingkungan_approval_stamp` DATETIME,
-  `id_sekretariat` VARCHAR(36),
-  `sekretariat_approval` TINYINT,
-  `sekretariat_approval_stamp` DATETIME,
-  `id_romo` VARCHAR(36),
-  `romo_approval` TINYINT,
-  `romo_approval_stamp` DATETIME,
+  `ketua_lingkungan` VARCHAR(255) DEFAULT NULL,
+  `ketua_lingkungan_approval_stamp` DATETIME DEFAULT NULL,
+  `id_romo` VARCHAR(36) DEFAULT NULL,
+  `romo_approval_stamp` DATETIME DEFAULT NULL,
+  `id_liturgi` VARCHAR(36) DEFAULT NULL,
+  `liturgi_approval_stamp` DATETIME DEFAULT NULL,
   `created_at` DATE,
   `updated_at` DATE,
   `deleted_at` DATE,
@@ -271,11 +262,11 @@ CREATE TABLE IF NOT EXISTS `sigrejak`.`Surat_Izin_Pelayanan_Ekaristi` (
   CONSTRAINT `fk_surat_izin_pelayanan_ekaristi_lingkungan`
     FOREIGN KEY (`id_lingkungan`)
     REFERENCES `sigrejak`.`Lingkungan` (`id`),
-  CONSTRAINT `fk_surat_izin_pelayanan_ekaristi_sekretariat`
-    FOREIGN KEY (`id_sekretariat`)
-    REFERENCES `sigrejak`.`Admin` (`id`),
   CONSTRAINT `fk_surat_izin_pelayanan_ekaristi_romo`
     FOREIGN KEY (`id_romo`)
+    REFERENCES `sigrejak`.`Admin` (`id`),
+  CONSTRAINT `fk_surat_izin_pelayanan_ekaristi_liturgi`
+    FOREIGN KEY (`id_liturgi`)
     REFERENCES `sigrejak`.`Admin` (`id`))
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb3;
@@ -295,15 +286,12 @@ CREATE TABLE IF NOT EXISTS `sigrejak`.`Surat_Keterangan_Beasiswa` (
   `status_beasiswa` VARCHAR(20) NOT NULL,
   `permohonan` TEXT NOT NULL,
   `file_syarat_beasiswa` VARCHAR(255) NOT NULL,
-  `ketua_lingkungan` VARCHAR(255),
-  `ketua_lingkungan_approval` TINYINT,
-  `ketua_lingkungan_approval_stamp` DATETIME,
-  `id_sekretariat` VARCHAR(36),
-  `sekretariat_approval` TINYINT,
-  `sekretariat_approval_stamp` DATETIME,
-  `id_romo` VARCHAR(36),
-  `romo_approval` TINYINT,
-  `romo_approval_stamp` DATETIME,
+  `ketua_lingkungan` VARCHAR(255) DEFAULT NULL,
+  `ketua_lingkungan_approval_stamp` DATETIME DEFAULT NULL,
+  `id_romo` VARCHAR(36) DEFAULT NULL,
+  `romo_approval_stamp` DATETIME DEFAULT NULL,
+  `id_yanmas` VARCHAR(36) DEFAULT NULL,
+  `yanmas_approval_stamp` DATETIME DEFAULT NULL,
   `created_at` DATE,
   `updated_at` DATE,
   `deleted_at` DATE,
@@ -317,11 +305,11 @@ CREATE TABLE IF NOT EXISTS `sigrejak`.`Surat_Keterangan_Beasiswa` (
   CONSTRAINT `fk_surat_keterangan_beasiswa_siswa`
     FOREIGN KEY (`id_siswa`)
     REFERENCES `sigrejak`.`Umat` (`id`),
-  CONSTRAINT `fk_surat_keterangan_beasiswa_sekretariat`
-    FOREIGN KEY (`id_sekretariat`)
-    REFERENCES `sigrejak`.`Admin` (`id`),
   CONSTRAINT `fk_surat_keterangan_beasiswa_romo`
     FOREIGN KEY (`id_romo`)
+    REFERENCES `sigrejak`.`Admin` (`id`),
+  CONSTRAINT `fk_surat_keterangan_beasiswa_yanmas`
+    FOREIGN KEY (`id_yanmas`)
     REFERENCES `sigrejak`.`Admin` (`id`))
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb3;
@@ -341,15 +329,13 @@ CREATE TABLE IF NOT EXISTS `sigrejak`.`Surat_Baptis_Anak` (
   `tgl_ortu_menikah` DATE NOT NULL,
   `nama_wali_baptis` VARCHAR(255) NOT NULL,
   `tgl_krisma_wali_baptis` DATE NOT NULL,
-  `ketua_lingkungan` VARCHAR(255),
-  `ketua_lingkungan_approval` TINYINT,
-  `ketua_lingkungan_approval_stamp` DATETIME,
-  `id_sekretariat` VARCHAR(36),
-  `sekretariat_approval` TINYINT,
-  `sekretariat_approval_stamp` DATETIME,
-  `jadwal_baptis` DATETIME,
-  `id_romo_pembaptis` VARCHAR(36),
   `file_syarat_baptis` VARCHAR(255) NOT NULL,
+  `ketua_lingkungan` VARCHAR(255) DEFAULT NULL,
+  `ketua_lingkungan_approval_stamp` DATETIME DEFAULT NULL,
+  `jadwal_baptis` DATETIME DEFAULT NULL,
+  `id_romo_pembaptis` VARCHAR(36) DEFAULT NULL,
+  `id_pewartaan` VARCHAR(36) DEFAULT NULL,
+  `pewartaan_approval_stamp` DATETIME DEFAULT NULL,
   `created_at` DATE,
   `updated_at` DATE,
   `deleted_at` DATE,
@@ -366,8 +352,8 @@ CREATE TABLE IF NOT EXISTS `sigrejak`.`Surat_Baptis_Anak` (
   CONSTRAINT `fk_surat_baptis_anak_romo_pembaptis`
     FOREIGN KEY (`id_romo_pembaptis`)
     REFERENCES `sigrejak`.`Admin` (`id`),
-  CONSTRAINT `fk_surat_baptis_anak_sekretariat`
-    FOREIGN KEY (`id_sekretariat`)
+  CONSTRAINT `fk_surat_baptis_anak_pewartaan`
+    FOREIGN KEY (`id_pewartaan`)
     REFERENCES `sigrejak`.`Admin` (`id`))
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb3;
@@ -407,11 +393,9 @@ CREATE TABLE `Surat_Baptis_Dewasa` (
   `jadwal_baptis` datetime DEFAULT NULL,
   `tempat_baptis` varchar(255) DEFAULT NULL,
   `ketua_lingkungan` varchar(255) DEFAULT NULL,
-  `ketua_lingkungan_approval` tinyint(4) DEFAULT NULL,
   `ketua_lingkungan_approval_stamp` datetime DEFAULT NULL,
-  `id_sekretariat` varchar(36) DEFAULT NULL,
-  `sekretariat_approval` tinyint(4) DEFAULT NULL,
-  `sekretariat_approval_stamp` datetime DEFAULT NULL,
+  `id_pewartaan` varchar(36) DEFAULT NULL,
+  `pewartaan_approval_stamp` datetime DEFAULT NULL,
   `created_at` date DEFAULT NULL,
   `updated_at` date DEFAULT NULL,
   `deleted_at` date DEFAULT NULL
@@ -424,16 +408,16 @@ ALTER TABLE `Surat_Baptis_Dewasa`
   ADD KEY `fk_surat_baptis_dewasa_lingkungan` (`id_lingkungan`),
   ADD KEY `fk_surat_baptis_dewasa_umat` (`id_umat`),
   ADD KEY `fk_surat_baptis_dewasa_romo_tahap_dua` (`id_romo_tahap_satu`),
-  ADD KEY `fk_surat_baptis_dewasa_romo_pembaptis` (`id_romo_pembaptis`),
-  ADD KEY `fk_surat_baptis_dewasa_sekretariat` (`id_sekretariat`);
---
+  ADD KEY `fk_surat_baptis_dewasa_pewartaan` (`id_pewartaan`),
+  ADD KEY `fk_surat_baptis_dewasa_romo_pembaptis` (`id_romo_pembaptis`);
+
 ALTER TABLE `Surat_Baptis_Dewasa`
   ADD CONSTRAINT `fk_surat_baptis_dewasa_keluarga` FOREIGN KEY (`id_keluarga`) REFERENCES `Keluarga` (`id`),
   ADD CONSTRAINT `fk_surat_baptis_dewasa_lingkungan` FOREIGN KEY (`id_lingkungan`) REFERENCES `Lingkungan` (`id`),
   ADD CONSTRAINT `fk_surat_baptis_dewasa_romo_pembaptis` FOREIGN KEY (`id_romo_pembaptis`) REFERENCES `Admin` (`id`),
   ADD CONSTRAINT `fk_surat_baptis_dewasa_romo_tahap_dua` FOREIGN KEY (`id_romo_tahap_satu`) REFERENCES `Admin` (`id`),
   ADD CONSTRAINT `fk_surat_baptis_dewasa_romo_tahap_satu` FOREIGN KEY (`id_romo_tahap_satu`) REFERENCES `Admin` (`id`),
-  ADD CONSTRAINT `fk_surat_baptis_dewasa_sekretariat` FOREIGN KEY (`id_sekretariat`) REFERENCES `Admin` (`id`),
+  ADD CONSTRAINT `fk_surat_baptis_dewasa_pewartaan` FOREIGN KEY (`id_pewartaan`) REFERENCES `Admin` (`id`),
   ADD CONSTRAINT `fk_surat_baptis_dewasa_umat` FOREIGN KEY (`id_umat`) REFERENCES `Umat` (`id`);
 COMMIT;
 
@@ -456,12 +440,10 @@ CREATE TABLE IF NOT EXISTS `sigrejak`.`Surat_Komuni_Penguatan` (
   `nama_wali_penguatan` VARCHAR(255),
   `tgl_krisma_wali` DATE,
   `file_syarat` VARCHAR(255) NOT NULL,
-  `ketua_lingkungan` VARCHAR(255),
-  `ketua_lingkungan_approval` TINYINT,
-  `ketua_lingkungan_approval_stamp` DATETIME,
-  `id_sekretariat` VARCHAR(36),
-  `sekretariat_approval` TINYINT,
-  `sekretariat_approval_stamp` DATETIME,
+  `ketua_lingkungan` VARCHAR(255) DEFAULT NULL,
+  `ketua_lingkungan_approval_stamp` DATETIME DEFAULT NULL,
+  `id_pewartaan` VARCHAR(36) DEFAULT NULL,
+  `pewartaan_approval_stamp` DATETIME DEFAULT NULL,
   `created_at` DATE,
   `updated_at` DATE,
   `deleted_at` DATE,
@@ -475,8 +457,8 @@ CREATE TABLE IF NOT EXISTS `sigrejak`.`Surat_Komuni_Penguatan` (
   CONSTRAINT `fk_surat_komuni_penguatan_umat`
     FOREIGN KEY (`id_umat`)
     REFERENCES `sigrejak`.`Umat` (`id`),
-  CONSTRAINT `fk_surat_komuni_penguatan_sekretariat`
-    FOREIGN KEY (`id_sekretariat`)
+  CONSTRAINT `fk_surat_komuni_penguatan_pewartaan`
+    FOREIGN KEY (`id_pewartaan`)
     REFERENCES `sigrejak`.`Admin` (`id`))
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb3;
@@ -500,12 +482,10 @@ CREATE TABLE IF NOT EXISTS `sigrejak`.`Surat_Keterangan_Calon_Pengantin` (
   `nama_ayah_pasangan` VARCHAR(255) NOT NULL,
   `nama_ibu_pasangan` VARCHAR(255) NOT NULL,
   `file_syarat` VARCHAR(255) NOT NULL,
-  `ketua_lingkungan` VARCHAR(255),
-  `ketua_lingkungan_approval` TINYINT,
-  `ketua_lingkungan_approval_stamp` DATETIME,
-  `id_sekretariat` VARCHAR(36),
-  `sekretariat_approval` TINYINT,
-  `sekretariat_approval_stamp` DATETIME,
+  `ketua_lingkungan` VARCHAR(255) DEFAULT NULL,
+  `ketua_lingkungan_approval_stamp` DATETIME DEFAULT NULL,
+  `id_sekretariat` VARCHAR(36) DEFAULT NULL,
+  `sekretariat_approval_stamp` DATETIME DEFAULT NULL,
   `id_romo` VARCHAR(36),
   `romo_approval` TINYINT,
   `romo_approval_stamp` DATETIME,
@@ -554,13 +534,10 @@ CREATE TABLE IF NOT EXISTS `sigrejak`.`Surat_Pelayanan_Minyak_Suci` (
   `status_terima_minyak` VARCHAR(50) NOT NULL,
   `tgl_terima_minyak` DATE,
   `id_pastor_pelayan` VARCHAR(36) NOT NULL,
-  `pastor_pelayan_approval` TINYINT,
-  `pastor_pelayan_approval_stamp` DATETIME,
-  `ketua_lingkungan` VARCHAR(255),
-  `ketua_lingkungan_approval` TINYINT,
-  `ketua_lingkungan_approval_stamp` DATETIME,
+  `pastor_pelayan_approval_stamp` DATETIME DEFAULT NULL,
+  `ketua_lingkungan` VARCHAR(255) DEFAULT NULL,
+  `ketua_lingkungan_approval_stamp` DATETIME DEFAULT NULL,
   `id_sekretariat` VARCHAR(36),
-  `sekretariat_approval` TINYINT,
   `sekretariat_approval_stamp` DATETIME,
   `created_at` DATE,
   `updated_at` DATE,
@@ -576,7 +553,7 @@ CREATE TABLE IF NOT EXISTS `sigrejak`.`Surat_Pelayanan_Minyak_Suci` (
   --   FOREIGN KEY (`id_umat`)
   --   REFERENCES `sigrejak`.`Umat` (`id`),
   CONSTRAINT `fk_surat_minyak_suci_pastor_pelayan`
-    FOREIGN KEY (`id_pastor_pelayan`)
+    FOREIGN KEY (`id_pastor_pelayan`),
     REFERENCES `sigrejak`.`Admin` (`id`),
   CONSTRAINT `fk_surat_minyak_suci_sekretariat`
     FOREIGN KEY (`id_sekretariat`)
@@ -610,14 +587,11 @@ CREATE TABLE IF NOT EXISTS `sigrejak`.`Surat_Keterangan_Mati` (
   `no_hp_pelapor` VARCHAR(20) NOT NULL,
   `no_hp_penanggungjawab` VARCHAR(20) NOT NULL,
   `id_imam_pemberkat` VARCHAR(36) NOT NULL,
-  `imam_pemberkat_approval` TINYINT,
-  `imam_pemberkat_approval_stamp` DATETIME,
-  `ketua_lingkungan` VARCHAR(255),
-  `ketua_lingkungan_approval` TINYINT,
-  `ketua_lingkungan_approval_stamp` DATETIME,
-  `id_sekretariat` VARCHAR(36),
-  `sekretariat_approval` TINYINT,
-  `sekretariat_approval_stamp` DATETIME,
+  `imam_pemberkat_approval_stamp` DATETIME DEFAULT NULL,
+  `ketua_lingkungan` VARCHAR(255) DEFAULT NULL,
+  `ketua_lingkungan_approval_stamp` DATETIME DEFAULT NULL,
+  `id_sekretariat` VARCHAR(36) DEFAULT NULL,
+  `sekretariat_approval_stamp` DATETIME DEFAULT NULL,
   `created_at` DATE,
   `updated_at` DATE,
   `deleted_at` DATE,

@@ -82,8 +82,8 @@ const getByKetuaLingkunganId = async (req, res) => {
         let result = await db(sql, [ id ])
 
         if(result.length === 0) {
-            res.status(404).send({
-                message: "Data not found",
+            res.status(204).send({
+                message: "Not a Ketua Lingkungan",
             })
         } else {
             res.status(200).send({
