@@ -78,6 +78,16 @@ const getJumlahSuratBasedOnTahun = async (tableName, year) => {
     return result[0].jumlah
 }
 
+const checkIsKetuaLingkungan = async (idKeluarga) => {
+    const sql = `SELECT ketua_lingkungan_id
+                FROM Lingkungan
+                WHERE ketua_lingkungan_id = ${idKeluarga}`
+    
+    let result = await db(sql)
+
+    return result ? true : false
+}
+
 const getJumlahSuratNotApproved = async (jenisSurat, approval) => {
     try {
         let sql =
@@ -130,6 +140,17 @@ const deleteFile = async (pathToFiles, fileName) => {
     })
 }
 
+const getAdminRoleId = async (idAdmin) => {
+    const sql = `SELECT role
+                FROM Admin
+                WHERE id = ${idAdmin}`
+    
+    let result = await db(sql)
+    console.log(result[0].id)
+
+    return result[0].id
+}
+
 module.exports = {
     generateRandomString,
     hashPassword,
@@ -139,6 +160,8 @@ module.exports = {
     checkUser,
     generateNomorSurat,
     getJumlahSuratNotApproved,
+    checkIsKetuaLingkungan,
     generateFileName,
     deleteFile,
+    getAdminRoleId,
 }

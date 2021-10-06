@@ -553,7 +553,7 @@ CREATE TABLE IF NOT EXISTS `sigrejak`.`Surat_Pelayanan_Minyak_Suci` (
   --   FOREIGN KEY (`id_umat`)
   --   REFERENCES `sigrejak`.`Umat` (`id`),
   CONSTRAINT `fk_surat_minyak_suci_pastor_pelayan`
-    FOREIGN KEY (`id_pastor_pelayan`),
+    FOREIGN KEY (`id_pastor_pelayan`)
     REFERENCES `sigrejak`.`Admin` (`id`),
   CONSTRAINT `fk_surat_minyak_suci_sekretariat`
     FOREIGN KEY (`id_sekretariat`)

@@ -1,7 +1,7 @@
 const db = require('../../connection')
     , { v4: uuidv4 } = require('uuid')
     , { getTodayDate, getDateTime, getJumlahSuratNotApproved, 
-      getKodeLingkungan, generateNomorSurat } = require('../../utils')
+      getKodeLingkungan, checkIsKetuaLingkungan, generateNomorSurat, getAdminRoleId } = require('../../utils')
     , LogSuratcontroller = require('../logSurat')
     , tableName = 'Surat_Izin_Pelayanan_Ekaristi'
 
@@ -26,6 +26,8 @@ const getAll = async (req, res) => {
               S.ketua_lingkungan_approval_stamp,
               S.id_romo,
               S.romo_approval_stamp,
+              S.id_liturgi,
+              S.liturgi_approval_stamp,
               DATE_FORMAT(S.created_at, '%d-%m-%Y') AS created_at,
               DATE_FORMAT(S.updated_at, '%d-%m-%Y') AS updated_at,
               DATE_FORMAT(S.deleted_at, '%d-%m-%Y') AS deleted_at 
@@ -71,6 +73,8 @@ const getById = async (req, res) => {
               S.ketua_lingkungan_approval_stamp,
               S.id_romo,
               S.romo_approval_stamp,
+              S.id_liturgi,
+              S.liturgi_approval_stamp,
               DATE_FORMAT(S.created_at, '%d-%m-%Y') AS created_at,
               DATE_FORMAT(S.updated_at, '%d-%m-%Y') AS updated_at,
               DATE_FORMAT(S.deleted_at, '%d-%m-%Y') AS deleted_at 
@@ -121,6 +125,8 @@ const getByIdKeluarga = async (req, res) => {
                   S.ketua_lingkungan_approval_stamp,
                   S.id_romo,
                   S.romo_approval_stamp,
+                  S.id_liturgi,
+                  S.liturgi_approval_stamp,
                   DATE_FORMAT(S.created_at, '%d-%m-%Y') AS created_at,
                   DATE_FORMAT(S.updated_at, '%d-%m-%Y') AS updated_at,
                   DATE_FORMAT(S.deleted_at, '%d-%m-%Y') AS deleted_at 
@@ -164,6 +170,8 @@ const getByIdLingkungan = async (req, res) => {
                   S.ketua_lingkungan_approval_stamp,
                   S.id_romo,
                   S.romo_approval_stamp,
+                  S.id_liturgi,
+                  S.liturgi_approval_stamp,
                   DATE_FORMAT(S.created_at, '%d-%m-%Y') AS created_at,
                   DATE_FORMAT(S.updated_at, '%d-%m-%Y') AS updated_at,
                   DATE_FORMAT(S.deleted_at, '%d-%m-%Y') AS deleted_at 
@@ -204,6 +212,8 @@ const getAllBriefInfo = async (req, res) => {
               ketua_lingkungan_approval_stamp,
               id_romo,
               romo_approval_stamp,
+              S.id_liturgi,
+              S.liturgi_approval_stamp,
               created_at,
       FROM ${tableName}`
     let result = await db(sql)
@@ -222,8 +232,8 @@ const getAllBriefInfo = async (req, res) => {
 }
 
 const post = async (req, res) => {
-  let id = uuidv4(),
-      {
+  let id = uuidv4()
+    , {
         id_keluarga,
         id_lingkungan,
         tgl_pelaksanaan,
@@ -236,60 +246,60 @@ const post = async (req, res) => {
         alamat_komunitas,
         no_telp_komunitas,
         ketua_lingkungan,
-        isKetuaLingkungan,
-      } = req.body,
-      created_at = getTodayDate(),
-      ketua_lingkungan_approval_stamp = null,
-      kode_lingkungan = await getKodeLingkungan(id_lingkungan)
+      } = req.body
+    , created_at = getTodayDate()
+    , ketua_lingkungan_approval_stamp = null
+    , kode_lingkungan = await getKodeLingkungan(id_lingkungan)
+    , isKetuaLingkungan = checkIsKetuaLingkungan(id_keluarga);
   
-  let no_surat = await generateNomorSurat('F1', kode_lingkungan, tableName)
-      
-  if(isKetuaLingkungan === true) {
+  if(isKetuaLingkungan) {
     ketua_lingkungan_approval_stamp = getDateTime()
   } else {
     ketua_lingkungan = null
   }
+      
+  let no_surat = await generateNomorSurat('F1', kode_lingkungan, tableName)
 
   try {
-      let sql = `INSERT INTO ${tableName} SET ?`
-      let result = await db(sql, [
-          {
-            id,
-            no_surat,
-            id_keluarga,
-            id_lingkungan,
-            tgl_pelaksanaan,
-            waktu_mulai,
-            waktu_selesai,
-            intensi,
-            lokasi_rumah,
-            no_telp_lokasi,
-            romo_pemimpin,
-            alamat_komunitas,
-            no_telp_komunitas,
-            ketua_lingkungan,
-            ketua_lingkungan_approval_stamp,
-            created_at,
-          }
-      ])
-      
-      // Catat ke log surat
-      LogSuratcontroller.post(id, 0, 0)
-
-      if(isKetuaLingkungan === true) {
-        LogSuratcontroller.post(id, 2, 1)
+    let sql = `INSERT INTO ${tableName} SET ?`
+    let result = await db(sql, [
+      {
+        id,
+        no_surat,
+        id_keluarga,
+        id_lingkungan,
+        tgl_pelaksanaan,
+        waktu_mulai,
+        waktu_selesai,
+        intensi,
+        lokasi_rumah,
+        no_telp_lokasi,
+        romo_pemimpin,
+        alamat_komunitas,
+        no_telp_komunitas,
+        ketua_lingkungan,
+        ketua_lingkungan_approval_stamp,
+        created_at,
       }
+    ])
+    
+    // Catat ke log surat
+    LogSuratcontroller.post(id, 0, 0)
 
-      res.status(200).send({
-          message: "Success adding data",
-          result: result,
-      })
+    if(isKetuaLingkungan === true) {
+      LogSuratcontroller.post(id, 2, 1)
+    }
+
+    res.status(200).send({
+        message: "Success adding data",
+        result: result,
+    })
   } catch (error) {
-      console.log(error.message)
-      res.status(500).send({
-          message: "Failed adding data",
-          error: error.message,
-      })
+    console.log(error.message)
+    res.status(500).send({
+      message: "Failed adding data",
+      error: error.message,
+    })
   }
 }
 
@@ -321,19 +331,19 @@ const update = async (req, res) => {
     } else {
       sql = `UPDATE ${tableName} SET ? WHERE id=?`
       result = await db(sql, [ {
-                                    id_keluarga,
-                                    id_lingkungan,
-                                    tgl_pelaksanaan,
-                                    waktu_mulai,
-                                    waktu_selesai,
-                                    intensi,
-                                    lokasi_rumah,
-                                    no_telp_lokasi,
-                                    romo_pemimpin,
-                                    alamat_komunitas,
-                                    no_telp_komunitas,
-                                    updated_at,
-                                }, id ])
+                                id_keluarga,
+                                id_lingkungan,
+                                tgl_pelaksanaan,
+                                waktu_mulai,
+                                waktu_selesai,
+                                intensi,
+                                lokasi_rumah,
+                                no_telp_lokasi,
+                                romo_pemimpin,
+                                alamat_komunitas,
+                                no_telp_komunitas,
+                                updated_at,
+                            }, id ])
       
       // Catat ke log surat
       LogSuratcontroller.post(id, 1, 0)
@@ -353,25 +363,38 @@ const update = async (req, res) => {
 }
 
 const verify = async (req, res) => {
-  let { id } = req.params,
-      {
-        role,
+  let { id } = req.params // id surat
+    , {
+        idVerificator, // id org yg verifikasi
+        isKetuaLingkungan, // true: ketua lingk, false: admin (romo/sekret/dll)
         ketua_lingkungan,
-        id_romo,
-      } = req.body,
-      data = {},
-      roleId
-
-  if(role === 'ketua lingkungan') {
-    data.ketua_lingkungan = ketua_lingkungan
-    data.ketua_lingkungan_approval_stamp = getDateTime()
-    roleId = 1
-  } else if (role === 'romo paroki') {
-    data.id_romo = id_romo
-    data.romo_approval_stamp = getDateTime()
-    roleId = 3
-  }
+      } = req.body
+    , data = {}
   
+  if (isKetuaLingkungan) {
+    // cek apakah bener ketua lingkungan
+    if(checkIsKetuaLingkungan(idVerificator)) {
+      data.ketua_lingkungan = ketua_lingkungan
+      data.ketua_lingkungan_approval_stamp = getDateTime()
+    } else {
+      // kalo bukan ketua lingkungan, kirim respon forbidden 403
+      return res.status(403).send({ message: "not a ketua lingkungan" })
+    }
+  } else {
+    // Kalo bukan ketua lingkungan, cek role dari adminnya
+    // apakah romo/sekretaris/liturgi/dll
+    const roleId = await getAdminRoleId(idVerificator)
+
+    if (roleId === 3) { // Romo paroki
+      data.id_romo = id_romo
+      data.romo_approval_stamp = getDateTime()
+    } else if (roleId === 5) { // Liturgi
+      data.liturgi_approval_stamp = getDateTime()
+    } else {
+      return res.status(403).send({ message: "not authorized for this request" })
+    }
+  }
+
   try {
       let sql = `SELECT * FROM ${tableName} WHERE id = ?`
       let result = await db(sql, [ id ])
