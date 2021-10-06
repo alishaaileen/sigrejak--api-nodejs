@@ -30,9 +30,9 @@ const getAll = async (req, res) => {
                     D.file_akta_lahir,
                     S.file_syarat_baptis,
                     S.ketua_lingkungan,
-                    S.ketua_lingkungan_approval,
+                    S.ketua_lingkungan_approval_stamp,
                     S.id_sekretariat,
-                    S.sekretariat_approval,
+                    S.sekretariat_approval_stamp,
                     S.jadwal_baptis,
                     S.id_romo_pembaptis,
                     DATE_FORMAT(S.created_at, '%d-%m-%Y') AS created_at,
@@ -83,9 +83,9 @@ const getAllSchedule = async (req, res) => {
                     D.file_akta_lahir,
                     S.file_syarat_baptis,
                     S.ketua_lingkungan,
-                    S.ketua_lingkungan_approval,
+                    S.ketua_lingkungan_approval_stamp,
                     S.id_sekretariat,
-                    S.sekretariat_approval,
+                    S.sekretariat_approval_stamp,
                     S.jadwal_baptis,
                     S.id_romo_pembaptis,
                     DATE_FORMAT(S.created_at, '%d-%m-%Y') AS created_at,
@@ -138,11 +138,9 @@ const getById = async (req, res) => {
                     D.file_akta_lahir,
                     S.file_syarat_baptis,
                     S.ketua_lingkungan,
-                    S.ketua_lingkungan_approval,
-                    S.ketua_lingkungan_approval,
+                    S.ketua_lingkungan_approval_stamp,
                     S.id_sekretariat,
-                    S.sekretariat_approval,
-                    S.sekretariat_approval,
+                    S.sekretariat_approval_stamp,
                     S.jadwal_baptis,
                     S.id_romo_pembaptis,
                     DATE_FORMAT(S.created_at, '%d-%m-%Y') AS created_at,
@@ -201,11 +199,9 @@ const getByIdLingkungan = async (req, res) => {
                     D.file_akta_lahir,
                     S.file_syarat_baptis,
                     S.ketua_lingkungan,
-                    S.ketua_lingkungan_approval,
-                    S.ketua_lingkungan_approval,
+                    S.ketua_lingkungan_approval_stamp,
                     S.id_sekretariat,
-                    S.sekretariat_approval,
-                    S.sekretariat_approval,
+                    S.sekretariat_approval_stamp,
                     S.jadwal_baptis,
                     S.id_romo_pembaptis,
                     DATE_FORMAT(S.created_at, '%d-%m-%Y') AS created_at,
@@ -264,11 +260,9 @@ const getByIdKeluarga = async (req, res) => {
                     D.file_akta_lahir,
                     S.file_syarat_baptis,
                     S.ketua_lingkungan,
-                    S.ketua_lingkungan_approval,
-                    S.ketua_lingkungan_approval,
+                    S.ketua_lingkungan_approval_stamp,
                     S.id_sekretariat,
-                    S.sekretariat_approval,
-                    S.sekretariat_approval,
+                    S.sekretariat_approval_stamp,
                     S.jadwal_baptis,
                     S.id_romo_pembaptis,
                     DATE_FORMAT(S.created_at, '%d-%m-%Y') AS created_at,
@@ -312,7 +306,6 @@ const post = async (req, res) => {
         } = req.body,
         { file_syarat_baptis } = req.files,
         created_at = getTodayDate(),
-        ketua_lingkungan_approval = 0,
         ketua_lingkungan_approval_stamp = null,
         kode_lingkungan = await getKodeLingkungan(id_lingkungan)
 
@@ -323,7 +316,6 @@ const post = async (req, res) => {
     // Karena dari front end itu pake FormData(),
     // semua data jadi String.
     if((isKetuaLingkungan === 'true') === true) {
-        ketua_lingkungan_approval = 1
         ketua_lingkungan_approval_stamp = getDateTime()
     } else  {
         ketua_lingkungan = null
@@ -357,7 +349,6 @@ const post = async (req, res) => {
                 tgl_krisma_wali_baptis,
                 file_syarat_baptis: tempNamaFile,
                 ketua_lingkungan,
-                ketua_lingkungan_approval,
                 ketua_lingkungan_approval_stamp,
                 created_at,
             } ])
@@ -493,12 +484,10 @@ const verify = async (req, res) => {
 
     if(role === 'ketua lingkungan') {
         data.ketua_lingkungan = ketua_lingkungan
-        data.ketua_lingkungan_approval = 1
         data.ketua_lingkungan_approval_stamp = getDateTime()
         roleId = 1
     } else {
         data.id_sekretariat = id_sekretariat
-        data.sekretariat_approval = 1
         data.sekretariat_approval_stamp = getDateTime()
         data.jadwal_baptis = jadwal_baptis
         data.id_romo_pembaptis = id_romo_pembaptis

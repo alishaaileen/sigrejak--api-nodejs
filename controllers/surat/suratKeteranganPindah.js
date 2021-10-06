@@ -27,13 +27,10 @@ const getAll = async (req, res) => {
                     S.nama_lingkungan_baru,
                     S.paroki_baru,
                     S.ketua_lingkungan,
-                    S.ketua_lingkungan_approval,
                     S.ketua_lingkungan_approval_stamp,
                     S.id_sekretariat,
-                    S.sekretariat_approval,
                     S.sekretariat_approval_stamp,
                     S.id_romo,
-                    S.romo_approval,
                     S.romo_approval_stamp,
                     DATE_FORMAT(S.created_at, '%d-%m-%Y') AS created_at,
                     DATE_FORMAT(S.updated_at, '%d-%m-%Y') AS updated_at,
@@ -80,13 +77,10 @@ const getById = async (req, res) => {
                     S.nama_lingkungan_baru,
                     S.paroki_baru,
                     S.ketua_lingkungan,
-                    S.ketua_lingkungan_approval,
                     S.ketua_lingkungan_approval_stamp,
                     S.id_sekretariat,
-                    S.sekretariat_approval,
                     S.sekretariat_approval_stamp,
                     S.id_romo,
-                    S.romo_approval,
                     S.romo_approval_stamp,
                     DATE_FORMAT(S.created_at, '%d-%m-%Y') AS created_at,
                     DATE_FORMAT(S.updated_at, '%d-%m-%Y') AS updated_at,
@@ -140,13 +134,10 @@ const getByIdLingkungan = async (req, res) => {
                     S.nama_lingkungan_baru,
                     S.paroki_baru,
                     S.ketua_lingkungan,
-                    S.ketua_lingkungan_approval,
                     S.ketua_lingkungan_approval_stamp,
                     S.id_sekretariat,
-                    S.sekretariat_approval,
                     S.sekretariat_approval_stamp,
                     S.id_romo,
-                    S.romo_approval,
                     S.romo_approval_stamp,
                     DATE_FORMAT(S.created_at, '%d-%m-%Y') AS created_at,
                     DATE_FORMAT(S.updated_at, '%d-%m-%Y') AS updated_at,
@@ -194,13 +185,10 @@ const getByIdKeluarga = async (req, res) => {
                     S.nama_lingkungan_baru,
                     S.paroki_baru,
                     S.ketua_lingkungan,
-                    S.ketua_lingkungan_approval,
                     S.ketua_lingkungan_approval_stamp,
                     S.id_sekretariat,
-                    S.sekretariat_approval,
                     S.sekretariat_approval_stamp,
                     S.id_romo,
-                    S.romo_approval,
                     S.romo_approval_stamp,
                     DATE_FORMAT(S.created_at, '%d-%m-%Y') AS created_at,
                     DATE_FORMAT(S.updated_at, '%d-%m-%Y') AS updated_at,
@@ -243,14 +231,12 @@ const post = async (req, res) => {
             isKetuaLingkungan
         } = req.body,
         created_at = getTodayDate(),
-        ketua_lingkungan_approval = 0,
         ketua_lingkungan_approval_stamp = null,
         kode_lingkungan = await getKodeLingkungan(id_lingkungan_lama)
 
     let no_surat = await generateNomorSurat('F11', kode_lingkungan, tableName)
     
     if(isKetuaLingkungan === true) {
-        ketua_lingkungan_approval = 1
         ketua_lingkungan_approval_stamp = getDateTime()
     } else {
         ketua_lingkungan = null
@@ -276,7 +262,6 @@ const post = async (req, res) => {
                 nama_lingkungan_baru,
                 paroki_baru,
                 ketua_lingkungan,
-                ketua_lingkungan_approval,
                 ketua_lingkungan_approval_stamp,
                 created_at,
             }
@@ -380,17 +365,14 @@ const verify = async (req, res) => {
   
     if(role === 'ketua lingkungan') {
         data.ketua_lingkungan = ketua_lingkungan
-        data.ketua_lingkungan_approval = 1
         data.ketua_lingkungan_approval_stamp = getDateTime()
         roleId = 1
     } else if (role === 'sekretariat'){
         data.id_sekretariat = id_sekretariat
-        data.sekretariat_approval = 1
         data.sekretariat_approval_stamp = getDateTime()
         roleId = 2
     } else if (role === 'romo paroki') {
         data.id_romo = id_romo
-        data.romo_approval = 1
         data.romo_approval_stamp = getDateTime()
         roleId = 3
     }
